@@ -58,3 +58,28 @@ export interface CliOptions {
   output?: string;
   noComments?: boolean;
 }
+
+export interface ScanResult {
+  files: string[];
+  totalFound: number;
+  errors: string[];
+}
+
+export interface BatchOptions {
+  sourceDirectory: string;
+  includeComments?: boolean;
+  onProgress?: (current: number, total: number, fileName: string) => void;
+  onFileProcessed?: (filePath: string, success: boolean, error?: string) => void;
+}
+
+export interface BatchResult {
+  totalFiles: number;
+  successCount: number;
+  failureCount: number;
+  processedFiles: Array<{
+    filePath: string;
+    success: boolean;
+    outputPath?: string;
+    error?: string;
+  }>;
+}
