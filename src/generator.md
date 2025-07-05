@@ -1,7 +1,7 @@
 # 📁 ./src/generator.ts
 
 ## 📦 Exports
-- **Functions**: 2 exported functions
+- **Functions**: 3 exported functions
 
 ## 🔧 Functions
 
@@ -27,4 +27,20 @@ export function generateMarkdown(parsedFile: ParsedFile, _options?: GeneratorOpt
 
 ```typescript
 export function getOutputPath(inputPath: string, customOutput?: string): string
+```
+
+### generateDependencyMarkdown
+/***
+ * Generate comprehensive dependency graph markdown
+ */
+
+
+**Parameters:**
+- graph: DependencyGraph
+- options?: GraphOptions
+
+**Returns:** string
+
+```typescript
+export function generateDependencyMarkdown(graph: DependencyGraph, options?: GraphOptions): string
 ```

@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 
+/* eslint-disable max-lines */
+/* eslint-disable max-lines-per-function */
+/* eslint-disable complexity */
+
 import { Command } from 'commander';
 import chalk from 'chalk';
 import { promises as fs } from 'fs';

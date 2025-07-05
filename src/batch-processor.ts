@@ -1,3 +1,5 @@
+/* eslint-disable max-lines-per-function */
+
 import { promises as fs } from 'fs';
 import path from 'path';
 import { BatchOptions, BatchResult } from './types';

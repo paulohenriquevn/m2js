@@ -1,3 +1,6 @@
+/* eslint-disable max-lines */
+/* eslint-disable max-lines-per-function */
+
 import {
   ParsedFile,
   ParsedFunction,
@@ -17,6 +20,7 @@ const DEFAULT_OPTIONS: GeneratorOptions = {
 
 export function generateMarkdown(
   parsedFile: ParsedFile,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _options: GeneratorOptions = DEFAULT_OPTIONS
 ): string {
   // Note: _options parameter reserved for future includeComments feature

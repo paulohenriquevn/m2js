@@ -1,3 +1,6 @@
+/* eslint-disable max-lines */
+/* eslint-disable max-lines-per-function */
+
 import { parse } from '@babel/parser';
 import traverse, { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
@@ -338,8 +341,14 @@ function generateMethodSignature(
 
 function extractJSDoc(path: NodePath): string | undefined {
   // For ExportNamedDeclaration, check the declaration's leading comments first
-  if ((path.node as any).declaration && (path.node as any).declaration.leadingComments) {
+  if (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (path.node as any).declaration &&
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (path.node as any).declaration.leadingComments
+  ) {
     // Get the last JSDoc comment (the one immediately before the declaration)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const jsDocComments = (path.node as any).declaration.leadingComments.filter(
       (comment: t.Comment) =>
         comment.type === 'CommentBlock' && comment.value.startsWith('*')

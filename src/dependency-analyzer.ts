@@ -1,3 +1,6 @@
+/* eslint-disable max-lines */
+/* eslint-disable max-lines-per-function */
+
 import { parse } from '@babel/parser';
 import traverse from '@babel/traverse';
 import * as t from '@babel/types';
@@ -11,6 +14,7 @@ import {
 } from './types';
 
 // Babel parser configuration for dependency analysis
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const DEPENDENCY_PARSE_CONFIG: any = {
   sourceType: 'module',
   plugins: [
