@@ -57,6 +57,8 @@ export interface ParseOptions {
 export interface CliOptions {
   output?: string;
   noComments?: boolean;
+  graph?: boolean;
+  mermaid?: boolean;
 }
 
 export interface ScanResult {
@@ -69,7 +71,11 @@ export interface BatchOptions {
   sourceDirectory: string;
   includeComments?: boolean;
   onProgress?: (current: number, total: number, fileName: string) => void;
-  onFileProcessed?: (filePath: string, success: boolean, error?: string) => void;
+  onFileProcessed?: (
+    filePath: string,
+    success: boolean,
+    error?: string
+  ) => void;
 }
 
 export interface BatchResult {
@@ -82,4 +88,38 @@ export interface BatchResult {
     outputPath?: string;
     error?: string;
   }>;
+}
+
+// === DEPENDENCY GRAPH TYPES ===
+
+export interface DependencyRelationship {
+  from: string; // Source file path
+  to: string; // Target file/module path
+  type: 'import' | 'export' | 'type';
+  importName?: string; // Specific import name
+  isExternal: boolean; // NPM package vs local file
+  importType: 'default' | 'named' | 'namespace' | 'side-effect';
+}
+
+export interface GraphMetrics {
+  totalNodes: number;
+  totalEdges: number;
+  internalDependencies: number;
+  externalDependencies: number;
+  circularDependencies: string[][];
+  mostConnectedModule?: string;
+  averageDependencies: number;
+}
+
+export interface DependencyGraph {
+  projectPath: string;
+  nodes: string[]; // All file paths
+  edges: DependencyRelationship[]; // All dependencies
+  metrics: GraphMetrics;
+}
+
+export interface GraphOptions {
+  includeMermaid?: boolean;
+  includeExternalDeps?: boolean;
+  detectCircular?: boolean;
 }

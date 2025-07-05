@@ -30,8 +30,8 @@ export class AuthService {
   async login(email: string, password: string): Promise<string> {
     const response = await fetch('/api/auth/login', {
       method: 'POST',
-      headers: { 'Authorization': `Bearer ${this.apiKey}` },
-      body: JSON.stringify({ email, password })
+      headers: { Authorization: `Bearer ${this.apiKey}` },
+      body: JSON.stringify({ email, password }),
     });
     return response.json();
   }

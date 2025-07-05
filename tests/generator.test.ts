@@ -13,15 +13,15 @@ describe('Generator', () => {
         signature: 'export function calculateTotal(items: number[]): number',
         isDefault: false,
         params: [{ name: 'items', type: 'number[]', optional: false }],
-        returnType: 'number'
+        returnType: 'number',
       },
       {
         name: 'default',
         signature: 'export default function(email: string): boolean',
         isDefault: true,
         params: [{ name: 'email', type: 'string', optional: false }],
-        returnType: 'boolean'
-      }
+        returnType: 'boolean',
+      },
     ],
     classes: [],
     exportMetadata: {
@@ -29,49 +29,49 @@ describe('Generator', () => {
       totalClasses: 0,
       hasDefaultExport: true,
       defaultExportType: 'function',
-      defaultExportName: 'function'
-    }
+      defaultExportName: 'function',
+    },
   };
 
-const mockParsedFileWithClasses: ParsedFile = {
-  fileName: 'service.ts',
-  filePath: '/path/to/service.ts',
-  functions: [],
-  classes: [
-    {
-      name: 'AuthService',
-      jsDoc: '/**\n * Service for authentication\n */',
-      methods: [
-        {
-          name: 'login',
-          signature: 'login(email: string): Promise<string>',
-          params: [{ name: 'email', type: 'string', optional: false }],
-          returnType: 'Promise<string>',
-          isPrivate: false,
-          jsDoc: '/**\n * Logs in user\n */'
-        },
-        {
-          name: 'validateToken',
-          signature: 'validateToken(token: string): boolean',
-          params: [{ name: 'token', type: 'string', optional: false }],
-          returnType: 'boolean',
-          isPrivate: true
-        }
-      ]
-    }
-  ],
-  exportMetadata: {
-    totalFunctions: 0,
-    totalClasses: 1,
-    hasDefaultExport: false,
-    defaultExportType: undefined,
-    defaultExportName: undefined
-  }
-};
+  const mockParsedFileWithClasses: ParsedFile = {
+    fileName: 'service.ts',
+    filePath: '/path/to/service.ts',
+    functions: [],
+    classes: [
+      {
+        name: 'AuthService',
+        jsDoc: '/**\n * Service for authentication\n */',
+        methods: [
+          {
+            name: 'login',
+            signature: 'login(email: string): Promise<string>',
+            params: [{ name: 'email', type: 'string', optional: false }],
+            returnType: 'Promise<string>',
+            isPrivate: false,
+            jsDoc: '/**\n * Logs in user\n */',
+          },
+          {
+            name: 'validateToken',
+            signature: 'validateToken(token: string): boolean',
+            params: [{ name: 'token', type: 'string', optional: false }],
+            returnType: 'boolean',
+            isPrivate: true,
+          },
+        ],
+      },
+    ],
+    exportMetadata: {
+      totalFunctions: 0,
+      totalClasses: 1,
+      hasDefaultExport: false,
+      defaultExportType: undefined,
+      defaultExportName: undefined,
+    },
+  };
 
   it('should generate valid markdown structure', () => {
     const result = generateMarkdown(mockParsedFile);
-    
+
     expect(result).toContain('# 📁 /path/to/test.ts');
     expect(result).toContain('## 📦 Exports');
     expect(result).toContain('- **Functions**: 2 exported functions');
@@ -93,8 +93,8 @@ const mockParsedFileWithClasses: ParsedFile = {
         totalClasses: 0,
         hasDefaultExport: false,
         defaultExportType: undefined,
-        defaultExportName: undefined
-      }
+        defaultExportName: undefined,
+      },
     };
 
     const result = generateMarkdown(emptyFile);
@@ -106,7 +106,7 @@ const mockParsedFileWithClasses: ParsedFile = {
 
   it('should generate classes section', () => {
     const result = generateMarkdown(mockParsedFileWithClasses);
-    
+
     expect(result).toContain('# 📁 /path/to/service.ts');
     expect(result).toContain('## 📦 Exports');
     expect(result).toContain('- **Classes**: 1 exported class');
@@ -118,14 +118,14 @@ const mockParsedFileWithClasses: ParsedFile = {
 
   it('should include JSDoc comments in output', () => {
     const result = generateMarkdown(mockParsedFileWithClasses);
-    
+
     expect(result).toContain('Service for authentication');
     expect(result).toContain('Logs in user');
   });
 
   it('should filter out private methods from class signatures', () => {
     const result = generateMarkdown(mockParsedFileWithClasses);
-    
+
     expect(result).toContain('login(email: string): Promise<string>');
     expect(result).not.toContain('validateToken'); // private method should not appear
   });
@@ -139,7 +139,7 @@ const mockParsedFileWithClasses: ParsedFile = {
         totalClasses: 0,
         hasDefaultExport: false,
         defaultExportType: undefined,
-        defaultExportName: undefined
+        defaultExportName: undefined,
       },
       functions: [
         {
@@ -147,9 +147,9 @@ const mockParsedFileWithClasses: ParsedFile = {
           signature: 'export function special*function(): void',
           isDefault: false,
           params: [],
-        }
+        },
       ],
-      classes: []
+      classes: [],
     };
 
     const result = generateMarkdown(specialFile);
@@ -173,22 +173,22 @@ const mockParsedFileWithClasses: ParsedFile = {
           signature: 'export function calculateTotal(items: number[]): number',
           isDefault: false,
           params: [{ name: 'items', type: 'number[]', optional: false }],
-          returnType: 'number'
+          returnType: 'number',
         },
         {
           name: 'formatCurrency',
           signature: 'export function formatCurrency(amount: number): string',
           isDefault: false,
           params: [{ name: 'amount', type: 'number', optional: false }],
-          returnType: 'string'
+          returnType: 'string',
         },
         {
           name: 'default',
           signature: 'export default function(email: string): boolean',
           isDefault: true,
           params: [{ name: 'email', type: 'string', optional: false }],
-          returnType: 'boolean'
-        }
+          returnType: 'boolean',
+        },
       ],
       classes: [],
       exportMetadata: {
@@ -196,8 +196,8 @@ const mockParsedFileWithClasses: ParsedFile = {
         totalClasses: 0,
         hasDefaultExport: true,
         defaultExportType: 'function',
-        defaultExportName: 'function'
-      }
+        defaultExportName: 'function',
+      },
     };
 
     const result = generateMarkdown(simpleParsedFile);

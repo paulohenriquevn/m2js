@@ -4,12 +4,14 @@ import { ScanResult } from './types';
 
 const SUPPORTED_EXTENSIONS = ['.ts', '.tsx', '.js', '.jsx'];
 
-export async function scanDirectory(directoryPath: string): Promise<ScanResult> {
+export async function scanDirectory(
+  directoryPath: string
+): Promise<ScanResult> {
   const absolutePath = path.resolve(directoryPath);
   const result: ScanResult = {
     files: [],
     totalFound: 0,
-    errors: []
+    errors: [],
   };
 
   try {
@@ -56,7 +58,9 @@ async function scanDirectoryRecursive(dirPath: string): Promise<string[]> {
     }
   } catch (error) {
     // Log error but continue scanning other directories
-    console.warn(`Warning: Could not scan directory ${dirPath}: ${(error as Error).message}`);
+    console.warn(
+      `Warning: Could not scan directory ${dirPath}: ${(error as Error).message}`
+    );
   }
 
   return foundFiles;
@@ -68,13 +72,15 @@ function isSupportedFile(fileName: string): boolean {
 }
 
 export function isDirectory(targetPath: string): Promise<boolean> {
-  return fs.stat(path.resolve(targetPath))
+  return fs
+    .stat(path.resolve(targetPath))
     .then(stats => stats.isDirectory())
     .catch(() => false);
 }
 
 export function isFile(targetPath: string): Promise<boolean> {
-  return fs.stat(path.resolve(targetPath))
+  return fs
+    .stat(path.resolve(targetPath))
     .then(stats => stats.isFile())
     .catch(() => false);
 }
