@@ -61,4 +61,54 @@ describe('Parser', () => {
     const defaultFunc = result.functions.find(f => f.isDefault);
     expect(defaultFunc?.signature).toBe('export default function(email: string): boolean');
   });
+
+  it('should extract exported classes only', async () => {
+    const content = await fs.readFile(path.join(fixturesPath, 'with-classes.ts'), 'utf-8');
+    const result = parseFile('with-classes.ts', content);
+
+    expect(result.classes).toHaveLength(2);
+    expect(result.classes.map(c => c.name)).toEqual(['AuthService', 'default']);
+  });
+
+  it('should extract public methods only from classes', async () => {
+    const content = await fs.readFile(path.join(fixturesPath, 'with-classes.ts'), 'utf-8');
+    const result = parseFile('with-classes.ts', content);
+
+    const authService = result.classes.find(c => c.name === 'AuthService');
+    expect(authService?.methods).toHaveLength(3); // login, logout, validateToken
+    
+    const publicMethods = authService?.methods.filter(m => !m.isPrivate);
+    expect(publicMethods).toHaveLength(2); // only login and logout
+    expect(publicMethods?.map(m => m.name)).toEqual(['login', 'logout']);
+  });
+
+  it('should extract JSDoc comments for functions', async () => {
+    const content = await fs.readFile(path.join(fixturesPath, 'with-classes.ts'), 'utf-8');
+    const result = parseFile('with-classes.ts', content);
+
+    const calculateTotal = result.functions.find(f => f.name === 'calculateTotal');
+    expect(calculateTotal?.jsDoc).toBeDefined();
+    expect(calculateTotal?.jsDoc).toContain('Calculates the sum of an array');
+  });
+
+  it('should extract JSDoc comments for classes', async () => {
+    const content = await fs.readFile(path.join(fixturesPath, 'with-classes.ts'), 'utf-8');
+    const result = parseFile('with-classes.ts', content);
+
+    const authService = result.classes.find(c => c.name === 'AuthService');
+    expect(authService?.jsDoc).toBeDefined();
+    expect(authService?.jsDoc).toContain('Service for handling user authentication');
+  });
+
+  it('should parse method signatures correctly', async () => {
+    const content = await fs.readFile(path.join(fixturesPath, 'with-classes.ts'), 'utf-8');
+    const result = parseFile('with-classes.ts', content);
+
+    const authService = result.classes.find(c => c.name === 'AuthService');
+    const loginMethod = authService?.methods.find(m => m.name === 'login');
+    
+    expect(loginMethod?.signature).toBe('login(email: string, password: string): Promise');
+    expect(loginMethod?.params).toHaveLength(2);
+    expect(loginMethod?.returnType).toBe('Promise');
+  });
 });

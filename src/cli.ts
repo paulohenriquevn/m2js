@@ -46,12 +46,19 @@ async function processFile(inputPath: string, options: CliOptions): Promise<void
   const parsedFile = parseFile(resolvedPath, content);
 
   console.log(chalk.blue('✨ Extracting exported functions...'));
-  if (parsedFile.functions.length === 0) {
-    console.log(chalk.yellow('⚠️  No exported functions found'));
+  if (parsedFile.classes.length > 0) {
+    console.log(chalk.blue('🏗️  Extracting exported classes...'));
+  }
+  if (parsedFile.functions.length > 0 || parsedFile.classes.length > 0) {
+    console.log(chalk.blue('📝 Extracting JSDoc comments...'));
+  }
+  
+  if (parsedFile.functions.length === 0 && parsedFile.classes.length === 0) {
+    console.log(chalk.yellow('⚠️  No exported functions or classes found'));
     return;
   }
 
-  console.log(chalk.blue('📝 Generating markdown...'));
+  console.log(chalk.blue('📄 Generating markdown...'));
   const markdown = generateMarkdown(parsedFile, {
     includeComments: !options.noComments,
     outputPath: options.output
@@ -61,7 +68,22 @@ async function processFile(inputPath: string, options: CliOptions): Promise<void
   await fs.writeFile(outputPath, markdown, 'utf-8');
 
   console.log(chalk.green(`✅ Created ${path.basename(outputPath)}`));
-  console.log(chalk.cyan(`📊 Found ${parsedFile.functions.length} exported function${parsedFile.functions.length === 1 ? '' : 's'}`));
+  
+  // Enhanced statistics
+  const totalMethods = parsedFile.classes.reduce((sum, cls) => sum + cls.methods.filter(m => !m.isPrivate).length, 0);
+  const stats: string[] = [];
+  
+  if (parsedFile.functions.length > 0) {
+    stats.push(`${parsedFile.functions.length} function${parsedFile.functions.length === 1 ? '' : 's'}`);
+  }
+  if (parsedFile.classes.length > 0) {
+    stats.push(`${parsedFile.classes.length} class${parsedFile.classes.length === 1 ? '' : 'es'}`);
+  }
+  if (totalMethods > 0) {
+    stats.push(`${totalMethods} method${totalMethods === 1 ? '' : 's'}`);
+  }
+  
+  console.log(chalk.cyan(`📊 Found ${stats.join(', ')}`));
   
   const inputStats = await fs.stat(resolvedPath);
   const outputStats = await fs.stat(outputPath);

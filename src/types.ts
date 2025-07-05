@@ -4,6 +4,7 @@ export interface ParsedFunction {
   isDefault: boolean;
   params: Parameter[];
   returnType?: string;
+  jsDoc?: string;
 }
 
 export interface Parameter {
@@ -12,9 +13,25 @@ export interface Parameter {
   optional: boolean;
 }
 
+export interface ParsedMethod {
+  name: string;
+  signature: string;
+  params: Parameter[];
+  returnType?: string;
+  isPrivate: boolean;
+  jsDoc?: string;
+}
+
+export interface ParsedClass {
+  name: string;
+  methods: ParsedMethod[];
+  jsDoc?: string;
+}
+
 export interface ParsedFile {
   fileName: string;
   functions: ParsedFunction[];
+  classes: ParsedClass[];
 }
 
 export interface GeneratorOptions {

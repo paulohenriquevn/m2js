@@ -3,6 +3,9 @@
 ## 🔧 Functions
 
 ### calculateTotal
+/***
+ * Utility functions for common operations
+ */
 ```typescript
 export function calculateTotal(items: number[]): number
 ```

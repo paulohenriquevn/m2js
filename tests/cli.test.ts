@@ -71,7 +71,7 @@ describe('CLI', () => {
       
       expect(stdout).toContain('📁 Reading simple.ts');
       expect(stdout).toContain('✅ Created simple.md');
-      expect(stdout).toContain('📊 Found 3 exported function');
+      expect(stdout).toContain('📊 Found 3 functions');
 
       const outputExists = await fs.access(outputFile).then(() => true).catch(() => false);
       expect(outputExists).toBe(true);
@@ -100,13 +100,45 @@ describe('CLI', () => {
     expect(outputExists).toBe(true);
   });
 
+  it('should process files with classes and show enhanced statistics', async () => {
+    const inputFile = path.join(fixturesPath, 'with-classes.ts');
+    const outputFile = path.join(fixturesPath, 'with-classes.md');
+
+    try {
+      const { stdout } = await execAsync(`npm run build && node dist/cli.js ${inputFile}`);
+      
+      expect(stdout).toContain('🏗️  Extracting exported classes');
+      expect(stdout).toContain('📝 Extracting JSDoc comments');
+      expect(stdout).toContain('✅ Created with-classes.md');
+      expect(stdout).toContain('📊 Found');
+      expect(stdout).toContain('function');
+      expect(stdout).toContain('class');
+      expect(stdout).toContain('method');
+
+      const outputExists = await fs.access(outputFile).then(() => true).catch(() => false);
+      expect(outputExists).toBe(true);
+
+      const content = await fs.readFile(outputFile, 'utf-8');
+      expect(content).toContain('## 🏗️ Classes');
+      expect(content).toContain('### AuthService');
+      expect(content).toContain('#### login');
+      expect(content).not.toContain('validateToken'); // private method
+    } finally {
+      try {
+        await fs.unlink(outputFile);
+      } catch {
+        // File might not exist
+      }
+    }
+  });
+
   it('should handle files with no exported functions', async () => {
     const emptyFile = path.join(__dirname, 'empty.ts');
     await fs.writeFile(emptyFile, 'const internal = 42;\nfunction privateFunc() {}');
 
     try {
       const { stdout } = await execAsync(`npm run build && node dist/cli.js ${emptyFile}`);
-      expect(stdout).toContain('⚠️  No exported functions found');
+      expect(stdout).toContain('⚠️  No exported functions or classes found');
     } finally {
       await fs.unlink(emptyFile);
     }

@@ -21,8 +21,37 @@ describe('Generator', () => {
         params: [{ name: 'email', type: 'string', optional: false }],
         returnType: 'boolean'
       }
-    ]
+    ],
+    classes: []
   };
+
+const mockParsedFileWithClasses: ParsedFile = {
+  fileName: 'service.ts',
+  functions: [],
+  classes: [
+    {
+      name: 'AuthService',
+      jsDoc: '/**\n * Service for authentication\n */',
+      methods: [
+        {
+          name: 'login',
+          signature: 'login(email: string): Promise<string>',
+          params: [{ name: 'email', type: 'string', optional: false }],
+          returnType: 'Promise<string>',
+          isPrivate: false,
+          jsDoc: '/**\n * Logs in user\n */'
+        },
+        {
+          name: 'validateToken',
+          signature: 'validateToken(token: string): boolean',
+          params: [{ name: 'token', type: 'string', optional: false }],
+          returnType: 'boolean',
+          isPrivate: true
+        }
+      ]
+    }
+  ]
+};
 
   it('should generate valid markdown structure', () => {
     const result = generateMarkdown(mockParsedFile);
@@ -34,15 +63,40 @@ describe('Generator', () => {
     expect(result).toContain('```typescript');
   });
 
-  it('should handle empty function list', () => {
+  it('should handle empty function and class lists', () => {
     const emptyFile: ParsedFile = {
       fileName: 'empty.ts',
-      functions: []
+      functions: [],
+      classes: []
     };
 
     const result = generateMarkdown(emptyFile);
     expect(result).toContain('# 📝 empty.ts');
-    expect(result).toContain('No exported functions found.');
+    expect(result).toContain('No exported functions or classes found.');
+  });
+
+  it('should generate classes section', () => {
+    const result = generateMarkdown(mockParsedFileWithClasses);
+    
+    expect(result).toContain('# 📝 service.ts');
+    expect(result).toContain('## 🏗️ Classes');
+    expect(result).toContain('### AuthService');
+    expect(result).toContain('#### login');
+    expect(result).not.toContain('#### validateToken'); // private method
+  });
+
+  it('should include JSDoc comments in output', () => {
+    const result = generateMarkdown(mockParsedFileWithClasses);
+    
+    expect(result).toContain('Service for authentication');
+    expect(result).toContain('Logs in user');
+  });
+
+  it('should filter out private methods from class signatures', () => {
+    const result = generateMarkdown(mockParsedFileWithClasses);
+    
+    expect(result).toContain('login(email: string): Promise<string>');
+    expect(result).not.toContain('validateToken'); // private method should not appear
   });
 
   it('should escape markdown special characters', () => {
@@ -55,7 +109,8 @@ describe('Generator', () => {
           isDefault: false,
           params: [],
         }
-      ]
+      ],
+      classes: []
     };
 
     const result = generateMarkdown(specialFile);
@@ -94,7 +149,8 @@ describe('Generator', () => {
           params: [{ name: 'email', type: 'string', optional: false }],
           returnType: 'boolean'
         }
-      ]
+      ],
+      classes: []
     };
 
     const result = generateMarkdown(simpleParsedFile);
