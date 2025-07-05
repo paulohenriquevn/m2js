@@ -1,0 +1,39 @@
+{
+  "name": "m2js",
+  "version": "1.0.0",
+  "description": "Transform TypeScript/JavaScript code into LLM-friendly Markdown summaries",
+  "main": "dist/index.js",
+  "bin": {
+    "m2js": "dist/cli.js"
+  },
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "type-check": "tsc --noEmit",
+    "lint": "echo 'No linter configured yet'",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": ["typescript", "javascript", "markdown", "llm", "ai", "documentation", "cli"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.0.10",
+    "jest": "^30.0.4",
+    "ts-jest": "^29.4.0",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.28.0",
+    "@babel/traverse": "^7.28.0",
+    "@babel/types": "^7.28.0",
+    "chalk": "^5.4.1",
+    "commander": "^14.0.0"
+  }
+}
