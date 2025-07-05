@@ -30,6 +30,7 @@ async function processFile(inputPath: string, options: CliOptions): Promise<void
   const resolvedPath = path.resolve(inputPath);
   
   console.log(chalk.blue(`📁 Reading ${path.basename(resolvedPath)}...`));
+  console.log(chalk.blue(`🗂️  Resolving file path...`));
   
   try {
     await fs.access(resolvedPath);
@@ -45,9 +46,13 @@ async function processFile(inputPath: string, options: CliOptions): Promise<void
   const content = await fs.readFile(resolvedPath, 'utf-8');
   const parsedFile = parseFile(resolvedPath, content);
 
-  console.log(chalk.blue('✨ Extracting exported functions...'));
-  if (parsedFile.classes.length > 0) {
-    console.log(chalk.blue('🏗️  Extracting exported classes...'));
+  // Enhanced messages with export counting
+  const { exportMetadata } = parsedFile;
+  if (exportMetadata.totalFunctions > 0) {
+    console.log(chalk.blue(`✨ Extracting exported functions (${exportMetadata.totalFunctions} found)...`));
+  }
+  if (exportMetadata.totalClasses > 0) {
+    console.log(chalk.blue(`🏗️  Extracting exported classes (${exportMetadata.totalClasses} found)...`));
   }
   if (parsedFile.functions.length > 0 || parsedFile.classes.length > 0) {
     console.log(chalk.blue('📝 Extracting JSDoc comments...'));
@@ -58,7 +63,8 @@ async function processFile(inputPath: string, options: CliOptions): Promise<void
     return;
   }
 
-  console.log(chalk.blue('📄 Generating markdown...'));
+  console.log(chalk.blue('📋 Organizing hierarchical structure...'));
+  console.log(chalk.blue('📄 Generating enhanced markdown...'));
   const markdown = generateMarkdown(parsedFile, {
     includeComments: !options.noComments,
     outputPath: options.output
@@ -67,23 +73,45 @@ async function processFile(inputPath: string, options: CliOptions): Promise<void
   const outputPath = getOutputPath(resolvedPath, options.output);
   await fs.writeFile(outputPath, markdown, 'utf-8');
 
-  console.log(chalk.green(`✅ Created ${path.basename(outputPath)}`));
+  console.log(chalk.green(`✅ Created ${path.basename(outputPath)} with enhanced context`));
   
-  // Enhanced statistics
-  const totalMethods = parsedFile.classes.reduce((sum, cls) => sum + cls.methods.filter(m => !m.isPrivate).length, 0);
-  const stats: string[] = [];
+  // Enhanced statistics with path information
+  // Show path information
+  const cwd = process.cwd();
+  let displayPath = parsedFile.filePath;
+  if (parsedFile.filePath.startsWith(cwd)) {
+    displayPath = path.relative(cwd, parsedFile.filePath);
+    if (!displayPath.startsWith('.')) {
+      displayPath = `./${displayPath}`;
+    }
+  }
+  console.log(chalk.cyan(`📁 Source: ${displayPath}`));
   
+  // Show export metadata
+  const exportStats: string[] = [];
+  if (exportMetadata.totalFunctions > 0) {
+    exportStats.push(`${exportMetadata.totalFunctions} function${exportMetadata.totalFunctions === 1 ? '' : 's'}`);
+  }
+  if (exportMetadata.totalClasses > 0) {
+    exportStats.push(`${exportMetadata.totalClasses} class${exportMetadata.totalClasses === 1 ? '' : 'es'}`);
+  }
+  if (exportMetadata.hasDefaultExport) {
+    exportStats.push(`1 default ${exportMetadata.defaultExportType}`);
+  }
+  console.log(chalk.cyan(`📦 Exports: ${exportStats.join(', ')}`));
+  
+  // Generate structure preview
+  console.log(chalk.cyan('📋 Generated enhanced structure:'));
   if (parsedFile.functions.length > 0) {
-    stats.push(`${parsedFile.functions.length} function${parsedFile.functions.length === 1 ? '' : 's'}`);
+    console.log(chalk.cyan(`    📁 Functions (${parsedFile.functions.length})`));
   }
   if (parsedFile.classes.length > 0) {
-    stats.push(`${parsedFile.classes.length} class${parsedFile.classes.length === 1 ? '' : 'es'}`);
+    console.log(chalk.cyan(`    📁 Classes (${parsedFile.classes.length})`));
+    parsedFile.classes.forEach(cls => {
+      const publicMethodsCount = cls.methods.filter(m => !m.isPrivate).length;
+      console.log(chalk.cyan(`      └── ${cls.name} (${publicMethodsCount} methods)`));
+    });
   }
-  if (totalMethods > 0) {
-    stats.push(`${totalMethods} method${totalMethods === 1 ? '' : 's'}`);
-  }
-  
-  console.log(chalk.cyan(`📊 Found ${stats.join(', ')}`));
   
   const inputStats = await fs.stat(resolvedPath);
   const outputStats = await fs.stat(outputPath);

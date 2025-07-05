@@ -1,7 +1,8 @@
 import { parse } from '@babel/parser';
 import traverse from '@babel/traverse';
 import * as t from '@babel/types';
-import { ParsedFunction, Parameter, ParsedFile, ParseOptions, ParsedClass, ParsedMethod } from './types';
+import path from 'path';
+import { ParsedFunction, Parameter, ParsedFile, ParseOptions, ParsedClass, ParsedMethod, ExportMetadata } from './types';
 
 const DEFAULT_PARSE_OPTIONS: ParseOptions = {
   sourceType: 'module',
@@ -17,11 +18,14 @@ export function parseFile(filePath: string, content: string): ParsedFile {
     const ast = parse(content, DEFAULT_PARSE_OPTIONS);
     const functions = extractExportedFunctions(ast);
     const classes = extractExportedClasses(ast);
+    const exportMetadata = generateExportMetadata(functions, classes, ast);
     
     return {
-      fileName: filePath,
+      fileName: path.basename(filePath),
+      filePath: path.resolve(filePath),
       functions,
-      classes
+      classes,
+      exportMetadata
     };
   } catch (error) {
     throw new Error(`Parse error in ${filePath}: ${(error as Error).message}`);
@@ -319,4 +323,50 @@ function extractJSDoc(path: any): string | undefined {
   }
   
   return undefined;
+}
+
+function generateExportMetadata(functions: ParsedFunction[], classes: ParsedClass[], ast: t.File): ExportMetadata {
+  let hasDefaultExport = false;
+  let defaultExportType: 'function' | 'class' | undefined;
+  let defaultExportName: string | undefined;
+
+  // Check for default exports in functions
+  const defaultFunction = functions.find(f => f.isDefault);
+  if (defaultFunction) {
+    hasDefaultExport = true;
+    defaultExportType = 'function';
+    defaultExportName = defaultFunction.name === 'default' ? 'function' : defaultFunction.name;
+  }
+
+  // Check for default exports in classes
+  const defaultClass = classes.find(c => c.name === 'default');
+  if (defaultClass) {
+    hasDefaultExport = true;
+    defaultExportType = 'class';
+    defaultExportName = 'class';
+  }
+
+  // If no default found in our parsed data, traverse AST to check for other default exports
+  if (!hasDefaultExport) {
+    traverse(ast, {
+      ExportDefaultDeclaration(path) {
+        hasDefaultExport = true;
+        if (t.isFunctionDeclaration(path.node.declaration)) {
+          defaultExportType = 'function';
+          defaultExportName = path.node.declaration.id?.name || 'function';
+        } else if (t.isClassDeclaration(path.node.declaration)) {
+          defaultExportType = 'class';
+          defaultExportName = path.node.declaration.id?.name || 'class';
+        }
+      }
+    });
+  }
+
+  return {
+    totalFunctions: functions.length,
+    totalClasses: classes.length,
+    hasDefaultExport,
+    defaultExportType,
+    defaultExportName
+  };
 }

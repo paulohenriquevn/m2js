@@ -1,4 +1,9 @@
-# 📝 with-classes.ts
+# 📁 ./tests/fixtures/with-classes.ts
+
+## 📦 Exports
+- **Functions**: 1 exported function
+- **Classes**: 2 exported classes
+- **Default Export**: class class
 
 ## 🔧 Functions
 
@@ -8,6 +13,12 @@
  * @param items Array of numbers to sum
  * @returns The total sum
  */
+
+**Parameters:**
+- items: number[]
+
+**Returns:** number
+
 ```typescript
 export function calculateTotal(items: number[]): number
 ```
@@ -18,6 +29,11 @@ export function calculateTotal(items: number[]): number
 /**
  * Service for handling user authentication and authorization
  */
+
+**Methods:**
+- login
+- logout
+
 ```typescript
 export class AuthService {
   login(email: string, password: string): Promise
@@ -32,6 +48,13 @@ export class AuthService {
    * @param password User's password
    * @returns Promise resolving to authentication token
    */
+
+**Parameters:**
+- email: string
+- password: string
+
+**Returns:** Promise
+
 ```typescript
 login(email: string, password: string): Promise
 ```
@@ -40,6 +63,9 @@ login(email: string, password: string): Promise
 /**
    * Logs out the current user
    */
+
+**Returns:** void
+
 ```typescript
 logout(): void
 ```
@@ -48,6 +74,10 @@ logout(): void
 /**
  * Default export class for data processing
  */
+
+**Methods:**
+- process
+
 ```typescript
 export class default {
   process(data: unknown[]): ProcessedData
@@ -55,6 +85,12 @@ export class default {
 ```
 
 #### process
+
+**Parameters:**
+- data: unknown[]
+
+**Returns:** ProcessedData
+
 ```typescript
 process(data: unknown[]): ProcessedData
 ```

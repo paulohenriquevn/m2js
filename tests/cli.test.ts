@@ -70,14 +70,15 @@ describe('CLI', () => {
       const { stdout } = await execAsync(`npm run build && node dist/cli.js ${inputFile}`);
       
       expect(stdout).toContain('📁 Reading simple.ts');
-      expect(stdout).toContain('✅ Created simple.md');
-      expect(stdout).toContain('📊 Found 3 functions');
+      expect(stdout).toContain('✅ Created simple.md with enhanced context');
+      expect(stdout).toContain('📦 Exports: 3 functions');
 
       const outputExists = await fs.access(outputFile).then(() => true).catch(() => false);
       expect(outputExists).toBe(true);
 
       const content = await fs.readFile(outputFile, 'utf-8');
-      expect(content).toContain('# 📝 simple.ts');
+      expect(content).toContain('# 📁 ./tests/fixtures/simple.ts');
+      expect(content).toContain('## 📦 Exports');
       expect(content).toContain('## 🔧 Functions');
     } finally {
       try {
@@ -109,11 +110,11 @@ describe('CLI', () => {
       
       expect(stdout).toContain('🏗️  Extracting exported classes');
       expect(stdout).toContain('📝 Extracting JSDoc comments');
-      expect(stdout).toContain('✅ Created with-classes.md');
-      expect(stdout).toContain('📊 Found');
+      expect(stdout).toContain('✅ Created with-classes.md with enhanced context');
+      expect(stdout).toContain('📦 Exports:');
       expect(stdout).toContain('function');
       expect(stdout).toContain('class');
-      expect(stdout).toContain('method');
+      expect(stdout).toContain('📋 Generated enhanced structure');
 
       const outputExists = await fs.access(outputFile).then(() => true).catch(() => false);
       expect(outputExists).toBe(true);

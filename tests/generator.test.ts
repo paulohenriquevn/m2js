@@ -6,6 +6,7 @@ import path from 'path';
 describe('Generator', () => {
   const mockParsedFile: ParsedFile = {
     fileName: 'test.ts',
+    filePath: '/path/to/test.ts',
     functions: [
       {
         name: 'calculateTotal',
@@ -22,11 +23,19 @@ describe('Generator', () => {
         returnType: 'boolean'
       }
     ],
-    classes: []
+    classes: [],
+    exportMetadata: {
+      totalFunctions: 2,
+      totalClasses: 0,
+      hasDefaultExport: true,
+      defaultExportType: 'function',
+      defaultExportName: 'function'
+    }
   };
 
 const mockParsedFileWithClasses: ParsedFile = {
   fileName: 'service.ts',
+  filePath: '/path/to/service.ts',
   functions: [],
   classes: [
     {
@@ -50,13 +59,23 @@ const mockParsedFileWithClasses: ParsedFile = {
         }
       ]
     }
-  ]
+  ],
+  exportMetadata: {
+    totalFunctions: 0,
+    totalClasses: 1,
+    hasDefaultExport: false,
+    defaultExportType: undefined,
+    defaultExportName: undefined
+  }
 };
 
   it('should generate valid markdown structure', () => {
     const result = generateMarkdown(mockParsedFile);
     
-    expect(result).toContain('# 📝 test.ts');
+    expect(result).toContain('# 📁 /path/to/test.ts');
+    expect(result).toContain('## 📦 Exports');
+    expect(result).toContain('- **Functions**: 2 exported functions');
+    expect(result).toContain('- **Default Export**: function function');
     expect(result).toContain('## 🔧 Functions');
     expect(result).toContain('### calculateTotal');
     expect(result).toContain('### default');
@@ -66,19 +85,31 @@ const mockParsedFileWithClasses: ParsedFile = {
   it('should handle empty function and class lists', () => {
     const emptyFile: ParsedFile = {
       fileName: 'empty.ts',
+      filePath: '/path/to/empty.ts',
       functions: [],
-      classes: []
+      classes: [],
+      exportMetadata: {
+        totalFunctions: 0,
+        totalClasses: 0,
+        hasDefaultExport: false,
+        defaultExportType: undefined,
+        defaultExportName: undefined
+      }
     };
 
     const result = generateMarkdown(emptyFile);
-    expect(result).toContain('# 📝 empty.ts');
+    expect(result).toContain('# 📁 /path/to/empty.ts');
+    expect(result).toContain('## 📦 Exports');
+    expect(result).toContain('- No exported functions or classes found');
     expect(result).toContain('No exported functions or classes found.');
   });
 
   it('should generate classes section', () => {
     const result = generateMarkdown(mockParsedFileWithClasses);
     
-    expect(result).toContain('# 📝 service.ts');
+    expect(result).toContain('# 📁 /path/to/service.ts');
+    expect(result).toContain('## 📦 Exports');
+    expect(result).toContain('- **Classes**: 1 exported class');
     expect(result).toContain('## 🏗️ Classes');
     expect(result).toContain('### AuthService');
     expect(result).toContain('#### login');
@@ -102,6 +133,14 @@ const mockParsedFileWithClasses: ParsedFile = {
   it('should escape markdown special characters', () => {
     const specialFile: ParsedFile = {
       fileName: 'special_*_file.ts',
+      filePath: '/path/to/special_*_file.ts',
+      exportMetadata: {
+        totalFunctions: 1,
+        totalClasses: 0,
+        hasDefaultExport: false,
+        defaultExportType: undefined,
+        defaultExportName: undefined
+      },
       functions: [
         {
           name: 'special*function',
@@ -114,7 +153,7 @@ const mockParsedFileWithClasses: ParsedFile = {
     };
 
     const result = generateMarkdown(specialFile);
-    expect(result).toContain('# 📝 special\\_\\*\\_file.ts');
+    expect(result).toContain('# 📁 /path/to/special\\_\\*\\_file.ts');
     expect(result).toContain('### special\\*function');
   });
 
@@ -127,6 +166,7 @@ const mockParsedFileWithClasses: ParsedFile = {
 
     const simpleParsedFile: ParsedFile = {
       fileName: 'simple.ts',
+      filePath: path.join(process.cwd(), 'tests/fixtures/simple.ts'),
       functions: [
         {
           name: 'calculateTotal',
@@ -150,7 +190,14 @@ const mockParsedFileWithClasses: ParsedFile = {
           returnType: 'boolean'
         }
       ],
-      classes: []
+      classes: [],
+      exportMetadata: {
+        totalFunctions: 3,
+        totalClasses: 0,
+        hasDefaultExport: true,
+        defaultExportType: 'function',
+        defaultExportName: 'function'
+      }
     };
 
     const result = generateMarkdown(simpleParsedFile);

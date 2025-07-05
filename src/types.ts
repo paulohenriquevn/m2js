@@ -28,10 +28,20 @@ export interface ParsedClass {
   jsDoc?: string;
 }
 
+export interface ExportMetadata {
+  totalFunctions: number;
+  totalClasses: number;
+  hasDefaultExport: boolean;
+  defaultExportType?: 'function' | 'class';
+  defaultExportName?: string;
+}
+
 export interface ParsedFile {
   fileName: string;
+  filePath: string;
   functions: ParsedFunction[];
   classes: ParsedClass[];
+  exportMetadata: ExportMetadata;
 }
 
 export interface GeneratorOptions {
