@@ -1,13 +1,19 @@
 {
-  "name": "m2js",
+  "name": "@paulohenriquevn/m2js",
   "version": "1.0.0",
-  "description": "Transform TypeScript/JavaScript code into LLM-friendly Markdown summaries",
+  "description": "🚀 Transform TypeScript/JavaScript code into LLM-friendly Markdown summaries. Extract exported functions, classes, and JSDoc comments for better AI context with 60%+ token reduction.",
   "main": "dist/index.js",
   "bin": {
     "m2js": "dist/cli.js"
   },
-  "directories": {
-    "doc": "docs"
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=16.0.0"
   },
   "scripts": {
     "build": "tsc",
@@ -17,11 +23,39 @@
     "test:coverage": "jest --coverage",
     "type-check": "tsc --noEmit",
     "lint": "echo 'No linter configured yet'",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run type-check && npm test && npm run build",
+    "postinstall": "echo '✅ m2js installed! Try: m2js --help'"
   },
-  "keywords": ["typescript", "javascript", "markdown", "llm", "ai", "documentation", "cli"],
-  "author": "",
+  "keywords": [
+    "typescript",
+    "javascript",
+    "markdown",
+    "llm",
+    "ai",
+    "chatgpt",
+    "claude",
+    "documentation",
+    "cli",
+    "ast",
+    "babel",
+    "parser",
+    "code-to-markdown",
+    "developer-tools",
+    "documentation-generator",
+    "token-reduction",
+    "ai-assistant",
+    "code-extraction"
+  ],
+  "author": "M2JS Contributors",
   "license": "MIT",
+  "homepage": "https://github.com/paulohenriquevn/m2js#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/paulohenriquevn/m2js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/paulohenriquevn/m2js/issues"
+  },
   "devDependencies": {
     "@types/jest": "^30.0.0",
     "@types/node": "^24.0.10",
