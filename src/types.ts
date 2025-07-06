@@ -132,3 +132,15 @@ export interface GraphOptions {
   includeExternalDeps?: boolean;
   detectCircular?: boolean;
 }
+
+// Template generation options
+export interface TemplateOptions {
+  domain: string;
+  component: string;
+  output?: string;
+  interactive?: boolean;
+  examples?: boolean;
+  businessContext?: boolean;
+  architectureGuide?: boolean;
+  testingGuide?: boolean;
+}

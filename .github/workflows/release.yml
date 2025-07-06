@@ -1,0 +1,224 @@
+name: Release & Publish
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+      version: ${{ steps.get_version.outputs.version }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Get version from tag
+      id: get_version
+      run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run all tests
+      run: |
+        npm run type-check
+        npm run lint
+        npm test
+        npm run build
+
+    - name: Generate changelog
+      run: |
+        echo "# Release v${{ steps.get_version.outputs.version }}" > RELEASE_NOTES.md
+        echo "" >> RELEASE_NOTES.md
+        echo "## What's New" >> RELEASE_NOTES.md
+        echo "" >> RELEASE_NOTES.md
+        # Extract changes from CHANGELOG.md for this version
+        if [ -f CHANGELOG.md ]; then
+          sed -n "/## \[v${{ steps.get_version.outputs.version }}\]/,/## \[v/p" CHANGELOG.md | head -n -1 >> RELEASE_NOTES.md
+        fi
+        echo "" >> RELEASE_NOTES.md
+        echo "## Installation" >> RELEASE_NOTES.md
+        echo "" >> RELEASE_NOTES.md
+        echo '```bash' >> RELEASE_NOTES.md
+        echo 'npm install -g m2js@${{ steps.get_version.outputs.version }}' >> RELEASE_NOTES.md
+        echo '```' >> RELEASE_NOTES.md
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ steps.get_version.outputs.version }}
+        release_name: M2JS v${{ steps.get_version.outputs.version }}
+        body_path: RELEASE_NOTES.md
+        draft: false
+        prerelease: false
+
+  publish-npm:
+    name: Publish to NPM
+    runs-on: ubuntu-latest
+    needs: release
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        registry-url: 'https://registry.npmjs.org'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build project
+      run: npm run build
+
+    - name: Update package.json version
+      run: npm version ${{ needs.release.outputs.version }} --no-git-tag-version
+
+    - name: Publish to NPM
+      run: npm publish --access public
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+    - name: Upload NPM package
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.release.outputs.upload_url }}
+        asset_path: ./m2js-${{ needs.release.outputs.version }}.tgz
+        asset_name: m2js-${{ needs.release.outputs.version }}.tgz
+        asset_content_type: application/gzip
+
+  publish-extension:
+    name: Publish VS Code Extension
+    runs-on: ubuntu-latest
+    needs: release
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+
+    - name: Install main project dependencies
+      run: npm ci
+
+    - name: Build main project
+      run: npm run build
+
+    - name: Install extension dependencies
+      run: |
+        cd vscode-extension
+        npm ci
+
+    - name: Update extension version
+      run: |
+        cd vscode-extension
+        npm version ${{ needs.release.outputs.version }} --no-git-tag-version
+
+    - name: Compile extension
+      run: |
+        cd vscode-extension
+        npm run compile
+
+    - name: Install VSCE
+      run: npm install -g vsce
+
+    - name: Package extension
+      run: |
+        cd vscode-extension
+        vsce package --no-dependencies
+
+    - name: Publish to VS Code Marketplace
+      run: |
+        cd vscode-extension
+        vsce publish --no-dependencies -p ${{ secrets.VSCODE_MARKETPLACE_TOKEN }}
+
+    - name: Upload extension to release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.release.outputs.upload_url }}
+        asset_path: ./vscode-extension/m2js-vscode-${{ needs.release.outputs.version }}.vsix
+        asset_name: m2js-vscode-${{ needs.release.outputs.version }}.vsix
+        asset_content_type: application/zip
+
+  post-release:
+    name: Post-Release Tasks
+    runs-on: ubuntu-latest
+    needs: [release, publish-npm, publish-extension]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+
+    - name: Test NPM package installation
+      run: |
+        echo "🧪 Testing NPM package installation..."
+        npm install -g m2js@${{ needs.release.outputs.version }}
+        m2js --version
+        m2js --help
+
+    - name: Update documentation
+      run: |
+        echo "📝 Updating documentation with new version..."
+        sed -i "s/npm install -g m2js@.*/npm install -g m2js@${{ needs.release.outputs.version }}/g" README.md
+
+    - name: Create post-release PR
+      run: |
+        echo "🔄 Creating post-release updates..."
+        # This would typically update documentation, bump dev version, etc.
+        # For now, just show success
+        echo "✅ Release v${{ needs.release.outputs.version }} completed successfully!"
+        echo "📦 NPM: https://www.npmjs.com/package/m2js"
+        echo "🔧 VS Code: https://marketplace.visualstudio.com/items?itemName=m2js-team.m2js-vscode"
+
+    - name: Notify success
+      uses: actions/github-script@v6
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: `🎉 **Release v${{ needs.release.outputs.version }} completed successfully!**
+            
+            ## 📦 Package Locations
+            - **NPM**: https://www.npmjs.com/package/m2js/v/${{ needs.release.outputs.version }}
+            - **VS Code Extension**: Available in marketplace
+            - **GitHub Release**: ${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ needs.release.outputs.version }}
+            
+            ## 🚀 Installation
+            \`\`\`bash
+            npm install -g m2js@${{ needs.release.outputs.version }}
+            \`\`\`
+            
+            Thanks for contributing to M2JS! 🙏`
+          })

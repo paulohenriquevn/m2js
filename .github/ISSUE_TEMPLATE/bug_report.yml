@@ -1,0 +1,110 @@
+name: 🐛 Bug Report
+description: Report a bug in M2JS
+title: "[BUG] "
+labels: ["bug", "needs-triage"]
+assignees: ["paulohenriquevn"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please fill out the form below to help us reproduce and fix the issue.
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      description: Please confirm the following before submitting
+      options:
+        - label: I have searched existing issues to avoid duplicates
+          required: true
+        - label: I am using the latest version of M2JS
+          required: true
+        - label: I have read the documentation
+          required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: M2JS Version
+      description: What version of M2JS are you using?
+      placeholder: "Run: m2js --version"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      description: What environment are you running M2JS in?
+      options:
+        - CLI (Command Line)
+        - VS Code Extension
+        - Node.js API
+        - Other (please specify in description)
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is
+      placeholder: Describe what happened and what you expected to happen
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Detailed steps to reproduce the behavior
+      placeholder: |
+        1. Run command: m2js ...
+        2. With file: ...
+        3. Expected: ...
+        4. Actual: ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: input-file
+    attributes:
+      label: Input File
+      description: The TypeScript/JavaScript file that causes the issue (if applicable)
+      render: typescript
+      placeholder: Paste the content of your input file here
+
+  - type: textarea
+    id: expected-output
+    attributes:
+      label: Expected Output
+      description: What did you expect to happen?
+      render: markdown
+
+  - type: textarea
+    id: actual-output
+    attributes:
+      label: Actual Output
+      description: What actually happened? Include any error messages
+      render: text
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: How severe is this bug?
+      options:
+        - Low (minor inconvenience)
+        - Medium (affects functionality)
+        - High (blocks major functionality)
+        - Critical (completely broken)
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any other context about the problem here
+      placeholder: Operating system, Node.js version, project setup, etc.

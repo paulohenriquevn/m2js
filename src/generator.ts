@@ -1,5 +1,7 @@
 /* eslint-disable max-lines */
 /* eslint-disable max-lines-per-function */
+/* eslint-disable max-depth */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import {
   ParsedFile,
@@ -118,16 +120,18 @@ function generateFunctionsSection(functions: ParsedFunction[]): string {
  */
 function shouldUseCompactFormat(functions: ParsedFunction[]): boolean {
   if (functions.length < 5) return false;
-  
+
   // Check if most functions are simple (few params, simple types)
   const simpleFunctions = functions.filter(func => {
     const hasSimpleParams = func.params.length <= 3;
-    const hasSimpleReturn = func.returnType && ['boolean', 'string', 'number', 'void'].includes(func.returnType);
+    const hasSimpleReturn =
+      func.returnType &&
+      ['boolean', 'string', 'number', 'void'].includes(func.returnType);
     const hasShortJSDoc = !func.jsDoc || func.jsDoc.length < 200;
-    
+
     return hasSimpleParams && hasSimpleReturn && hasShortJSDoc;
   });
-  
+
   // Use compact format if 70%+ of functions are simple
   return simpleFunctions.length / functions.length >= 0.7;
 }
@@ -137,25 +141,27 @@ function shouldUseCompactFormat(functions: ParsedFunction[]): boolean {
  */
 function generateCompactFunctionsTable(functions: ParsedFunction[]): string {
   const sections: string[] = [];
-  
+
   sections.push('| Function | Parameters | Returns | Description |');
   sections.push('|----------|------------|---------|-------------|');
-  
+
   functions.forEach(func => {
     const name = func.isDefault ? 'default' : func.name;
-    const params = func.params.map(p => `${p.name}${p.optional ? '?' : ''}: ${p.type || 'any'}`).join(', ');
+    const params = func.params
+      .map(p => `${p.name}${p.optional ? '?' : ''}: ${p.type || 'any'}`)
+      .join(', ');
     const returnType = func.returnType || 'unknown';
-    
+
     // Extract first line of JSDoc as description
     let description = 'Utility function';
     if (func.jsDoc) {
       // Try multiple patterns to extract description
       const patterns = [
-        /\/\*\*\s*\n?\s*\*\s*(.+?)(?:\n|\*\/)/,  // Standard JSDoc
-        /\/\*\*\s*(.+?)(?:\n|\*\/)/,              // Inline JSDoc
-        /\*\s*(.+?)(?:\n|\*\/|@)/                 // Any comment line before @
+        /\/\*\*\s*\n?\s*\*\s*(.+?)(?:\n|\*\/)/, // Standard JSDoc
+        /\/\*\*\s*(.+?)(?:\n|\*\/)/, // Inline JSDoc
+        /\*\s*(.+?)(?:\n|\*\/|@)/, // Any comment line before @
       ];
-      
+
       for (const pattern of patterns) {
         const match = func.jsDoc.match(pattern);
         if (match && match[1] && match[1].trim()) {
@@ -163,21 +169,28 @@ function generateCompactFunctionsTable(functions: ParsedFunction[]): string {
           break;
         }
       }
-      
+
       // Clean up common prefixes and shorten
-      description = description.replace(/^(Validates?|Checks?|Returns?|Gets?|Creates?)\s+/i, '');
+      description = description.replace(
+        /^(Validates?|Checks?|Returns?|Gets?|Creates?)\s+/i,
+        ''
+      );
       if (description.length > 45) {
         description = description.substring(0, 42) + '...';
       }
     }
-    
-    sections.push(`| \`${name}\` | \`${params}\` | \`${returnType}\` | ${description} |`);
+
+    sections.push(
+      `| \`${name}\` | \`${params}\` | \`${returnType}\` | ${description} |`
+    );
   });
-  
+
   // Add a note about compact format
   sections.push('');
-  sections.push('*Compact format used for utility functions - see source for implementation details*');
-  
+  sections.push(
+    '*Compact format used for utility functions - see source for implementation details*'
+  );
+
   return sections.join('\n');
 }
 
@@ -465,21 +478,21 @@ function generateModuleDependencies(graph: DependencyGraph): string {
       const deps = dependencyMap.get(file)!.filter(dep => !dep.isExternal);
       if (deps.length > 0) {
         const fileName = path.basename(file);
-        
+
         // Group dependencies by target file and count occurrences
         const depCounts = new Map<string, number>();
         deps.forEach(dep => {
           const count = depCounts.get(dep.to) || 0;
           depCounts.set(dep.to, count + 1);
         });
-        
+
         // Format with counts for duplicates
         const depList = Array.from(depCounts.entries())
           .map(([depPath, count]) => {
             return count > 1 ? `\`${depPath}\` (${count}x)` : `\`${depPath}\``;
           })
           .join(', ');
-        
+
         sections.push(`- **${fileName}** → ${depList}`);
       }
     });
@@ -670,13 +683,13 @@ function generateMermaidDiagram(graph: DependencyGraph): string {
 
   // Add edges (only internal dependencies for clarity)
   const internalEdges = graph.edges.filter(edge => !edge.isExternal);
-  
+
   // Deduplicate edges by grouping from -> to relationships
   const edgeMap = new Map<string, Set<string>>();
-  
+
   internalEdges.forEach(edge => {
     const fromNode = nodeMap.get(edge.from);
-    
+
     // Resolve relative paths to absolute paths for mapping
     let resolvedToPath = edge.to;
     if (edge.to.startsWith('./') || edge.to.startsWith('../')) {
@@ -697,16 +710,19 @@ function generateMermaidDiagram(graph: DependencyGraph): string {
         // If resolution fails, try to find by basename
         const basename = path.basename(edge.to);
         for (const [nodePath] of nodeMap.entries()) {
-          if (path.basename(nodePath, path.extname(nodePath)) === basename.replace(/\.(ts|tsx|js|jsx)$/, '')) {
+          if (
+            path.basename(nodePath, path.extname(nodePath)) ===
+            basename.replace(/\.(ts|tsx|js|jsx)$/, '')
+          ) {
             resolvedToPath = nodePath;
             break;
           }
         }
       }
     }
-    
+
     const toNode = nodeMap.get(resolvedToPath);
-    
+
     if (fromNode && toNode && fromNode !== toNode) {
       if (!edgeMap.has(fromNode)) {
         edgeMap.set(fromNode, new Set());
@@ -714,7 +730,7 @@ function generateMermaidDiagram(graph: DependencyGraph): string {
       edgeMap.get(fromNode)!.add(toNode);
     }
   });
-  
+
   // Generate unique edges
   for (const [fromNode, toNodes] of edgeMap.entries()) {
     for (const toNode of toNodes) {

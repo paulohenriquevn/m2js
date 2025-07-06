@@ -1,0 +1,132 @@
+name: ✨ Feature Request
+description: Suggest a new feature for M2JS
+title: "[FEATURE] "
+labels: ["enhancement", "needs-triage"]
+assignees: ["paulohenriquevn"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new feature! Please fill out the form below to help us understand your request.
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      description: Please confirm the following before submitting
+      options:
+        - label: I have searched existing issues to avoid duplicates
+          required: true
+        - label: This is not a bug report (use bug report template instead)
+          required: true
+        - label: I have checked the roadmap and this feature is not already planned
+          required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Feature Category
+      description: What category does this feature belong to?
+      options:
+        - CLI Interface
+        - VS Code Extension
+        - Core Engine (Parser/Generator)
+        - AI Enhancement Features
+        - Template System
+        - Documentation
+        - Performance
+        - Integration (APIs, tools)
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem does this feature solve?
+      placeholder: |
+        Is your feature request related to a problem? Please describe.
+        A clear and concise description of what the problem is.
+        Ex. I'm always frustrated when [...]
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the solution you'd like
+      placeholder: |
+        A clear and concise description of what you want to happen.
+        Include specific examples of how the feature would work.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Describe any alternative solutions you've considered
+      placeholder: |
+        A clear and concise description of any alternative solutions 
+        or features you've considered.
+
+  - type: textarea
+    id: use-cases
+    attributes:
+      label: Use Cases
+      description: Provide specific examples of how this feature would be used
+      placeholder: |
+        1. As a developer, I want to...
+        2. When working with large codebases, I need to...
+        3. For AI assistant integration, it would help to...
+
+  - type: dropdown
+    id: complexity
+    attributes:
+      label: Implementation Complexity
+      description: How complex do you think this feature would be to implement?
+      options:
+        - Simple (few lines of code)
+        - Medium (single component/module)
+        - Complex (multiple components)
+        - Major (significant architecture changes)
+        - Unknown
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this feature to you?
+      options:
+        - Nice to have
+        - Would be helpful
+        - Important for my workflow
+        - Critical for my use case
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: breaking-changes
+    attributes:
+      label: Breaking Changes
+      description: Would this feature require breaking changes?
+      options:
+        - label: This feature would require breaking changes to existing APIs
+        - label: This feature could be implemented without breaking changes
+        - label: I'm not sure about breaking changes
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any other context, mockups, or examples about the feature request here
+      placeholder: |
+        - Links to similar features in other tools
+        - Mockups or diagrams
+        - Code examples
+        - References to discussions
