@@ -17,15 +17,16 @@ export default defineConfig({
     // Navigation
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Quick Start', link: '/guide/getting-started' },
-      { text: 'CLI Reference', link: '/reference/cli' },
-      { text: 'VS Code Extension', link: '/extension/overview' },
-      { text: 'Examples', link: '/examples/basic' },
+      { text: 'Guide', link: '/guide/quick-start' },
+      { text: 'Reference', link: '/reference/cli' },
+      { text: 'Architecture', link: '/architecture/overview' },
+      { text: 'Extension', link: '/extension/overview' },
       {
-        text: 'Links',
+        text: 'v1.0.1',
         items: [
           { text: 'GitHub', link: 'https://github.com/paulohenriquevn/m2js' },
           { text: 'NPM Package', link: 'https://www.npmjs.com/package/@paulohenriquevn/m2js' },
+          { text: 'Deployment', link: '/deployment/github-pages' },
           { text: 'VS Code Marketplace', link: 'https://marketplace.visualstudio.com/items?itemName=paulohenriquevn.m2js-vscode' }
         ]
       }
@@ -37,37 +38,28 @@ export default defineConfig({
         {
           text: 'Getting Started',
           items: [
-            { text: 'Introduction', link: '/guide/introduction' },
-            { text: 'Installation', link: '/guide/installation' },
-            { text: 'Quick Start', link: '/guide/getting-started' },
+            { text: 'Quick Start', link: '/guide/quick-start' },
+            { text: 'Best Practices', link: '/guide/best-practices' },
             { text: 'Configuration', link: '/guide/configuration' }
-          ]
-        },
-        {
-          text: 'Features',
-          items: [
-            { text: 'AI Enhancement', link: '/guide/ai-enhancement' },
-            { text: 'Business Context', link: '/guide/business-context' },
-            { text: 'Architecture Analysis', link: '/guide/architecture' },
-            { text: 'Template Generation', link: '/guide/templates' }
           ]
         }
       ],
       '/reference/': [
         {
-          text: 'CLI Reference',
+          text: 'Reference',
           items: [
-            { text: 'Commands', link: '/reference/cli' },
-            { text: 'Options', link: '/reference/options' },
-            { text: 'Output Formats', link: '/reference/output' }
+            { text: 'CLI Commands', link: '/reference/cli' },
+            { text: 'AI Analyzers', link: '/reference/ai-analyzers' }
           ]
-        },
+        }
+      ],
+      '/architecture/': [
         {
-          text: 'API Reference',
+          text: 'Architecture & Development',
           items: [
-            { text: 'Types', link: '/reference/types' },
-            { text: 'Parser', link: '/reference/parser' },
-            { text: 'Generator', link: '/reference/generator' }
+            { text: 'Overview', link: '/architecture/overview' },
+            { text: 'Contributing Guide', link: '/architecture/contributing' },
+            { text: 'Deployment Guide', link: '/architecture/deployment' }
           ]
         }
       ],
@@ -75,22 +67,15 @@ export default defineConfig({
         {
           text: 'VS Code Extension',
           items: [
-            { text: 'Overview', link: '/extension/overview' },
-            { text: 'Installation', link: '/extension/installation' },
-            { text: 'Commands', link: '/extension/commands' },
-            { text: 'Settings', link: '/extension/settings' }
+            { text: 'Overview', link: '/extension/overview' }
           ]
         }
       ],
-      '/examples/': [
+      '/deployment/': [
         {
-          text: 'Examples',
+          text: 'Deployment',
           items: [
-            { text: 'Basic Usage', link: '/examples/basic' },
-            { text: 'AI Enhancement', link: '/examples/ai-enhanced' },
-            { text: 'E-commerce API', link: '/examples/ecommerce' },
-            { text: 'Service Layer', link: '/examples/service-layer' },
-            { text: 'Real World', link: '/examples/real-world' }
+            { text: 'GitHub Pages', link: '/deployment/github-pages' }
           ]
         }
       ]

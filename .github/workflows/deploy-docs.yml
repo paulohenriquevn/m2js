@@ -1,0 +1,70 @@
+name: Deploy M2JS Documentation
+
+on:
+  # Trigger on pushes to main branch affecting documentation
+  push:
+    branches: [main]
+    paths: ['docs-site/**']
+  
+  # Allow manual deployment
+  workflow_dispatch:
+
+# Set permissions for GitHub Pages deployment
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Ensure only one deployment runs at a time
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build Documentation
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for VitePress lastUpdated
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: npm
+          cache-dependency-path: docs-site/package-lock.json
+
+      - name: Install Dependencies
+        run: |
+          cd docs-site
+          npm ci
+
+      - name: Build Documentation
+        run: |
+          cd docs-site
+          npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: docs-site/docs/.vitepress/dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2

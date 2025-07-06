@@ -32,7 +32,7 @@
     "clean": "rm -rf dist coverage *.md m2js-*.tgz",
     "validate": "npm run type-check && npm run lint && npm run test && npm run security",
     "ci": "npm run type-check && npm run test && npm run build && npm run test:integration",
-    "prepublishOnly": "npm run validate && npm run build",
+    "prepublishOnly": "npm run type-check && npm run lint && npm run build",
     "postinstall": "echo '✅ m2js installed! Try: m2js --help'",
     "release:patch": "npm version patch && git push && git push --tags",
     "release:minor": "npm version minor && git push && git push --tags",

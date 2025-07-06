@@ -1,257 +1,452 @@
-# VS Code Extension
+# 🔌 VS Code Extension
 
-🔧 **Native IDE integration with interactive webviews and one-click documentation generation**
+M2JS VS Code Extension brings AI-ready code documentation directly to your editor workflow.
 
-The M2JS VS Code Extension brings the power of intelligent code analysis directly into your development environment, making it effortless to generate AI-optimized documentation.
-
-## ✨ Features
-
-### 🎯 Core Functionality
-- **📝 Generate Documentation**: Right-click any TypeScript/JavaScript file to create optimized Markdown
-- **🧠 AI-Enhanced Analysis**: Get business context, architecture insights, and semantic relationships
-- **🎯 Template Wizard**: Interactive creation of LLM implementation guides
-- **📊 Project Analysis**: Comprehensive dependency and architecture analysis
-
-### 🎮 User Experience
-- **Right-click Context Menus**: Generate docs directly from Explorer and Editor
-- **Interactive Webviews**: Beautiful result display with VS Code theming
-- **Auto-save to Workspace**: Organized output in configurable project directories
-- **Command Palette Integration**: All features accessible via `Ctrl+Shift+P`
-
-## 🚀 Installation
+## Installation
 
 ### From VS Code Marketplace
 
-1. Open VS Code
-2. Go to Extensions (`Ctrl+Shift+X`)
-3. Search for **"M2JS"**
-4. Click **"Install"**
-
-### From Command Line
-
 ```bash
-code --install-extension paulohenriquevn.m2js-vscode
+# Install from VS Code marketplace
+ext install paulohenriquevn.m2js
+
+# Or install via command line
+code --install-extension paulohenriquevn.m2js
 ```
 
 ### Manual Installation
 
 ```bash
-# Download the .vsix file and install
-code --install-extension m2js-vscode-0.1.0.vsix
+# Clone and build extension
+git clone https://github.com/paulohenriquevn/m2js-vscode.git
+cd m2js-vscode
+npm install
+npm run build
+
+# Install locally
+code --install-extension m2js-vscode.vsix
 ```
 
-## 🎮 How to Use
+## Features
 
-### Quick Start Workflow
+### 🚀 Quick Actions
 
-1. **Right-click** any `.ts`, `.tsx`, `.js`, or `.jsx` file in the Explorer
-2. Select **"🧠 Generate AI-Enhanced Analysis"** from the context menu
-3. View the results in an **interactive webview panel**
-4. **Copy to clipboard** for your AI assistant
-5. **Auto-save** to your project workspace
+**1. Right-click Context Menu**
+```
+Right-click on any .ts/.js file
+→ "Generate M2JS Documentation"
+→ Creates .md file alongside source
+```
 
-### Available Commands
+**2. Command Palette**
+```
+Ctrl+Shift+P (Cmd+Shift+P on Mac)
+→ "M2JS: Generate Documentation"
+→ "M2JS: Generate for Workspace"
+→ "M2JS: Show Dependency Graph"
+```
 
-Access these via Command Palette (`Ctrl+Shift+P`):
+**3. Editor Integration**
+```
+Open any TypeScript/JavaScript file
+→ Click M2JS icon in editor toolbar
+→ Instant documentation generation
+```
 
-#### 📝 `M2JS: Generate Documentation`
-- Basic code documentation generation
-- Fast processing with essential information
-- Perfect for quick reference
+### 📊 Dependency Visualization
 
-#### 🧠 `M2JS: Generate AI-Enhanced Analysis`
-- Full AI-powered analysis with business context
-- Architecture insights and semantic relationships
-- Optimized for AI coding assistants
+**Mermaid Diagrams in VS Code**
+```typescript
+// Generates interactive dependency graphs
+m2js src/ --graph --mermaid
 
-#### 🎯 `M2JS: Create LLM Template`
-- Generate implementation guides for AI assistants
-- Domain-specific templates (e-commerce, blog, API)
-- Interactive template wizard
+// Opens in VS Code preview pane
+// Clickable nodes navigate to files
+```
 
-#### 📊 `M2JS: Analyze Project Dependencies`
-- Project-wide dependency analysis
-- Architecture visualization with Mermaid diagrams
-- Cross-file relationship mapping
+### ⚡ Batch Processing
 
-#### 🪄 `M2JS: Template Wizard`
-- Interactive template creation interface
-- Step-by-step guidance for complex templates
-- Business rule specification
+**Workspace Integration**
+```
+Explorer → Right-click folder
+→ "Generate M2JS for Folder"
+→ Processes all TypeScript/JavaScript files
+→ Creates organized documentation structure
+```
 
-#### 🎯 `M2JS: Show Available Domains`
-- Browse available domain templates
-- Preview template structures
-- Quick domain selection
+## Configuration
 
-## ⚙️ Configuration
+### Extension Settings
 
-Access settings via `File > Preferences > Settings > Extensions > M2JS`:
-
-### 🎯 Core Settings
+Access via `File → Preferences → Settings → Extensions → M2JS`:
 
 ```json
 {
-  "m2js.enableAutoAnalysis": false,
-  "m2js.defaultOutputFormat": "ai-enhanced",
-  "m2js.outputDirectory": "m2js-output",
-  "m2js.autoOpenResults": true,
-  "m2js.cliPath": ""
+  "m2js.outputDirectory": "docs/ai",
+  "m2js.autoGenerate": true,
+  "m2js.includeComments": true,
+  "m2js.showProgressNotifications": true,
+  "m2js.excludePatterns": [
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    "*.test.ts",
+    "*.spec.ts"
+  ]
 }
 ```
 
-### 🧠 AI Enhancement Options
+### Setting Descriptions
 
-```json
-{
-  "m2js.enableBusinessContext": true,
-  "m2js.enableArchitectureInsights": true,
-  "m2js.enableSemanticAnalysis": true,
-  "m2js.tokenOptimization": "balanced",
-  "m2js.preferredDomain": "auto"
-}
-```
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `outputDirectory` | `docs/ai` | Where to save generated documentation |
+| `autoGenerate` | `true` | Generate docs automatically on file save |
+| `includeComments` | `true` | Extract JSDoc comments |
+| `showProgressNotifications` | `true` | Show progress in VS Code notifications |
+| `excludePatterns` | `["node_modules/**", "*.test.ts"]` | Files to ignore |
 
-### 🎨 Display Preferences
+## Usage Examples
 
-```json
-{
-  "m2js.webview": {
-    "theme": "auto",
-    "fontSize": "14px",
-    "showLineNumbers": true,
-    "enableSyntaxHighlighting": true
-  },
-  "m2js.notifications": {
-    "showProgress": true,
-    "showSuccess": true,
-    "showWarnings": true
+### Single File Processing
+
+```typescript
+// 1. Open UserService.ts
+// 2. Right-click in editor
+// 3. Select "Generate M2JS Documentation"
+// 4. UserService.md created automatically
+
+export class UserService {
+  /**
+   * Authenticates user credentials
+   * @param email - User email address
+   * @param password - User password
+   * @returns Authentication result
+   */
+  async authenticate(email: string, password: string): Promise<AuthResult> {
+    // Implementation
   }
 }
 ```
 
-## 🎯 Use Cases
+**Generated Output:**
+```markdown
+# 📝 UserService.ts
 
-### 🤖 AI Coding Assistant Preparation
+## 🏗️ Classes
 
+### UserService
+
+#### authenticate
+/**
+ * Authenticates user credentials
+ * @param email - User email address
+ * @param password - User password
+ * @returns Authentication result
+ */
 ```typescript
-// 1. Right-click your complex service file
-// 2. Select "Generate AI-Enhanced Analysis"
-// 3. Copy optimized context to ChatGPT/Claude
-// 4. Get better AI responses with 80% fewer tokens
+async authenticate(email: string, password: string): Promise<AuthResult>
 ```
 
-### 📚 Code Documentation
+### Project Documentation
 
-```typescript
-// 1. Select multiple TypeScript files
-// 2. Generate batch documentation
-// 3. Auto-organized in your project structure
-// 4. Always up-to-date with your code
+```bash
+# Via Command Palette
+Ctrl+Shift+P → "M2JS: Generate for Workspace"
+
+# Creates structure:
+docs/ai/
+├── UserService.md
+├── PaymentService.md
+├── OrderService.md
+└── dependency-graph.md
 ```
 
-### 👥 Team Onboarding
+### Dependency Analysis
 
 ```typescript
-// 1. Generate comprehensive project analysis
-// 2. Include architecture insights and business context
-// 3. Share clear understanding of codebase structure
-// 4. Accelerate new developer productivity
+// 1. Open project root
+// 2. Command Palette → "M2JS: Show Dependency Graph"
+// 3. Interactive Mermaid diagram opens
+// 4. Click nodes to navigate to files
+
+// Example output:
+graph TD
+    A[UserService] --> B[DatabaseService]
+    A --> C[ValidationService]
+    D[PaymentService] --> B
+    D --> E[ExternalApiService]
 ```
 
-### 🔍 Legacy Code Understanding
+## Integration Workflows
+
+### Code Review Process
+
+```bash
+# 1. Checkout feature branch
+# 2. VS Code automatically detects changed files
+# 3. Extension generates docs for modified files
+# 4. Include generated docs in PR for AI review
+```
+
+### AI Assistant Integration
+
+```markdown
+# Generated documentation is optimized for:
+- ChatGPT code analysis
+- Claude code review
+- GitHub Copilot context
+- AI-powered debugging
+```
+
+### Team Documentation
+
+```bash
+# 1. Team member makes changes
+# 2. Extension auto-generates docs on save
+# 3. Documentation stays synchronized
+# 4. AI assistants have current context
+```
+
+## Advanced Features
+
+### Custom Templates
+
+```json
+// .vscode/settings.json
+{
+  "m2js.templates": {
+    "functions": "## 🔧 Functions\n\n${functions}",
+    "classes": "## 🏗️ Classes\n\n${classes}",
+    "interfaces": "## 📋 Interfaces\n\n${interfaces}"
+  }
+}
+```
+
+### File Watching
+
+```json
+{
+  "m2js.watchPatterns": [
+    "src/**/*.ts",
+    "src/**/*.js",
+    "lib/**/*.ts"
+  ],
+  "m2js.autoGenerateOnSave": true
+}
+```
+
+### Output Customization
+
+```json
+{
+  "m2js.outputFormat": {
+    "includePrivateMethods": false,
+    "includeTypeDefinitions": true,
+    "includeImports": true,
+    "collapsibleSections": true
+  }
+}
+```
+
+## Keyboard Shortcuts
+
+### Default Shortcuts
+
+| Command | Windows/Linux | macOS |
+|---------|---------------|--------|
+| Generate for current file | `Ctrl+Alt+M` | `Cmd+Alt+M` |
+| Generate for workspace | `Ctrl+Shift+Alt+M` | `Cmd+Shift+Alt+M` |
+| Show dependency graph | `Ctrl+Alt+D` | `Cmd+Alt+D` |
+
+### Custom Shortcuts
+
+```json
+// keybindings.json
+[
+  {
+    "key": "ctrl+alt+g",
+    "command": "m2js.generateCurrent",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "ctrl+alt+shift+g",
+    "command": "m2js.generateWorkspace"
+  }
+]
+```
+
+## Status Bar Integration
+
+The extension adds a status bar item showing:
+
+```
+📝 M2JS: Ready    # Extension ready
+📝 M2JS: Busy     # Processing files
+📝 M2JS: 12 files # Files processed
+📝 M2JS: Error    # Processing error
+```
+
+Click the status bar item for quick actions menu.
+
+## Performance Considerations
+
+### Large Projects
+
+```json
+{
+  "m2js.performance": {
+    "maxFilesPerBatch": 50,
+    "processingTimeout": 30000,
+    "enableProgressReporting": true,
+    "skipLargeFiles": true,
+    "largeFileThreshold": "1MB"
+  }
+}
+```
+
+### Memory Usage
 
 ```typescript
-// 1. Analyze complex legacy systems
-// 2. Extract business rules and patterns
-// 3. Understand dependencies and relationships
-// 4. Plan refactoring strategies
+// Extension monitors memory usage
+// Automatically switches to streaming mode for large files
+// Progress notifications for long operations
 ```
 
-## 🎨 Interactive Features
-
-### Webview Panels
-
-The extension displays results in beautiful, interactive webview panels featuring:
-
-- **📋 Copy to Clipboard**: One-click copying optimized for AI assistants
-- **💾 Save to File**: Auto-save to organized project directories
-- **🎨 VS Code Theming**: Automatically matches your VS Code theme
-- **🔍 Syntax Highlighting**: Beautiful code block rendering
-- **📱 Responsive Design**: Adapts to panel size and layout
-
-### Template Wizard
-
-Interactive creation of LLM implementation guides:
-
-1. **Domain Selection**: Choose from e-commerce, blog, API, or custom
-2. **Entity Configuration**: Define business entities and relationships
-3. **Workflow Definition**: Specify business processes and rules
-4. **Template Generation**: Create comprehensive implementation guides
-
-## 🛠️ Requirements
-
-- **VS Code**: Version 1.74.0 or higher
-- **Node.js**: 16.0.0+ (for M2JS CLI functionality)
-- **M2JS CLI**: Automatically detected or manually configured
-
-### Supported File Types
-- TypeScript (`.ts`, `.tsx`)
-- JavaScript (`.js`, `.jsx`)
-- JSDoc comments and type annotations
-
-## 🔧 Troubleshooting
+## Error Handling
 
 ### Common Issues
 
-#### M2JS CLI Not Found
-```bash
-# Install M2JS CLI globally
-npm install -g @paulohenriquevn/m2js
-
-# Or set custom path in VS Code settings
-"m2js.cliPath": "/path/to/m2js"
+**1. TypeScript Compilation Errors**
+```
+Problem: Extension can't process files with syntax errors
+Solution: Fix TypeScript errors first, then generate docs
 ```
 
-#### Permission Errors
-- Ensure VS Code has write permissions to output directory
-- Default output: `workspace-root/m2js-output/`
+**2. Permission Issues**
+```
+Problem: Can't write to output directory
+Solution: Check folder permissions or change output directory
+```
 
-#### Analysis Fails
-- Check file syntax is valid TypeScript/JavaScript
-- Ensure file contains exported functions/classes
-- Check VS Code Output panel for detailed error messages
+**3. Large File Processing**
+```
+Problem: Extension times out on very large files
+Solution: Use selective processing or increase timeout
+```
+
+### Debug Mode
+
+```json
+{
+  "m2js.debug": {
+    "enabled": true,
+    "logLevel": "verbose",
+    "outputChannel": "M2JS Debug"
+  }
+}
+```
+
+## Development & Contributing
+
+### Extension Development
+
+```bash
+# Clone extension repository
+git clone https://github.com/paulohenriquevn/m2js-vscode.git
+cd m2js-vscode
+
+# Install dependencies
+npm install
+
+# Start development
+npm run dev
+
+# Launch extension host
+F5 (or Run → Start Debugging)
+```
+
+### Extension Architecture
+
+```typescript
+// src/extension.ts - Main extension entry point
+export function activate(context: vscode.ExtensionContext) {
+  // Register commands
+  const disposable = vscode.commands.registerCommand(
+    'm2js.generateCurrent',
+    () => generateForCurrentFile()
+  );
+  
+  context.subscriptions.push(disposable);
+}
+
+// src/commands/
+├── generateCurrent.ts    # Single file processing
+├── generateWorkspace.ts  # Batch processing
+├── showDependencyGraph.ts # Dependency analysis
+└── configureSettings.ts  # Settings management
+```
+
+### Testing
+
+```bash
+# Run extension tests
+npm test
+
+# Integration tests
+npm run test:integration
+
+# Manual testing
+npm run test:manual
+```
+
+## Roadmap
+
+### Planned Features
+
+**v1.1.0**
+- [ ] Real-time documentation preview
+- [ ] Integrated dependency graph viewer
+- [ ] AI-powered code suggestions
+- [ ] Custom output formats
+
+**v1.2.0**
+- [ ] Team collaboration features
+- [ ] Documentation versioning
+- [ ] Performance optimizations
+- [ ] Plugin system
+
+**v2.0.0**
+- [ ] AI-enhanced analysis (when core features are re-enabled)
+- [ ] Business context detection
+- [ ] Architecture insights
+- [ ] Usage pattern analysis
+
+### Community Requests
+
+Vote for features on [GitHub Issues](https://github.com/paulohenriquevn/m2js-vscode/issues) with 👍 reactions.
+
+## Support
 
 ### Getting Help
 
-- **🐛 Report Issues**: [GitHub Issues](https://github.com/paulohenriquevn/m2js/issues)
-- **💬 Ask Questions**: [GitHub Discussions](https://github.com/paulohenriquevn/m2js/discussions)
-- **📖 Documentation**: [Full Documentation](https://paulohenriquevn.github.io/m2js/)
+- **GitHub Issues**: Bug reports and feature requests
+- **VS Code Marketplace**: Extension reviews and ratings
+- **Documentation**: Comprehensive guides and examples
+- **Community**: GitHub Discussions for questions
 
-## 🎯 Tips & Best Practices
+### Common Questions
 
-### ⚡ Performance Optimization
-- Use **auto-analysis** sparingly for large projects
-- Configure **output directory** to avoid clutter
-- Set **token optimization** to "minimal" for large files
+**Q: Does the extension work with JavaScript files?**
+A: Yes, supports .js, .jsx, .ts, .tsx files.
 
-### 🧠 AI Enhancement
-- Enable **business context** for better domain detection
-- Use **architecture insights** for design pattern recognition
-- Enable **semantic analysis** for complex business logic
+**Q: Can I customize the output format?**
+A: Yes, via extension settings and custom templates.
 
-### 👥 Team Collaboration
-- Share **output directory** location with team
-- Use consistent **preferred domain** settings
-- Configure **notification preferences** for team workflows
+**Q: Does it work with monorepos?**
+A: Yes, processes each workspace folder independently.
 
----
+**Q: Can I exclude certain files?**
+A: Yes, use the `excludePatterns` setting.
 
-## 🚀 What's Next?
-
-Ready to explore more features?
-
-- 📖 **[Extension Commands](/extension/commands)** - Detailed command reference
-- ⚙️ **[Settings Guide](/extension/settings)** - Complete configuration options
-- 🎯 **[Best Practices](/guide/configuration)** - Optimize your workflow
-- 📊 **[Examples](/examples/basic)** - Real-world usage scenarios
+This VS Code extension makes M2JS documentation generation seamless and integrated into your development workflow.
