@@ -11,6 +11,20 @@
   --vp-c-brand-soft: rgba(100, 108, 255, 0.14);
 }
 
+/* Dark theme variables for better readability */
+.dark {
+  --vp-c-text-1: #f8f8f2 !important;
+  --vp-c-text-2: #e6e6dd !important;
+  --vp-c-text-3: #d4d4aa !important;
+  --vp-c-bg: #1a1a1a !important;
+  --vp-c-bg-soft: #242424 !important;
+  --vp-c-bg-mute: #2c2c2c !important;
+  --vp-c-divider: #404040 !important;
+  --vp-c-divider-light: #484848 !important;
+  --vp-sidebar-bg-color: #1e1e1e !important;
+  --vp-nav-bg-color: #1a1a1a !important;
+}
+
 /* Force basic styling if VitePress CSS fails to load */
 .Layout {
   min-height: 100vh;
@@ -125,37 +139,98 @@ a:hover {
   text-decoration: none;
 }
 
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .Layout {
-    color: #e2e8f0;
-    background: #1a202c;
-  }
-  
-  .VPNav {
-    background: #2d3748;
-    border-bottom-color: #4a5568;
-  }
-  
-  .VPSidebar {
-    background: #2d3748;
-    border-right-color: #4a5568;
-  }
-  
-  pre {
-    background: #2d3748 !important;
-    border-color: #4a5568;
-  }
-  
-  code {
-    background: #2d3748;
-  }
-  
-  th, td {
-    border-color: #4a5568;
-  }
-  
-  th {
-    background: #2d3748;
-  }
+/* Enhanced dark mode styling for better readability */
+.dark {
+  color-scheme: dark;
+}
+
+.dark .Layout {
+  color: var(--vp-c-text-1);
+  background: var(--vp-c-bg);
+}
+
+.dark .VPNav {
+  background: var(--vp-nav-bg-color);
+  border-bottom-color: var(--vp-c-divider);
+}
+
+.dark .VPSidebar {
+  background: var(--vp-sidebar-bg-color);
+  border-right-color: var(--vp-c-divider);
+}
+
+/* Improved code block contrast in dark mode */
+.dark pre {
+  background: #0d1117 !important;
+  border: 1px solid #30363d !important;
+  color: #f0f6fc !important;
+}
+
+.dark code {
+  background: #21262d !important;
+  color: #f0f6fc !important;
+  border: 1px solid #30363d;
+}
+
+/* Better table styling in dark mode */
+.dark th, .dark td {
+  border-color: var(--vp-c-divider);
+  color: var(--vp-c-text-1);
+}
+
+.dark th {
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-1);
+  font-weight: 600;
+}
+
+/* Enhanced text readability in dark mode */
+.dark .VPHero .text {
+  color: var(--vp-c-text-2) !important;
+}
+
+.dark .VPHero .name {
+  color: var(--vp-c-text-1) !important;
+}
+
+.dark .VPFeature .title {
+  color: var(--vp-c-text-1) !important;
+}
+
+.dark .VPFeature .details {
+  color: var(--vp-c-text-2) !important;
+}
+
+/* Better link contrast in dark mode */
+.dark a {
+  color: #79b8ff !important;
+}
+
+.dark a:hover {
+  color: #a5cdff !important;
+}
+
+/* Improved content text in dark mode */
+.dark .vp-doc h1, .dark .vp-doc h2, .dark .vp-doc h3, .dark .vp-doc h4, .dark .vp-doc h5, .dark .vp-doc h6 {
+  color: var(--vp-c-text-1) !important;
+}
+
+.dark .vp-doc p, .dark .vp-doc li {
+  color: var(--vp-c-text-2) !important;
+  line-height: 1.7;
+}
+
+/* Better custom blocks in dark mode */
+.dark .custom-block {
+  border-color: var(--vp-c-divider) !important;
+}
+
+.dark .custom-block.tip {
+  background-color: rgba(70, 150, 70, 0.1) !important;
+  border-color: #4f8f4f !important;
+}
+
+.dark .custom-block.warning {
+  background-color: rgba(200, 150, 50, 0.1) !important;
+  border-color: #c8965a !important;
 }
