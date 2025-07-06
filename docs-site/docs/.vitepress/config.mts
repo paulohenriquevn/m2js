@@ -1,5 +1,7 @@
 import { defineConfig } from 'vitepress'
 
+// M2JS Documentation Configuration
+
 export default defineConfig({
   title: 'M2JS',
   description: 'Transform TypeScript/JavaScript into LLM-friendly Markdown documentation',
