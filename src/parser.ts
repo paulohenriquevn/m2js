@@ -210,14 +210,129 @@ function getTypeAnnotation(
 }
 
 function getTypeString(type: t.TSType): string {
+  // Primitive types
   if (t.isTSStringKeyword(type)) return 'string';
   if (t.isTSNumberKeyword(type)) return 'number';
   if (t.isTSBooleanKeyword(type)) return 'boolean';
-  if (t.isTSArrayType(type)) return `${getTypeString(type.elementType)}[]`;
-  if (t.isTSTypeReference(type) && t.isIdentifier(type.typeName)) {
-    return type.typeName.name;
+  if (t.isTSVoidKeyword(type)) return 'void';
+  if (t.isTSUndefinedKeyword(type)) return 'undefined';
+  if (t.isTSNullKeyword(type)) return 'null';
+  if (t.isTSAnyKeyword(type)) return 'any';
+  
+  // Array types
+  if (t.isTSArrayType(type)) {
+    return `${getTypeString(type.elementType)}[]`;
   }
+  
+  // Promise and generic types
+  if (t.isTSTypeReference(type)) {
+    if (t.isIdentifier(type.typeName)) {
+      const typeName = type.typeName.name;
+      
+      if (type.typeParameters && type.typeParameters.params.length > 0) {
+        const params = type.typeParameters.params
+          .map(param => getTypeString(param))
+          .join(', ');
+        return `${typeName}<${params}>`;
+      }
+      
+      return typeName;
+    }
+    
+    if (t.isTSQualifiedName(type.typeName)) {
+      return getQualifiedTypeName(type.typeName);
+    }
+  }
+  
+  // Union types (e.g., 'light' | 'dark')
+  if (t.isTSUnionType(type)) {
+    const types = type.types.map(t => getTypeString(t)).join(' | ');
+    return types;
+  }
+  
+  // Intersection types (e.g., User & { id: string })
+  if (t.isTSIntersectionType(type)) {
+    const types = type.types.map(t => getTypeString(t)).join(' & ');
+    return types;
+  }
+  
+  // Literal types
+  if (t.isTSLiteralType(type)) {
+    if (t.isStringLiteral(type.literal)) {
+      return `'${type.literal.value}'`;
+    }
+    if (t.isNumericLiteral(type.literal)) {
+      return type.literal.value.toString();
+    }
+    if (t.isBooleanLiteral(type.literal)) {
+      return type.literal.value.toString();
+    }
+  }
+  
+  // Object types
+  if (t.isTSTypeLiteral(type)) {
+    if (type.members.length === 0) {
+      return '{}';
+    }
+    // For complex objects, just return a simplified representation
+    return '{ ... }';
+  }
+  
+  // Function types
+  if (t.isTSFunctionType(type)) {
+    const params = type.parameters
+      .map(param => {
+        if (t.isIdentifier(param) && param.typeAnnotation) {
+          const paramType = t.isTSTypeAnnotation(param.typeAnnotation) 
+            ? getTypeString(param.typeAnnotation.typeAnnotation)
+            : 'unknown';
+          return `${param.name}: ${paramType}`;
+        }
+        return 'param: unknown';
+      })
+      .join(', ');
+    
+    const returnType = type.typeAnnotation 
+      ? getTypeString(type.typeAnnotation.typeAnnotation)
+      : 'unknown';
+    
+    return `(${params}) => ${returnType}`;
+  }
+  
+  // Tuple types
+  if (t.isTSTupleType(type)) {
+    const elements = type.elementTypes.map(el => {
+      if (t.isTSNamedTupleMember(el)) {
+        return `${el.label.name}: ${getTypeString(el.elementType)}`;
+      }
+      return getTypeString(el);
+    }).join(', ');
+    return `[${elements}]`;
+  }
+  
+  // Conditional types and other complex types
+  if (t.isTSConditionalType(type)) {
+    return 'ConditionalType';
+  }
+  
+  if (t.isTSMappedType(type)) {
+    return 'MappedType';
+  }
+  
   return 'unknown';
+}
+
+/**
+ * Helper function to extract qualified type names (e.g., React.Component)
+ */
+function getQualifiedTypeName(qualifiedName: t.TSQualifiedName): string {
+  if (t.isIdentifier(qualifiedName.left) && t.isIdentifier(qualifiedName.right)) {
+    return `${qualifiedName.left.name}.${qualifiedName.right.name}`;
+  }
+  if (t.isTSQualifiedName(qualifiedName.left) && t.isIdentifier(qualifiedName.right)) {
+    return `${getQualifiedTypeName(qualifiedName.left)}.${qualifiedName.right.name}`;
+  }
+  return 'QualifiedType';
 }
 
 function parseReturnType(node: t.FunctionDeclaration): string | undefined {
@@ -356,7 +471,11 @@ function extractJSDoc(path: NodePath): string | undefined {
 
     if (jsDocComments.length > 0) {
       const lastJsDoc = jsDocComments[jsDocComments.length - 1];
-      return `/**${lastJsDoc.value}*/`;
+      // Clean up the JSDoc value - remove leading * if present
+      const cleanValue = lastJsDoc.value.startsWith('*') 
+        ? lastJsDoc.value.substring(1) 
+        : lastJsDoc.value;
+      return `/**${cleanValue}*/`;
     }
   }
 
@@ -369,7 +488,11 @@ function extractJSDoc(path: NodePath): string | undefined {
 
     if (jsDocComments.length > 0) {
       const lastJsDoc = jsDocComments[jsDocComments.length - 1];
-      return `/**${lastJsDoc.value}*/`;
+      // Clean up the JSDoc value - remove leading * if present
+      const cleanValue = lastJsDoc.value.startsWith('*') 
+        ? lastJsDoc.value.substring(1) 
+        : lastJsDoc.value;
+      return `/**${cleanValue}*/`;
     }
   }
 

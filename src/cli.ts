@@ -14,6 +14,7 @@ import {
   getOutputPath,
   generateDependencyMarkdown,
 } from './generator';
+import { generateEnhancedMarkdown } from './enhanced-generator';
 import { CliOptions, GraphOptions } from './types';
 import { isDirectory, isFile, scanDirectory } from './file-scanner';
 import { processBatch } from './batch-processor';
@@ -37,6 +38,26 @@ program
   .option(
     '--mermaid',
     'include Mermaid diagrams in graph output (use with --graph)'
+  )
+  .option(
+    '--usage-examples',
+    'include usage examples and patterns found in the code'
+  )
+  .option(
+    '--business-context',
+    'analyze and include business domain context'
+  )
+  .option(
+    '--architecture-insights',
+    'analyze and include architectural patterns and decisions'
+  )
+  .option(
+    '--semantic-analysis',
+    'analyze business entities, relationships, and workflows'
+  )
+  .option(
+    '--ai-enhanced',
+    'enable all AI-friendly analysis features (business context, usage examples, architecture, semantic)'
   )
   .action(async (inputPath: string, options: CliOptions) => {
     try {
@@ -128,10 +149,61 @@ async function processSingleFile(
 
   console.log(chalk.blue('📋 Organizing hierarchical structure...'));
   console.log(chalk.blue('📄 Generating enhanced markdown...'));
-  const markdown = generateMarkdown(parsedFile, {
-    includeComments: !options.noComments,
-    outputPath: options.output,
-  });
+  
+  // Check if AI enhancements are requested
+  const needsEnhancement = options.businessContext || options.usageExamples || 
+                          options.architectureInsights || options.semanticAnalysis || 
+                          options.aiEnhanced;
+  
+  let markdown: string;
+  
+  if (needsEnhancement) {
+    // For enhanced generation, we need all files and dependency graph
+    console.log(chalk.blue('🧠 Analyzing business context and patterns...'));
+    
+    // Get all files in the directory for context
+    const projectPath = path.dirname(resolvedPath);
+    const allFiles = await scanDirectory(projectPath);
+    const allParsedFiles: any[] = [];
+    
+    // Parse a subset of files for context (limit to avoid performance issues)
+    const contextFiles = allFiles.files.slice(0, 10);
+    for (const file of contextFiles) {
+      try {
+        const fileContent = await fs.readFile(file, 'utf-8');
+        const parsed = parseFile(file, fileContent);
+        allParsedFiles.push(parsed);
+      } catch {
+        // Skip files that can't be parsed
+      }
+    }
+    
+    // Create a simple dependency graph for the main file
+    const dependencyGraph = {
+      nodes: [resolvedPath],
+      edges: [],
+      projectPath: projectPath,
+      metrics: {
+        totalNodes: 1,
+        totalEdges: 0,
+        internalDependencies: 0,
+        externalDependencies: 0,
+        averageDependencies: 0,
+        circularDependencies: [],
+        mostConnectedModule: undefined
+      }
+    };
+    
+    markdown = generateEnhancedMarkdown(
+      parsedFile, 
+      allParsedFiles, 
+      dependencyGraph, 
+      options, 
+      projectPath
+    );
+  } else {
+    markdown = generateMarkdown(parsedFile);
+  }
 
   const outputPath = getOutputPath(resolvedPath, options.output);
   await fs.writeFile(outputPath, markdown, 'utf-8');

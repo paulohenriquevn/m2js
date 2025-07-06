@@ -47,6 +47,10 @@ export interface ParsedFile {
 export interface GeneratorOptions {
   includeComments?: boolean;
   outputPath?: string;
+  businessContext?: boolean;
+  usageExamples?: boolean;
+  architectureInsights?: boolean;
+  semanticAnalysis?: boolean;
 }
 
 export interface ParseOptions {
@@ -59,6 +63,11 @@ export interface CliOptions {
   noComments?: boolean;
   graph?: boolean;
   mermaid?: boolean;
+  usageExamples?: boolean;
+  businessContext?: boolean;
+  architectureInsights?: boolean;
+  semanticAnalysis?: boolean;
+  aiEnhanced?: boolean;
 }
 
 export interface ScanResult {
