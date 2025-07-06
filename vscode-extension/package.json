@@ -3,7 +3,7 @@
   "displayName": "M2JS - Markdown from JavaScript",
   "description": "Transform TypeScript/JavaScript into LLM-friendly Markdown documentation with AI-enhanced analysis",
   "version": "0.1.0",
-  "publisher": "m2js",
+  "publisher": "paulohenriquevn",
   "repository": {
     "type": "git",
     "url": "https://github.com/paulohenriquevn/m2js.git",

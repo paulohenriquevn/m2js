@@ -1,8 +1,83 @@
-# M2JS VS Code Extension
+# M2JS - VS Code Extension
 
-🚀 **Transform TypeScript/JavaScript into LLM-friendly Markdown documentation with AI-enhanced analysis**
+🐻 **Transform TypeScript/JavaScript into LLM-friendly Markdown documentation**
 
-M2JS extension brings the power of intelligent code analysis directly into VS Code, helping developers create perfect documentation for AI coding assistants like ChatGPT, Claude, and GitHub Copilot.
+M2JS VS Code Extension brings the power of intelligent code analysis directly to your IDE, making it effortless to generate AI-optimized documentation with significant token reduction.
+
+## ✨ Features
+
+### 🎯 **Core Functionality**
+- **📝 Generate Documentation**: Right-click any TypeScript/JavaScript file to create optimized Markdown
+- **🧠 AI-Enhanced Analysis**: Get business context, architecture insights, and semantic relationships
+- **🎯 Template Wizard**: Interactive creation of LLM implementation guides
+- **📊 Project Analysis**: Comprehensive dependency and architecture analysis
+
+### 🚀 **Key Benefits**
+- **60-90% Token Reduction**: Dramatically reduce LLM context size while preserving meaning
+- **Business Intelligence**: Automatic domain detection (e-commerce, blog, API, etc.)
+- **Architecture Insights**: Pattern recognition (MVC, Service Layer, Repository, etc.)
+- **Zero Configuration**: Works out-of-the-box with smart defaults
+
+## 🎮 How to Use
+
+### Quick Start
+1. **Right-click** any `.ts`, `.tsx`, `.js`, or `.jsx` file
+2. Select **"🧠 Generate AI-Enhanced Analysis"**
+3. View results in interactive webview
+4. **Copy to clipboard** for your AI assistant
+5. **Auto-save** to your project workspace
+
+### Available Commands
+- `M2JS: Generate Documentation` - Basic code documentation
+- `M2JS: Generate AI-Enhanced Analysis` - Full AI analysis with business context
+- `M2JS: Create LLM Template` - Generate implementation guides
+- `M2JS: Analyze Project Dependencies` - Project-wide analysis
+- `M2JS: Template Wizard` - Interactive template creation
+
+## 📊 Real Results
+
+### Before M2JS (2,847 tokens)
+```typescript
+// Full AuthService class with 150+ lines of implementation details
+export class AuthService {
+  private readonly jwtSecret: string;
+  // ... all private implementation
+}
+```
+
+### After M2JS (487 tokens - 83% reduction!)
+```markdown
+# 📝 AuthService.ts
+
+## 🧠 Business Context
+**Domain**: Authentication (98% confidence)
+**Patterns**: Service Layer, Repository Pattern
+
+## 🔧 Functions
+### login
+async login(email: string, password: string): Promise<AuthResult>
+**Business Rules**: Rate limiting, password validation, active account required
+```
+
+## 🛠️ Requirements
+
+- **VS Code**: Version 1.74.0 or higher
+- **M2JS CLI**: Automatically detected or manually configured
+- **Node.js**: 16.0.0+ (for CLI functionality)
+
+## 🚀 Installation
+
+### From VS Code Marketplace
+1. Open VS Code
+2. Go to Extensions (`Ctrl+Shift+X`)
+3. Search for "M2JS"
+4. Click "Install"
+
+## 🔐 Privacy & Security
+
+- **Zero cloud processing**: All analysis runs locally
+- **No data collection**: Zero telemetry or usage tracking
+- **Offline capable**: Works without internet connection
 
 ## ✨ Features
 

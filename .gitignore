@@ -138,3 +138,42 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# M2JS specific ignores
+# Test output files
+test-*.md
+*-test.md  
+*-spec.md
+*-output.md
+*-analysis.md
+*.spec.md
+test-extension.ts
+test-*.ts
+
+# Generated documentation (except examples)
+/src/**/*.md
+!/examples/User.ts
+!/examples/service.ts
+!/examples/utils.ts
+
+# Temporary files
+token.txt
+npm.md
+.eslintrc.md
+
+# VS Code extension test files
+vscode-extension/test-*.ts
+vscode-extension/test-*.md
+vscode-extension/example-*.ts
+vscode-extension/DEVELOPMENT.md
+
+# Build artifacts
+/dist/
+/out/
+*.vsix
+
+# Development scripts
+/scripts/fix-*.js
+
+# Empty test directories
+test-empty-dir/

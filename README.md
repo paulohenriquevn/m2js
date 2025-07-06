@@ -1,5 +1,9 @@
 # M2JS (Markdown from JavaScript)
 
+<div align="center">
+  <img src="https://raw.githubusercontent.com/paulohenriquevn/m2js/main/assets/logo.png" alt="M2JS Logo" width="120" height="120">
+</div>
+
 🚀 **Transform TypeScript/JavaScript code into LLM-friendly Markdown summaries with 60-90% token reduction**
 
 M2JS is a comprehensive ecosystem that extracts and analyzes TypeScript/JavaScript code, converting it into optimized Markdown documentation perfect for AI coding assistants like ChatGPT, Claude, and GitHub Copilot.
