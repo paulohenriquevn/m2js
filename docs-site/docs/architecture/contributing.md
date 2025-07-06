@@ -78,7 +78,7 @@ src/
 
 ### CLAUDE.md Compliance
 
-All contributions must follow the [CLAUDE.md](/CLAUDE.md) principles:
+All contributions must follow the [CLAUDE.md](https://github.com/paulohenriquevn/m2js/blob/main/CLAUDE.md) principles:
 
 #### 1. KISS (Keep It Simple, Stupid)
 

@@ -302,13 +302,13 @@ M2JS consistently delivers massive token savings across different project sizes:
 ## 🌟 Resources & Support
 
 ### 📚 Documentation
-- [**Getting Started Guide**](/guide/getting-started) - Complete setup and usage
-- [**CLI Reference**](/guide/cli) - All commands and options
-- [**Examples Gallery**](/guide/examples) - Real-world usage patterns
+- [**Getting Started Guide**](/guide/quick-start) - Complete setup and usage
+- [**CLI Reference**](/reference/cli) - All commands and options
+- [**Best Practices**](/guide/best-practices) - Real-world usage patterns
 
 ### 🛠️ Tools & Extensions
 - [**VS Code Extension**](/extension/overview) - One-click integration
-- [**GitHub Actions**](/guide/github-actions) - CI/CD integration
+- [**GitHub Pages Deployment**](/deployment/github-pages) - CI/CD integration
 - [**NPM Package**](https://www.npmjs.com/package/@paulohenriquevn/m2js) - Latest releases
 
 ### 🤝 Community
@@ -322,7 +322,7 @@ M2JS consistently delivers massive token savings across different project sizes:
 
 **Get started in under 2 minutes:**
 
-[Get Started →](/guide/getting-started){ .get-started-btn }
+[Get Started →](/guide/quick-start){ .get-started-btn }
 [VS Code Extension →](/extension/overview){ .extension-btn }
 
 <style>
