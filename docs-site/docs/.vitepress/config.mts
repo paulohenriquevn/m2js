@@ -137,7 +137,13 @@ export default defineConfig({
   
   // Markdown config
   markdown: {
-    theme: 'github-dark',
+    theme: {
+      light: 'github-light',
+      dark: 'github-dark'
+    },
     lineNumbers: true
-  }
+  },
+  
+  // Appearance
+  appearance: 'auto'
 })
