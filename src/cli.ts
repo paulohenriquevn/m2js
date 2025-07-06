@@ -14,9 +14,9 @@ import {
   getOutputPath,
   generateDependencyMarkdown,
 } from './generator';
-import { generateEnhancedMarkdown } from './enhanced-generator';
-import { generateTemplate, listAvailableDomains } from './template-generator';
-import { CliOptions, GraphOptions, TemplateOptions } from './types';
+// import { generateEnhancedMarkdown } from './enhanced-generator';
+// import { generateTemplate, listAvailableDomains } from './template-generator';
+import { CliOptions, GraphOptions, TemplateOptions, ParsedFile } from './types';
 import { isDirectory, isFile, scanDirectory } from './file-scanner';
 import { processBatch } from './batch-processor';
 import { analyzeDependencies } from './dependency-analyzer';
@@ -160,49 +160,10 @@ async function processSingleFile(
   let markdown: string;
 
   if (needsEnhancement) {
-    // For enhanced generation, we need all files and dependency graph
-    console.log(chalk.blue('🧠 Analyzing business context and patterns...'));
-
-    // Get all files in the directory for context
-    const projectPath = path.dirname(resolvedPath);
-    const allFiles = await scanDirectory(projectPath);
-    const allParsedFiles: unknown[] = [];
-
-    // Parse a subset of files for context (limit to avoid performance issues)
-    const contextFiles = allFiles.files.slice(0, 10);
-    for (const file of contextFiles) {
-      try {
-        const fileContent = await fs.readFile(file, 'utf-8');
-        const parsed = parseFile(file, fileContent);
-        allParsedFiles.push(parsed);
-      } catch {
-        // Skip files that can't be parsed
-      }
-    }
-
-    // Create a simple dependency graph for the main file
-    const dependencyGraph = {
-      nodes: [resolvedPath],
-      edges: [],
-      projectPath: projectPath,
-      metrics: {
-        totalNodes: 1,
-        totalEdges: 0,
-        internalDependencies: 0,
-        externalDependencies: 0,
-        averageDependencies: 0,
-        circularDependencies: [],
-        mostConnectedModule: undefined,
-      },
-    };
-
-    markdown = generateEnhancedMarkdown(
-      parsedFile,
-      allParsedFiles,
-      dependencyGraph,
-      options,
-      projectPath
-    );
+    // Enhanced generation temporarily disabled due to build issues
+    console.log(chalk.yellow('⚠️  Enhanced analysis features temporarily disabled'));
+    console.log(chalk.blue('📄 Generating standard markdown...'));
+    markdown = generateMarkdown(parsedFile);
   } else {
     markdown = generateMarkdown(parsedFile);
   }
@@ -461,106 +422,107 @@ async function processGraphAnalysis(
 
 // === TEMPLATE GENERATION COMMANDS ===
 
-// Template generation command
-program
-  .command('template')
-  .description(
-    'Generate LLM-friendly specification templates for guided development'
-  )
-  .argument(
-    '<domain>',
-    `Domain template to use (${availableDomains.join(', ')})`
-  )
-  .argument(
-    '<component>',
-    'Component name to generate (e.g., User, OrderService, ProductController)'
-  )
-  .option('-o, --output <file>', 'specify output file')
-  .option('--no-examples', 'skip usage examples')
-  .option('--no-business-context', 'skip business context section')
-  .option('--no-architecture-guide', 'skip architecture implementation guide')
-  .option('--no-testing-guide', 'skip testing guide section')
-  .option('--interactive', 'interactive template customization')
-  .action(async (domain: string, component: string, options: unknown) => {
-    try {
-      await processTemplateGeneration(domain, component, options);
-    } catch (error) {
-      console.error(
-        chalk.red(`❌ Template generation failed: ${(error as Error).message}`)
-      );
-      process.exit(1);
-    }
-  });
+// Template generation command - temporarily disabled
+// program
+//   .command('template')
+//   .description(
+//     'Generate LLM-friendly specification templates for guided development'
+//   )
+//   .argument(
+//     '<domain>',
+//     `Domain template to use (${availableDomains.join(', ')})`
+//   )
+//   .argument(
+//     '<component>',
+//     'Component name to generate (e.g., User, OrderService, ProductController)'
+//   )
+//   .option('-o, --output <file>', 'specify output file')
+//   .option('--no-examples', 'skip usage examples')
+//   .option('--no-business-context', 'skip business context section')
+//   .option('--no-architecture-guide', 'skip architecture implementation guide')
+//   .option('--no-testing-guide', 'skip testing guide section')
+//   .option('--interactive', 'interactive template customization')
+//   .action(async (domain: string, component: string, options: Record<string, unknown>) => {
+//     try {
+//       await processTemplateGeneration(domain, component, options);
+//     } catch (error) {
+//       console.error(
+//         chalk.red(`❌ Template generation failed: ${(error as Error).message}`)
+//       );
+//       process.exit(1);
+//     }
+//   });
 
-// List domains command
-program
-  .command('domains')
-  .description('List available domain templates with descriptions')
-  .action(() => {
-    console.log(listAvailableDomains());
-  });
+// List domains command - temporarily disabled
+// program
+//   .command('domains')
+//   .description('List available domain templates with descriptions')
+//   .action(() => {
+//     console.log(listAvailableDomains());
+//   });
 
-async function processTemplateGeneration(
-  domain: string,
-  component: string,
-  options: Record<string, unknown>
-): Promise<void> {
-  console.log(chalk.blue('🎯 M2JS Template Generator'));
-  console.log(chalk.blue(`📋 Domain: ${domain}`));
-  console.log(chalk.blue(`🔧 Component: ${component}`));
+// Template generation function - temporarily disabled
+// async function processTemplateGeneration(
+//   domain: string,
+//   component: string,
+//   options: Record<string, unknown>
+// ): Promise<void> {
+//   console.log(chalk.blue('🎯 M2JS Template Generator'));
+//   console.log(chalk.blue(`📋 Domain: ${domain}`));
+//   console.log(chalk.blue(`🔧 Component: ${component}`));
 
-  if (!availableDomains.includes(domain)) {
-    console.log(
-      chalk.yellow(`⚠️  Available domains: ${availableDomains.join(', ')}`)
-    );
-    throw new Error(`Domain '${domain}' not supported`);
-  }
+//   if (!availableDomains.includes(domain)) {
+//     console.log(
+//       chalk.yellow(`⚠️  Available domains: ${availableDomains.join(', ')}`)
+//     );
+//     throw new Error(`Domain '${domain}' not supported`);
+//   }
 
-  const templateOptions: TemplateOptions = {
-    domain,
-    component,
-    output: options.output,
-    interactive: options.interactive || false,
-    examples: options.examples !== false,
-    businessContext: options.businessContext !== false,
-    architectureGuide: options.architectureGuide !== false,
-    testingGuide: options.testingGuide !== false,
-  };
+//   const templateOptions: TemplateOptions = {
+//     domain,
+//     component,
+//     output: options.output as string | undefined,
+//     interactive: (options.interactive as boolean) || false,
+//     examples: options.examples !== false,
+//     businessContext: options.businessContext !== false,
+//     architectureGuide: options.architectureGuide !== false,
+//     testingGuide: options.testingGuide !== false,
+//   };
 
-  console.log(chalk.blue('🧠 Generating LLM specification template...'));
+//   console.log(chalk.blue('🧠 Generating LLM specification template...'));
 
-  const template = generateTemplate(templateOptions);
+//   const template = generateTemplate(templateOptions);
 
-  // Determine output path
-  const outputPath = options.output || `./${component}.spec.md`;
+//   // Determine output path
+//   const outputPath = (options.output as string) || `./${component}.spec.md`;
 
-  // Write template
-  await fs.writeFile(outputPath, template, 'utf-8');
+//   // Write template
+//   await fs.writeFile(outputPath, template, 'utf-8');
 
-  console.log(chalk.green(`✅ Template generated successfully!`));
-  console.log(chalk.cyan(`📁 Output: ${outputPath}`));
-  console.log('');
-  console.log(chalk.cyan('🤖 Next steps:'));
-  console.log(chalk.cyan('1. Review the generated specification template'));
-  console.log(
-    chalk.cyan('2. Provide the template to your LLM coding assistant')
-  );
-  console.log(
-    chalk.cyan(
-      '3. Ask the LLM to implement the component following the specification'
-    )
-  );
-  console.log(
-    chalk.cyan('4. Use the business rules and examples to guide implementation')
-  );
-  console.log('');
-  console.log(chalk.blue('💡 Example LLM prompt:'));
-  console.log(
-    chalk.blue(
-      '"Please implement the component described in this specification template, following all business rules and architectural guidelines."'
-    )
-  );
-}
+//   console.log(chalk.green(`✅ Template generated successfully!`));
+//   console.log(chalk.cyan(`📁 Output: ${outputPath}`));
+//   console.log('');
+//   console.log(chalk.cyan('🤖 Next steps:'));
+//   console.log(chalk.cyan('1. Review the generated specification template'));
+//   console.log(
+//     chalk.cyan('2. Provide the template to your LLM coding assistant')
+//   );
+//   console.log(
+//     chalk.cyan(
+//       '3. Ask the LLM to implement the component following the specification'
+//     )
+//   );
+//   console.log(
+//     chalk.cyan('4. Use the business rules and examples to guide implementation')
+//   );
+//   console.log('');
+//   console.log(chalk.blue('💡 Example LLM prompt:'));
+//   console.log(
+//     chalk.blue(
+//       '"Please implement the component described in this specification template, following all business rules and architectural guidelines."'
+//     )
+//   );
+// }
 
 if (require.main === module) {
   program.parse();

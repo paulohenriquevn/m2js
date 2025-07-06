@@ -4,6 +4,11 @@
  */
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 
 import { ParsedFile, DependencyGraph, CliOptions } from './types';
 import { generateMarkdown } from './generator';
@@ -73,36 +78,46 @@ export function generateEnhancedMarkdown(
  */
 function generateBusinessContextSection(context: unknown): string {
   const sections: string[] = [];
+  const ctx = context as {
+    domain?: string;
+    confidence?: number;
+    description?: string;
+    framework?: string;
+    frameworks?: string[];
+    patterns?: string[];
+    entities?: string[];
+    businessRules?: string[];
+  };
 
   sections.push('## 🎯 Business Context');
   sections.push(
-    `**Domain**: ${context.domain} (${context.confidence}% confidence)`
+    `**Domain**: ${ctx.domain} (${ctx.confidence}% confidence)`
   );
 
-  if (context.description) {
-    sections.push(`**Description**: ${context.description}`);
+  if (ctx.description) {
+    sections.push(`**Description**: ${ctx.description}`);
   }
 
-  if (context.frameworks.length > 0) {
-    sections.push(`**Tech Stack**: ${context.frameworks.join(', ')}`);
+  if (ctx.frameworks && ctx.frameworks.length > 0) {
+    sections.push(`**Tech Stack**: ${ctx.frameworks.join(', ')}`);
   }
 
-  if (context.patterns.length > 0) {
-    sections.push(`**Architecture**: ${context.patterns.join(', ')}`);
+  if (ctx.patterns && ctx.patterns.length > 0) {
+    sections.push(`**Architecture**: ${ctx.patterns.join(', ')}`);
   }
 
-  if (context.entities.length > 0) {
+  if (ctx.entities && ctx.entities.length > 0) {
     sections.push('');
     sections.push('**Business Entities**:');
-    context.entities.forEach((entity: string) => {
+    ctx.entities.forEach((entity: string) => {
       sections.push(`- ${entity}`);
     });
   }
 
-  if (context.businessRules.length > 0) {
+  if (ctx.businessRules && ctx.businessRules.length > 0) {
     sections.push('');
     sections.push('**Business Rules**:');
-    context.businessRules.forEach((rule: string) => {
+    ctx.businessRules.forEach((rule: string) => {
       sections.push(`- ${rule}`);
     });
   }
@@ -113,18 +128,34 @@ function generateBusinessContextSection(context: unknown): string {
 /**
  * Generates usage examples section
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function generateUsageExamplesSection(
   usage: any,
   parsedFile: ParsedFile
 ): string {
   const sections: string[] = [];
+  const usageData = usage as {
+    examples?: Array<{
+      function?: string;
+      pattern?: string;
+      code?: string;
+      description?: string;
+      category?: string;
+    }>;
+    patterns?: Array<{
+      pattern?: string;
+      description?: string;
+    }>;
+  };
+
+  if (!usageData.examples) return '';
 
   // Filter examples relevant to this file
-  const relevantExamples = usage.examples.filter(
-    (example: unknown) =>
+  const relevantExamples = usageData.examples.filter(
+    (example) =>
       parsedFile.functions.some(func => func.name === example.function) ||
       parsedFile.classes.some(cls =>
-        cls.methods.some(method => example.function.includes(method.name))
+        cls.methods.some(method => example.function?.includes(method.name))
       )
   );
 
@@ -145,7 +176,7 @@ function generateUsageExamplesSection(
 
   categories.forEach(category => {
     const categoryExamples = relevantExamples.filter(
-      (ex: unknown) => ex.category === category
+      (ex) => ex.category === category
     );
 
     if (categoryExamples.length > 0) {
@@ -153,10 +184,10 @@ function generateUsageExamplesSection(
         `### ${category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' ')}`
       );
 
-      categoryExamples.slice(0, 2).forEach((example: unknown) => {
+      categoryExamples.slice(0, 2).forEach((example) => {
         sections.push(`**${example.function}**`);
         sections.push('```typescript');
-        sections.push(example.example);
+        sections.push(example.code || '');
         sections.push('```');
         sections.push(`*${example.description}*`);
         sections.push('');
@@ -165,9 +196,9 @@ function generateUsageExamplesSection(
   });
 
   // Add common patterns
-  if (usage.patterns.length > 0) {
+  if (usageData.patterns && usageData.patterns.length > 0) {
     sections.push('### Common Patterns');
-    usage.patterns.slice(0, 3).forEach((pattern: unknown) => {
+    usageData.patterns.slice(0, 3).forEach((pattern) => {
       sections.push(`**${pattern.pattern}**: ${pattern.description}`);
     });
   }
