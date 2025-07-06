@@ -1,4 +1,4 @@
-# 🧠 AI Analyzers Reference
+# AI Analyzers Reference
 
 Deep dive into M2JS's AI-enhanced analysis capabilities.
 
@@ -31,7 +31,7 @@ m2js src/UserService.ts --business-context
 
 **Example Output**:
 ```markdown
-## 🧠 Business Context
+## Business Context
 **Domain**: E-commerce (95% confidence)
 **Framework**: Node.js + Express + TypeScript
 **Patterns**: Service Layer, Repository Pattern, Event Sourcing
@@ -58,7 +58,7 @@ m2js src/PaymentService.ts --usage-examples
 
 **Example Output**:
 ```markdown
-## 📖 Usage Patterns
+## Usage Patterns
 
 ### Common Workflows
 1. **Payment Processing**: validate → charge → confirm → notify
@@ -69,10 +69,10 @@ m2js src/PaymentService.ts --usage-examples
 ```typescript
 // Typical payment flow
 const result = await paymentService.processPayment({
-  amount: 99.99,
-  currency: 'USD',
-  paymentMethod: 'credit_card',
-  customer: { id: 'user123' }
+amount: 99.99,
+currency: 'USD',
+paymentMethod: 'credit_card',
+customer: { id: 'user123' }
 });
 ```
 
@@ -93,7 +93,7 @@ m2js src/ --architecture-insights
 
 **Example Output**:
 ```markdown
-## 🏗️ Architecture Insights
+## Architecture Insights
 
 ### Layer Architecture
 - **Presentation**: Controllers and API endpoints
@@ -107,8 +107,8 @@ m2js src/ --architecture-insights
 - **Dependency Injection**: Loose coupling implementation
 
 ### Architecture Violations
-⚠️ Direct database access in controller (UserController.ts:45)
-⚠️ Business logic in data layer (UserRepository.ts:123)
+Direct database access in controller (UserController.ts:45)
+Business logic in data layer (UserRepository.ts:123)
 ```
 
 ### 4. Semantic Relationship Analyzer
@@ -128,29 +128,29 @@ m2js src/ --semantic-analysis
 
 **Example Output**:
 ```markdown
-## 🔗 Entity Relationships
+## Entity Relationships
 
 ### Business Entities
 - **User** (Aggregate Root)
-  - Properties: id, email, profile, preferences
-  - Operations: register, authenticate, updateProfile
-  - States: inactive → active → suspended → deleted
+- Properties: id, email, profile, preferences
+- Operations: register, authenticate, updateProfile
+- States: inactive → active → suspended → deleted
 
 - **Order** (Entity)
-  - Belongs to: User (1:N)
-  - Contains: OrderItems (1:N)
-  - States: draft → confirmed → shipped → delivered
+- Belongs to: User (1:N)
+- Contains: OrderItems (1:N)
+- States: draft → confirmed → shipped → delivered
 
 ### Business Workflows
 1. **User Registration**
-   - Trigger: Registration form submission
-   - Steps: validate → create → verify email → activate
-   - Outcomes: Active user account or validation errors
+- Trigger: Registration form submission
+- Steps: validate → create → verify email → activate
+- Outcomes: Active user account or validation errors
 
 2. **Order Processing**
-   - Trigger: Checkout button click
-   - Steps: validate cart → process payment → create order → send confirmation
-   - Outcomes: Confirmed order or payment failure
+- Trigger: Checkout button click
+- Steps: validate cart → process payment → create order → send confirmation
+- Outcomes: Confirmed order or payment failure
 ```
 
 ## Analyzer Configuration
@@ -160,7 +160,7 @@ m2js src/ --semantic-analysis
 ```bash
 # Single analyzer
 m2js src/file.ts --business-context
-m2js src/file.ts --usage-examples  
+m2js src/file.ts --usage-examples 
 m2js src/file.ts --architecture-insights
 m2js src/file.ts --semantic-analysis
 
@@ -187,24 +187,24 @@ m2js src/ --architecture-insights --pattern-detection strict
 When AI analyzers are enabled, M2JS generates enriched documentation:
 
 ```markdown
-# 📝 UserService.ts
+# UserService.ts
 
-## 🧠 Business Context
+## Business Context
 [Business domain analysis]
 
-## 🏗️ Architecture Insights  
+## Architecture Insights 
 [Architectural pattern analysis]
 
-## 🔗 Semantic Relationships
+## Semantic Relationships
 [Entity and workflow mapping]
 
-## 📖 Usage Examples
+## Usage Examples
 [Common usage patterns]
 
-## 🔧 Functions
+## Functions
 [Standard function documentation]
 
-## 🏗️ Classes
+## Classes
 [Standard class documentation]
 ```
 
@@ -226,25 +226,25 @@ The enhanced output is optimized for AI assistants:
 ```typescript
 // Domain classification approach
 interface DomainPattern {
-  domain: string;
-  keywords: string[];
-  patterns: string[];
-  confidence: number;
+domain: string;
+keywords: string[];
+patterns: string[];
+confidence: number;
 }
 
 const domains: DomainPattern[] = [
-  {
-    domain: 'E-commerce',
-    keywords: ['cart', 'order', 'payment', 'product', 'customer'],
-    patterns: ['checkout workflow', 'inventory management'],
-    confidence: 0.95
-  },
-  {
-    domain: 'Healthcare',
-    keywords: ['patient', 'diagnosis', 'treatment', 'medical'],
-    patterns: ['patient records', 'appointment scheduling'],
-    confidence: 0.90
-  }
+{
+domain: 'E-commerce',
+keywords: ['cart', 'order', 'payment', 'product', 'customer'],
+patterns: ['checkout workflow', 'inventory management'],
+confidence: 0.95
+},
+{
+domain: 'Healthcare',
+keywords: ['patient', 'diagnosis', 'treatment', 'medical'],
+patterns: ['patient records', 'appointment scheduling'],
+confidence: 0.90
+}
 ];
 ```
 
@@ -253,18 +253,18 @@ const domains: DomainPattern[] = [
 ```typescript
 // Architecture pattern detection
 interface ArchitecturePattern {
-  name: string;
-  indicators: string[];
-  violations: string[];
-  benefits: string[];
+name: string;
+indicators: string[];
+violations: string[];
+benefits: string[];
 }
 
 const patterns = {
-  'Repository Pattern': {
-    indicators: ['Repository interface', 'Data access abstraction'],
-    violations: ['Direct SQL in business logic'],
-    benefits: ['Testability', 'Data source independence']
-  }
+'Repository Pattern': {
+indicators: ['Repository interface', 'Data access abstraction'],
+violations: ['Direct SQL in business logic'],
+benefits: ['Testability', 'Data source independence']
+}
 };
 ```
 
@@ -273,11 +273,11 @@ const patterns = {
 ```typescript
 // Business entity identification
 interface BusinessEntity {
-  name: string;
-  type: 'aggregate' | 'entity' | 'value-object';
-  properties: EntityProperty[];
-  operations: EntityOperation[];
-  relationships: EntityRelationship[];
+name: string;
+type: 'aggregate' | 'entity' | 'value-object';
+properties: EntityProperty[];
+operations: EntityOperation[];
+relationships: EntityRelationship[];
 }
 ```
 
@@ -297,11 +297,11 @@ interface BusinessEntity {
 
 ```bash
 # Selective analysis for performance
-m2js src/core/ --business-context  # Only core business logic
-m2js src/api/ --architecture-insights  # Only API layer
+m2js src/core/ --business-context # Only core business logic
+m2js src/api/ --architecture-insights # Only API layer
 
 # Batch optimization
-m2js src/ --ai-enhanced --batch-size 10  # Process in smaller chunks
+m2js src/ --ai-enhanced --batch-size 10 # Process in smaller chunks
 ```
 
 ## Accuracy and Confidence
@@ -311,7 +311,7 @@ m2js src/ --ai-enhanced --batch-size 10  # Process in smaller chunks
 AI analyzers provide confidence scores for their findings:
 
 ```markdown
-## 🧠 Business Context
+## Business Context
 **Domain**: E-commerce (92% confidence)
 **Framework**: Node.js + Express (87% confidence)
 **Patterns**: Repository Pattern (95% confidence)
@@ -329,29 +329,29 @@ AI analyzers provide confidence scores for their findings:
 ### Planned Features
 
 1. **Custom Domain Training**
-   ```bash
-   m2js --train-domain healthcare ./training-data/
-   m2js src/ --domain healthcare  # Use trained model
-   ```
+```bash
+m2js --train-domain healthcare ./training-data/
+m2js src/ --domain healthcare # Use trained model
+```
 
 2. **Pattern Libraries**
-   ```bash
-   m2js --add-pattern ./custom-patterns.json
-   m2js src/ --patterns enterprise  # Use pattern library
-   ```
+```bash
+m2js --add-pattern ./custom-patterns.json
+m2js src/ --patterns enterprise # Use pattern library
+```
 
 3. **Interactive Mode**
-   ```bash
-   m2js src/ --interactive  # Step-by-step analysis with user input
-   ```
+```bash
+m2js src/ --interactive # Step-by-step analysis with user input
+```
 
 4. **Integration APIs**
-   ```typescript
-   // Programmatic access
-   import { analyzeBusinessContext } from '@paulohenriquevn/m2js/analyzers';
-   
-   const result = await analyzeBusinessContext(sourceCode, options);
-   ```
+```typescript
+// Programmatic access
+import { analyzeBusinessContext } from '@paulohenriquevn/m2js/analyzers';
+
+const result = await analyzeBusinessContext(sourceCode, options);
+```
 
 ## Troubleshooting
 

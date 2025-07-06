@@ -1,4 +1,4 @@
-# 🚀 Deployment Guide
+# Deployment Guide
 
 Complete guide for releasing and deploying M2JS updates.
 
@@ -10,13 +10,13 @@ M2JS follows [Semantic Versioning](https://semver.org/):
 
 ```bash
 # Patch release (bug fixes)
-npm version patch    # 1.0.0 → 1.0.1
+npm version patch # 1.0.0 → 1.0.1
 
 # Minor release (new features)
-npm version minor    # 1.0.1 → 1.1.0
+npm version minor # 1.0.1 → 1.1.0
 
 # Major release (breaking changes)
-npm version major    # 1.1.0 → 2.0.0
+npm version major # 1.1.0 → 2.0.0
 ```
 
 ### Pre-Release Checklist
@@ -24,8 +24,8 @@ npm version major    # 1.1.0 → 2.0.0
 **1. Code Quality Validation**
 ```bash
 # Run complete validation suite
-npm run validate      # type-check + lint + test + security
-npm run build        # Ensure clean build
+npm run validate # type-check + lint + test + security
+npm run build # Ensure clean build
 npm run test:coverage # Verify test coverage
 ```
 
@@ -46,10 +46,10 @@ m2js src/components/Button.tsx
 **3. Documentation Updates**
 ```bash
 # Update version-specific docs
-docs-site/docs/index.md           # Hero version number
-package.json                      # Version metadata
-CHANGELOG.md                      # Release notes
-README.md                        # Installation instructions
+docs-site/docs/index.md # Hero version number
+package.json # Version metadata
+CHANGELOG.md # Release notes
+README.md # Installation instructions
 ```
 
 ### Release Workflow
@@ -63,7 +63,7 @@ git checkout -b release/v1.1.0
 npm version minor
 # This automatically:
 # - Updates package.json version
-# - Creates git tag (e.g., v1.1.0)  
+# - Creates git tag (e.g., v1.1.0) 
 # - Commits the version change
 ```
 
@@ -76,7 +76,7 @@ echo "## [1.1.0] - $(date +%Y-%m-%d)
 - New feature X
 - Enhanced feature Y
 
-### Fixed  
+### Fixed 
 - Bug fix Z
 - Performance improvement W
 
@@ -109,9 +109,9 @@ git push --tags
 
 # Create GitHub release via CLI
 gh release create v1.1.0 \
-  --title "M2JS v1.1.0" \
-  --notes-file CHANGELOG.md \
-  --generate-notes
+--title "M2JS v1.1.0" \
+--notes-file CHANGELOG.md \
+--generate-notes
 ```
 
 **5. Documentation Deployment**
@@ -129,26 +129,26 @@ npm run deploy
 ```json
 // package.json essentials
 {
-  "name": "@paulohenriquevn/m2js",
-  "version": "1.1.0",
-  "description": "Transform TypeScript/JavaScript into LLM-friendly Markdown",
-  "main": "dist/index.js",
-  "bin": {
-    "m2js": "dist/cli.js"
-  },
-  "files": [
-    "dist/**/*",
-    "README.md",
-    "LICENSE",
-    "CHANGELOG.md"
-  ],
-  "engines": {
-    "node": ">=16.0.0"
-  },
-  "keywords": [
-    "typescript", "javascript", "markdown", "llm", "ai",
-    "chatgpt", "claude", "documentation", "cli"
-  ]
+"name": "@paulohenriquevn/m2js",
+"version": "1.1.0",
+"description": "Transform TypeScript/JavaScript into LLM-friendly Markdown",
+"main": "dist/index.js",
+"bin": {
+"m2js": "dist/cli.js"
+},
+"files": [
+"dist/**/*",
+"README.md",
+"LICENSE",
+"CHANGELOG.md"
+],
+"engines": {
+"node": ">=16.0.0"
+},
+"keywords": [
+"typescript", "javascript", "markdown", "llm", "ai",
+"chatgpt", "claude", "documentation", "cli"
+]
 }
 ```
 
@@ -186,30 +186,30 @@ npm view @paulohenriquevn/m2js dist.tarball
 # docs-site/.github/workflows/deploy.yml
 name: Deploy Documentation
 on:
-  push:
-    branches: [main]
-    paths: ['docs-site/**']
+push:
+branches: [main]
+paths: ['docs-site/**']
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: npm
-          cache-dependency-path: docs-site/package-lock.json
-      
-      - run: cd docs-site && npm ci
-      - run: cd docs-site && npm run build
-      
-      - uses: actions/deploy-pages@v2
-        with:
-          folder: docs-site/docs/.vitepress/dist
+deploy:
+runs-on: ubuntu-latest
+steps:
+- uses: actions/checkout@v3
+with:
+fetch-depth: 0
+
+- uses: actions/setup-node@v3
+with:
+node-version: 18
+cache: npm
+cache-dependency-path: docs-site/package-lock.json
+
+- run: cd docs-site && npm ci
+- run: cd docs-site && npm run build
+
+- uses: actions/deploy-pages@v2
+with:
+folder: docs-site/docs/.vitepress/dist
 ```
 
 ### Documentation Versioning
@@ -217,20 +217,20 @@ jobs:
 ```javascript
 // docs-site/docs/.vitepress/config.mts
 export default defineConfig({
-  title: 'M2JS',
-  description: 'Transform code into AI-ready documentation',
-  base: '/m2js/',
-  
-  themeConfig: {
-    nav: [
-      { text: 'Guide', link: '/guide/getting-started' },
-      { text: 'v1.1.0', items: [
-        { text: 'v1.1.0 (Latest)', link: '/guide/getting-started' },
-        { text: 'v1.0.1', link: '/v1.0.1/guide/getting-started' },
-        { text: 'Changelog', link: '/changelog' }
-      ]}
-    ]
-  }
+title: 'M2JS',
+description: 'Transform code into AI-ready documentation',
+base: '/m2js/',
+
+themeConfig: {
+nav: [
+{ text: 'Guide', link: '/guide/getting-started' },
+{ text: 'v1.1.0', items: [
+{ text: 'v1.1.0 (Latest)', link: '/guide/getting-started' },
+{ text: 'v1.0.1', link: '/v1.0.1/guide/getting-started' },
+{ text: 'Changelog', link: '/changelog' }
+]}
+]
+}
 });
 ```
 
@@ -244,85 +244,85 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16, 18, 20]
-    
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: npm
-      
-      - run: npm ci
-      - run: npm run validate
-      - run: npm run build
-      - run: npm run test:coverage
-      
-      - uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+test:
+runs-on: ubuntu-latest
+strategy:
+matrix:
+node-version: [16, 18, 20]
+
+steps:
+- uses: actions/checkout@v3
+- uses: actions/setup-node@v3
+with:
+node-version: ${{ matrix.node-version }}
+cache: npm
+
+- run: npm ci
+- run: npm run validate
+- run: npm run build
+- run: npm run test:coverage
+
+- uses: codecov/codecov-action@v3
+with:
+token: ${{ secrets.CODECOV_TOKEN }}
 ```
 
 **2. Release Automation** (`.github/workflows/release.yml`)
 ```yaml
 name: Release
 on:
-  push:
-    tags: ['v*']
+push:
+tags: ['v*']
 
 jobs:
-  release:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          registry-url: https://registry.npmjs.org
-      
-      - run: npm ci
-      - run: npm run validate
-      - run: npm run build
-      - run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      
-      - uses: actions/create-release@v1
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: M2JS ${{ github.ref }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+release:
+runs-on: ubuntu-latest
+steps:
+- uses: actions/checkout@v3
+- uses: actions/setup-node@v3
+with:
+node-version: 18
+registry-url: https://registry.npmjs.org
+
+- run: npm ci
+- run: npm run validate
+- run: npm run build
+- run: npm publish
+env:
+NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+- uses: actions/create-release@v1
+with:
+tag_name: ${{ github.ref }}
+release_name: M2JS ${{ github.ref }}
+env:
+GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 **3. Documentation Deploy** (`.github/workflows/docs.yml`)
 ```yaml
 name: Deploy Docs
 on:
-  push:
-    branches: [main]
-    paths: ['docs-site/**']
+push:
+branches: [main]
+paths: ['docs-site/**']
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-      - run: cd docs-site && npm ci && npm run build
-      - uses: actions/configure-pages@v3
-      - uses: actions/upload-pages-artifact@v2
-        with:
-          path: docs-site/docs/.vitepress/dist
-      - uses: actions/deploy-pages@v2
+deploy:
+runs-on: ubuntu-latest
+permissions:
+pages: write
+id-token: write
+
+steps:
+- uses: actions/checkout@v3
+- uses: actions/setup-node@v3
+- run: cd docs-site && npm ci && npm run build
+- uses: actions/configure-pages@v3
+- uses: actions/upload-pages-artifact@v2
+with:
+path: docs-site/docs/.vitepress/dist
+- uses: actions/deploy-pages@v2
 ```
 
 ## Quality Gates
@@ -337,7 +337,7 @@ npm run type-check
 npm test
 ```
 
-**Pre-push Hooks** (`.husky/pre-push`)  
+**Pre-push Hooks** (`.husky/pre-push`) 
 ```bash
 #!/usr/bin/env sh
 npm run validate
@@ -385,18 +385,18 @@ npm view @paulohenriquevn/m2js dependencies
 // Google Analytics 4 integration
 // docs-site/docs/.vitepress/config.mts
 export default defineConfig({
-  head: [
-    ['script', { 
-      async: true, 
-      src: 'https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX' 
-    }],
-    ['script', {}, `
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-XXXXXXXXXX');
-    `]
-  ]
+head: [
+['script', { 
+async: true, 
+src: 'https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX' 
+}],
+['script', {}, `
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-XXXXXXXXXX');
+`]
+]
 });
 ```
 
@@ -409,7 +409,7 @@ export default defineConfig({
 npm deprecate @paulohenriquevn/m2js@1.1.0 "Critical bug - use 1.0.1 instead"
 
 # Publish hotfix
-npm version patch  # 1.1.0 → 1.1.1
+npm version patch # 1.1.0 → 1.1.1
 npm publish
 
 # Update latest tag if needed
@@ -440,25 +440,25 @@ git push --force-with-lease --tags
 ## [1.1.0] - 2024-01-15
 
 ### Added
-- 🎯 New dependency graph visualization with Mermaid diagrams
-- 🔧 Enhanced CLI with progress reporting and colored output
-- 📊 Performance metrics and token reduction statistics
+- New dependency graph visualization with Mermaid diagrams
+- Enhanced CLI with progress reporting and colored output
+- Performance metrics and token reduction statistics
 
 ### Fixed
-- 🐛 Fixed parsing of arrow functions in class properties
-- 🔧 Improved error messages for unsupported file types
-- ⚡ Optimized memory usage for large files (50% reduction)
+- Fixed parsing of arrow functions in class properties
+- Improved error messages for unsupported file types
+- Optimized memory usage for large files (50% reduction)
 
 ### Changed
-- 📝 Updated documentation with comprehensive examples
-- 🏗️ Refactored parser engine for better maintainability
-- 🎨 Enhanced Markdown output formatting
+- Updated documentation with comprehensive examples
+- Refactored parser engine for better maintainability
+- Enhanced Markdown output formatting
 
 ### Deprecated
-- ⚠️ Legacy --simple flag (use --no-comments instead)
+- Legacy --simple flag (use --no-comments instead)
 
 ### Security
-- 🔒 Updated dependencies to fix vulnerability CVE-2024-XXXX
+- Updated dependencies to fix vulnerability CVE-2024-XXXX
 ```
 
 ### Release Announcements

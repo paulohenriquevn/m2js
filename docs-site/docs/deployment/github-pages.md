@@ -1,4 +1,4 @@
-# 🚀 GitHub Pages Deployment
+# GitHub Pages Deployment
 
 Complete guide for deploying M2JS documentation to GitHub Pages using VitePress.
 
@@ -21,12 +21,12 @@ M2JS documentation is built with VitePress and deployed automatically to GitHub 
 
 ```
 docs-site/
-├── .github/workflows/deploy-docs.yml  # GitHub Actions workflow
-├── docs/                              # Documentation content
-├── package.json                       # VitePress dependencies
-└── .vitepress/
-    ├── config.mts                     # VitePress configuration
-    └── theme/                         # Custom theme files
+.github/workflows/deploy-docs.yml # GitHub Actions workflow
+docs/ # Documentation content
+package.json # VitePress dependencies
+.vitepress/
+config.mts # VitePress configuration
+theme/ # Custom theme files
 ```
 
 ## GitHub Actions Workflow
@@ -39,85 +39,85 @@ Create `.github/workflows/deploy-docs.yml`:
 name: Deploy M2JS Documentation
 
 on:
-  # Trigger on pushes to main branch
-  push:
-    branches: [main]
-    paths: ['docs-site/**']
-  
-  # Allow manual deployment
-  workflow_dispatch:
+# Trigger on pushes to main branch
+push:
+branches: [main]
+paths: ['docs-site/**']
+
+# Allow manual deployment
+workflow_dispatch:
 
 # Set permissions for GitHub Pages deployment
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+contents: read
+pages: write
+id-token: write
 
 # Ensure only one deployment runs at a time
 concurrency:
-  group: pages
-  cancel-in-progress: false
+group: pages
+cancel-in-progress: false
 
 jobs:
-  build:
-    name: Build Documentation
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Full history for VitePress lastUpdated
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: npm
-          cache-dependency-path: docs-site/package-lock.json
-      
-      - name: Install Dependencies
-        run: |
-          cd docs-site
-          npm ci
-      
-      - name: Build Documentation
-        run: |
-          cd docs-site
-          npm run build
-        env:
-          # Set base URL for GitHub Pages
-          NODE_ENV: production
-      
-      - name: Upload Build Artifacts
-        uses: actions/upload-pages-artifact@v2
-        with:
-          path: docs-site/docs/.vitepress/dist
+build:
+name: Build Documentation
+runs-on: ubuntu-latest
 
-  deploy:
-    name: Deploy to GitHub Pages
-    needs: build
-    runs-on: ubuntu-latest
-    
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2
+steps:
+- name: Checkout Repository
+uses: actions/checkout@v4
+with:
+fetch-depth: 0 # Full history for VitePress lastUpdated
+
+- name: Setup Node.js
+uses: actions/setup-node@v3
+with:
+node-version: 18
+cache: npm
+cache-dependency-path: docs-site/package-lock.json
+
+- name: Install Dependencies
+run: |
+cd docs-site
+npm ci
+
+- name: Build Documentation
+run: |
+cd docs-site
+npm run build
+env:
+# Set base URL for GitHub Pages
+NODE_ENV: production
+
+- name: Upload Build Artifacts
+uses: actions/upload-pages-artifact@v2
+with:
+path: docs-site/docs/.vitepress/dist
+
+deploy:
+name: Deploy to GitHub Pages
+needs: build
+runs-on: ubuntu-latest
+
+environment:
+name: github-pages
+url: ${{ steps.deployment.outputs.page_url }}
+
+steps:
+- name: Deploy to GitHub Pages
+id: deployment
+uses: actions/deploy-pages@v2
 ```
 
 ### Workflow Features
 
-- ✅ **Automatic deployment** on pushes to main branch
-- ✅ **Manual deployment** via workflow_dispatch
-- ✅ **Path filtering** - only runs when docs-site/ changes
-- ✅ **Concurrency control** - prevents conflicting deployments
-- ✅ **Full git history** for VitePress lastUpdated timestamps
-- ✅ **Node.js caching** for faster builds
-- ✅ **Production optimization** with NODE_ENV
+- **Automatic deployment** on pushes to main branch
+- **Manual deployment** via workflow_dispatch
+- **Path filtering** - only runs when docs-site/ changes
+- **Concurrency control** - prevents conflicting deployments
+- **Full git history** for VitePress lastUpdated timestamps
+- **Node.js caching** for faster builds
+- **Production optimization** with NODE_ENV
 
 ## VitePress Configuration
 
@@ -129,118 +129,118 @@ Update `docs-site/docs/.vitepress/config.mts`:
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
-  title: 'M2JS Documentation',
-  description: 'Transform TypeScript/JavaScript into AI-ready Markdown',
-  
-  // GitHub Pages configuration
-  base: '/m2js/',  // Repository name
-  
-  // Build configuration
-  outDir: '../dist',
-  cacheDir: '../.vitepress/cache',
-  
-  // GitHub Pages optimizations
-  cleanUrls: true,
-  metaChunk: true,
-  
-  head: [
-    // Favicon
-    ['link', { rel: 'icon', href: '/m2js/favicon.ico' }],
-    
-    // Meta tags for SEO
-    ['meta', { name: 'theme-color', content: '#646cff' }],
-    ['meta', { name: 'og:type', content: 'website' }],
-    ['meta', { name: 'og:locale', content: 'en' }],
-    ['meta', { name: 'og:site_name', content: 'M2JS Documentation' }],
-    ['meta', { name: 'og:image', content: '/m2js/og-image.png' }],
-  ],
-  
-  themeConfig: {
-    // GitHub integration
-    editLink: {
-      pattern: 'https://github.com/paulohenriquevn/m2js/edit/main/docs-site/docs/:path',
-      text: 'Edit this page on GitHub'
-    },
-    
-    socialLinks: [
-      { icon: 'github', link: 'https://github.com/paulohenriquevn/m2js' },
-      { icon: 'npm', link: 'https://www.npmjs.com/package/@paulohenriquevn/m2js' }
-    ],
-    
-    // Footer
-    footer: {
-      message: 'Released under the MIT License.',
-      copyright: 'Copyright © 2024 Paulo Henrique'
-    },
-    
-    // Search
-    search: {
-      provider: 'local'
-    },
-    
-    // Navigation
-    nav: [
-      { text: 'Guide', link: '/guide/quick-start' },
-      { text: 'Reference', link: '/reference/cli' },
-      { text: 'Architecture', link: '/architecture/overview' },
-      { 
-        text: 'v1.0.1', 
-        items: [
-          { text: 'Changelog', link: '/changelog' },
-          { text: 'Migration Guide', link: '/migration' }
-        ]
-      }
-    ],
-    
-    sidebar: {
-      '/guide/': [
-        {
-          text: 'Getting Started',
-          items: [
-            { text: 'Quick Start', link: '/guide/quick-start' },
-            { text: 'Best Practices', link: '/guide/best-practices' },
-            { text: 'Configuration', link: '/guide/configuration' }
-          ]
-        }
-      ],
-      '/reference/': [
-        {
-          text: 'Reference',
-          items: [
-            { text: 'CLI Commands', link: '/reference/cli' },
-            { text: 'AI Analyzers', link: '/reference/ai-analyzers' }
-          ]
-        }
-      ],
-      '/architecture/': [
-        {
-          text: 'Architecture',
-          items: [
-            { text: 'Overview', link: '/architecture/overview' },
-            { text: 'Contributing', link: '/architecture/contributing' },
-            { text: 'Deployment', link: '/architecture/deployment' }
-          ]
-        }
-      ],
-      '/extension/': [
-        {
-          text: 'VS Code Extension',
-          items: [
-            { text: 'Overview', link: '/extension/overview' }
-          ]
-        }
-      ]
-    }
-  },
-  
-  // Markdown configuration
-  markdown: {
-    theme: 'github-dark',
-    lineNumbers: true
-  },
-  
-  // Last updated timestamps
-  lastUpdated: true
+title: 'M2JS Documentation',
+description: 'Transform TypeScript/JavaScript into AI-ready Markdown',
+
+// GitHub Pages configuration
+base: '/m2js/', // Repository name
+
+// Build configuration
+outDir: '../dist',
+cacheDir: '../.vitepress/cache',
+
+// GitHub Pages optimizations
+cleanUrls: true,
+metaChunk: true,
+
+head: [
+// Favicon
+['link', { rel: 'icon', href: '/m2js/favicon.ico' }],
+
+// Meta tags for SEO
+['meta', { name: 'theme-color', content: '#646cff' }],
+['meta', { name: 'og:type', content: 'website' }],
+['meta', { name: 'og:locale', content: 'en' }],
+['meta', { name: 'og:site_name', content: 'M2JS Documentation' }],
+['meta', { name: 'og:image', content: '/m2js/og-image.png' }],
+],
+
+themeConfig: {
+// GitHub integration
+editLink: {
+pattern: 'https://github.com/paulohenriquevn/m2js/edit/main/docs-site/docs/:path',
+text: 'Edit this page on GitHub'
+},
+
+socialLinks: [
+{ icon: 'github', link: 'https://github.com/paulohenriquevn/m2js' },
+{ icon: 'npm', link: 'https://www.npmjs.com/package/@paulohenriquevn/m2js' }
+],
+
+// Footer
+footer: {
+message: 'Released under the MIT License.',
+copyright: 'Copyright © 2024 Paulo Henrique'
+},
+
+// Search
+search: {
+provider: 'local'
+},
+
+// Navigation
+nav: [
+{ text: 'Guide', link: '/guide/quick-start' },
+{ text: 'Reference', link: '/reference/cli' },
+{ text: 'Architecture', link: '/architecture/overview' },
+{ 
+text: 'v1.0.1', 
+items: [
+{ text: 'Changelog', link: '/changelog' },
+{ text: 'Migration Guide', link: '/migration' }
+]
+}
+],
+
+sidebar: {
+'/guide/': [
+{
+text: 'Getting Started',
+items: [
+{ text: 'Quick Start', link: '/guide/quick-start' },
+{ text: 'Best Practices', link: '/guide/best-practices' },
+{ text: 'Configuration', link: '/guide/configuration' }
+]
+}
+],
+'/reference/': [
+{
+text: 'Reference',
+items: [
+{ text: 'CLI Commands', link: '/reference/cli' },
+{ text: 'AI Analyzers', link: '/reference/ai-analyzers' }
+]
+}
+],
+'/architecture/': [
+{
+text: 'Architecture',
+items: [
+{ text: 'Overview', link: '/architecture/overview' },
+{ text: 'Contributing', link: '/architecture/contributing' },
+{ text: 'Deployment', link: '/architecture/deployment' }
+]
+}
+],
+'/extension/': [
+{
+text: 'VS Code Extension',
+items: [
+{ text: 'Overview', link: '/extension/overview' }
+]
+}
+]
+}
+},
+
+// Markdown configuration
+markdown: {
+theme: 'github-dark',
+lineNumbers: true
+},
+
+// Last updated timestamps
+lastUpdated: true
 })
 ```
 
@@ -250,18 +250,18 @@ export default defineConfig({
 
 ```json
 {
-  "name": "m2js-docs",
-  "private": true,
-  "scripts": {
-    "dev": "vitepress dev docs",
-    "build": "vitepress build docs",
-    "preview": "vitepress preview docs",
-    "deploy": "npm run build && gh-pages -d docs/.vitepress/dist"
-  },
-  "devDependencies": {
-    "vitepress": "^1.0.0",
-    "gh-pages": "^6.0.0"
-  }
+"name": "m2js-docs",
+"private": true,
+"scripts": {
+"dev": "vitepress dev docs",
+"build": "vitepress build docs",
+"preview": "vitepress preview docs",
+"deploy": "npm run build && gh-pages -d docs/.vitepress/dist"
+},
+"devDependencies": {
+"vitepress": "^1.0.0",
+"gh-pages": "^6.0.0"
+}
 }
 ```
 
@@ -284,26 +284,26 @@ npm run preview
 ### Enable GitHub Pages
 
 1. **Go to Repository Settings**
-   ```
-   https://github.com/paulohenriquevn/m2js/settings
-   ```
+```
+https://github.com/paulohenriquevn/m2js/settings
+```
 
 2. **Navigate to Pages Section**
-   ```
-   Settings → Pages
-   ```
+```
+Settings → Pages
+```
 
 3. **Configure Source**
-   ```
-   Source: GitHub Actions
-   ✅ Enforce HTTPS
-   ```
+```
+Source: GitHub Actions
+Enforce HTTPS
+```
 
 4. **Custom Domain (Optional)**
-   ```
-   Custom domain: docs.m2js.dev
-   ✅ Enforce HTTPS
-   ```
+```
+Custom domain: docs.m2js.dev
+Enforce HTTPS
+```
 
 ### Environment Protection
 
@@ -359,23 +359,23 @@ npm run deploy
 ### Configure Custom Domain
 
 1. **Add CNAME file**
-   ```bash
-   # docs-site/docs/public/CNAME
-   docs.m2js.dev
-   ```
+```bash
+# docs-site/docs/public/CNAME
+docs.m2js.dev
+```
 
 2. **DNS Configuration**
-   ```
-   Type: CNAME
-   Name: docs
-   Value: paulohenriquevn.github.io
-   ```
+```
+Type: CNAME
+Name: docs
+Value: paulohenriquevn.github.io
+```
 
 3. **GitHub Pages Settings**
-   ```
-   Custom domain: docs.m2js.dev
-   ✅ Enforce HTTPS
-   ```
+```
+Custom domain: docs.m2js.dev
+Enforce HTTPS
+```
 
 ### SSL Certificate
 
@@ -451,13 +451,13 @@ Solution: Verify base URL configuration in VitePress config
 ```typescript
 // config.mts - Enable debug mode
 export default defineConfig({
-  // Add debug configuration
-  vite: {
-    logLevel: 'info',
-    build: {
-      sourcemap: true
-    }
-  }
+// Add debug configuration
+vite: {
+logLevel: 'info',
+build: {
+sourcemap: true
+}
+}
 })
 ```
 
@@ -466,12 +466,12 @@ export default defineConfig({
 ```yaml
 # Enable debug logging in workflow
 - name: Build Documentation
-  run: |
-    cd docs-site
-    npm run build
-  env:
-    NODE_ENV: production
-    DEBUG: vitepress:*
+run: |
+cd docs-site
+npm run build
+env:
+NODE_ENV: production
+DEBUG: vitepress:*
 ```
 
 ## Security Considerations
@@ -481,9 +481,9 @@ export default defineConfig({
 ```yaml
 # Minimal required permissions
 permissions:
-  contents: read    # Read repository content
-  pages: write      # Write to GitHub Pages
-  id-token: write   # OIDC token for deployment
+contents: read # Read repository content
+pages: write # Write to GitHub Pages
+id-token: write # OIDC token for deployment
 ```
 
 ### Environment Variables
@@ -499,8 +499,8 @@ permissions:
 ```typescript
 // config.mts - Security headers
 head: [
-  ['meta', { 'http-equiv': 'Content-Security-Policy', content: "default-src 'self'" }],
-  ['meta', { name: 'robots', content: 'index,follow' }]
+['meta', { 'http-equiv': 'Content-Security-Policy', content: "default-src 'self'" }],
+['meta', { name: 'robots', content: 'index,follow' }]
 ]
 ```
 
@@ -511,23 +511,23 @@ head: [
 ```typescript
 // config.mts - Performance settings
 export default defineConfig({
-  cleanUrls: true,         // Clean URLs for better SEO
-  metaChunk: true,         // Extract meta info to separate chunk
-  mpa: false,              # SPA mode for better performance
-  
-  vite: {
-    build: {
-      minify: 'terser',    // Better minification
-      rollupOptions: {
-        output: {
-          manualChunks: {
-            // Code splitting for faster loading
-            'group-user': ['./src/user']
-          }
-        }
-      }
-    }
-  }
+cleanUrls: true, // Clean URLs for better SEO
+metaChunk: true, // Extract meta info to separate chunk
+mpa: false, # SPA mode for better performance
+
+vite: {
+build: {
+minify: 'terser', // Better minification
+rollupOptions: {
+output: {
+manualChunks: {
+// Code splitting for faster loading
+'group-user': ['./src/user']
+}
+}
+}
+}
+}
 })
 ```
 
@@ -536,12 +536,12 @@ export default defineConfig({
 ```yaml
 # GitHub Actions caching
 - name: Cache Node Modules
-  uses: actions/cache@v3
-  with:
-    path: docs-site/node_modules
-    key: ${{ runner.os }}-node-${{ hashFiles('docs-site/package-lock.json') }}
-    restore-keys: |
-      ${{ runner.os }}-node-
+uses: actions/cache@v3
+with:
+path: docs-site/node_modules
+key: ${{ runner.os }}-node-${{ hashFiles('docs-site/package-lock.json') }}
+restore-keys: |
+${{ runner.os }}-node-
 ```
 
 ## Maintenance
@@ -572,13 +572,13 @@ npm update
 ```typescript
 // config.mts - Add Google Analytics
 head: [
-  ['script', { async: true, src: 'https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID' }],
-  ['script', {}, `
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'GA_MEASUREMENT_ID');
-  `]
+['script', { async: true, src: 'https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID' }],
+['script', {}, `
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'GA_MEASUREMENT_ID');
+`]
 ]
 ```
 

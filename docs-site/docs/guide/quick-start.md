@@ -1,4 +1,4 @@
-# 🚀 Quick Start Guide
+# Quick Start Guide
 
 Get M2JS running in under 5 minutes and start transforming your code into AI-ready documentation.
 
@@ -23,9 +23,9 @@ npm install --save-dev @paulohenriquevn/m2js
 
 # Add to package.json scripts
 {
-  "scripts": {
-    "docs:ai": "m2js src/ --batch --output docs/ai/"
-  }
+"scripts": {
+"docs:ai": "m2js src/ --batch --output docs/ai/"
+}
 }
 ```
 
@@ -70,26 +70,26 @@ Let's transform a sample TypeScript file:
 ```typescript
 // src/Calculator.ts
 export class Calculator {
-  /**
-   * Adds two numbers together
-   * @param a First number
-   * @param b Second number
-   * @returns Sum of a and b
-   */
-  add(a: number, b: number): number {
-    return a + b;
-  }
+/**
+* Adds two numbers together
+* @param a First number
+* @param b Second number
+* @returns Sum of a and b
+*/
+add(a: number, b: number): number {
+return a + b;
+}
 
-  /**
-   * Multiplies two numbers
-   */
-  multiply(a: number, b: number): number {
-    return a * b;
-  }
+/**
+* Multiplies two numbers
+*/
+multiply(a: number, b: number): number {
+return a * b;
+}
 }
 
 export function createCalculator(): Calculator {
-  return new Calculator();
+return new Calculator();
 }
 ```
 
@@ -102,22 +102,22 @@ m2js src/Calculator.ts
 **Output** (`Calculator.md`):
 
 ```markdown
-# 📝 Calculator.ts
+# Calculator.ts
 
-## 🔧 Functions
+## Functions
 
 ### createCalculator
 ```typescript
 export function createCalculator(): Calculator
 ```
 
-## 🏗️ Classes
+## Classes
 
 ### Calculator
 ```typescript
 export class Calculator {
-  add(a: number, b: number): number
-  multiply(a: number, b: number): number
+add(a: number, b: number): number
+multiply(a: number, b: number): number
 }
 ```
 
@@ -220,10 +220,10 @@ find src/ -name "*.ts" | parallel m2js {}
 
 ## Next Steps
 
-- 📖 [**Configuration Guide**](/guide/configuration) - Customize M2JS behavior
-- 🎯 [**Best Practices**](/guide/best-practices) - Maximize effectiveness  
-- 🔧 [**VS Code Extension**](/extension/overview) - IDE integration
-- 📋 [**CLI Reference**](/reference/cli) - Complete command list
+- [**Configuration Guide**](/guide/configuration) - Customize M2JS behavior
+- [**Best Practices**](/guide/best-practices) - Maximize effectiveness 
+- [**VS Code Extension**](/extension/overview) - IDE integration
+- [**CLI Reference**](/reference/cli) - Complete command list
 
 ## Troubleshooting
 
@@ -254,6 +254,6 @@ npx @paulohenriquevn/m2js src/MyFile.ts
 
 ### Getting Help
 
-- 📖 [Full documentation](/guide/getting-started)
-- 🐛 [Report issues](https://github.com/paulohenriquevn/m2js/issues)
-- 💬 [Join discussions](https://github.com/paulohenriquevn/m2js/discussions)
+- [Full documentation](/guide/getting-started)
+- [Report issues](https://github.com/paulohenriquevn/m2js/issues)
+- [Join discussions](https://github.com/paulohenriquevn/m2js/discussions)

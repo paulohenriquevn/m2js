@@ -60,14 +60,14 @@ Complete configuration reference for the M2JS VS Code extension.
 
 ```json
 {
-  "m2js.enableAutoAnalysis": false,
-  "m2js.defaultOutputFormat": "ai-enhanced",
-  "m2js.outputDirectory": "docs/generated",
-  "m2js.autoOpenResults": true,
-  "m2js.enableBusinessContext": true,
-  "m2js.enableArchitectureInsights": true,
-  "m2js.tokenOptimization": "balanced",
-  "m2js.webview.theme": "auto",
-  "m2js.webview.fontSize": "14px"
+"m2js.enableAutoAnalysis": false,
+"m2js.defaultOutputFormat": "ai-enhanced",
+"m2js.outputDirectory": "docs/generated",
+"m2js.autoOpenResults": true,
+"m2js.enableBusinessContext": true,
+"m2js.enableArchitectureInsights": true,
+"m2js.tokenOptimization": "balanced",
+"m2js.webview.theme": "auto",
+"m2js.webview.fontSize": "14px"
 }
 ```

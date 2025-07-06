@@ -18,7 +18,7 @@ m2js EcommerceService.ts --business-context
 
 **Detected Domains:**
 - **E-commerce** (Product, Order, Cart, Payment)
-- **Blog** (Post, Author, Comment, Category)  
+- **Blog** (Post, Author, Comment, Category) 
 - **API** (Controller, Service, Repository)
 - **Authentication** (User, Auth, Token, Session)
 
@@ -38,14 +38,14 @@ M2JS recognizes common design patterns:
 ```typescript
 // Detected: Repository Pattern
 export class UserRepository {
-  async findById(id: string): Promise<User> {}
-  async save(user: User): Promise<void> {}
+async findById(id: string): Promise<User> {}
+async save(user: User): Promise<void> {}
 }
 
-// Detected: Service Layer Pattern  
+// Detected: Service Layer Pattern 
 export class UserService {
-  constructor(private userRepo: UserRepository) {}
-  async createUser(data: CreateUserData): Promise<User> {}
+constructor(private userRepo: UserRepository) {}
+async createUser(data: CreateUserData): Promise<User> {}
 }
 ```
 
@@ -64,9 +64,9 @@ Identifies architectural layers:
 Maps business entity relationships:
 
 ```markdown
-## 🔗 Entity Relationships
+## Entity Relationships
 - **User** → *has many* → **Orders**
-- **Order** → *contains* → **Products**  
+- **Order** → *contains* → **Products** 
 - **User** → *authenticates via* → **AuthService**
 ```
 
@@ -75,7 +75,7 @@ Maps business entity relationships:
 Identifies business workflows:
 
 ```markdown
-## 🔄 Business Workflows
+## Business Workflows
 1. **User Registration**: validation → creation → email verification
 2. **Order Processing**: cart → payment → fulfillment → notification
 3. **Authentication**: login → token generation → session management
@@ -91,7 +91,7 @@ Choose the right level for your use case:
 # Minimal (90% reduction)
 m2js file.ts --token-optimization minimal
 
-# Balanced (70% reduction) - Recommended  
+# Balanced (70% reduction) - Recommended 
 m2js file.ts --token-optimization balanced
 
 # Detailed (50% reduction)
@@ -104,7 +104,7 @@ M2JS intelligently chooses what to include:
 
 **Always Included:**
 - Public interfaces and types
-- Exported function signatures  
+- Exported function signatures 
 - Business rules from JSDoc
 - Error types and handling
 
@@ -121,9 +121,9 @@ M2JS intelligently chooses what to include:
 # UserService.ts
 
 export class UserService {
-  async createUser(data: any): Promise<any> {
-    // 50 lines of implementation
-  }
+async createUser(data: any): Promise<any> {
+// 50 lines of implementation
+}
 }
 ```
 
@@ -136,25 +136,25 @@ export class UserService {
 ### After AI Enhancement
 
 ```markdown
-# 📝 UserService.ts
+# UserService.ts
 
-## 🧠 Business Context
+## Business Context
 **Domain**: User Management (95% confidence)
 **Patterns**: Service Layer, Validation Pattern
 **Framework**: Express + TypeScript + JWT
 
-## 🏗️ Architecture Insights  
+## Architecture Insights 
 **Layer**: Service Layer
 **Responsibility**: User lifecycle management with validation
 **Dependencies**: UserRepository, EmailService, AuthService
 **Security**: Input validation, JWT token generation
 
-## 🔗 Entity Relationships
+## Entity Relationships
 - **User** → *managed by* → **UserService**
 - **UserService** → *depends on* → **UserRepository**
 - **UserService** → *uses* → **EmailService** for notifications
 
-## 🔧 Functions
+## Functions
 
 ### createUser
 ```typescript
@@ -182,11 +182,11 @@ Enable AI features in your config:
 
 ```json
 {
-  "aiEnhanced": true,
-  "businessContext": true,
-  "architectureInsights": true,
-  "semanticAnalysis": true,
-  "confidenceThreshold": 80
+"aiEnhanced": true,
+"businessContext": true,
+"architectureInsights": true,
+"semanticAnalysis": true,
+"confidenceThreshold": 80
 }
 ```
 

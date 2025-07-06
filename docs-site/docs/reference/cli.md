@@ -1,4 +1,4 @@
-# 📋 CLI Reference
+# CLI Reference
 
 Complete command-line reference for M2JS.
 
@@ -31,13 +31,13 @@ m2js src/ --batch
 
 | Option | Status | Description |
 |--------|--------|-------------|
-| `--graph` | ✅ Available | Generate dependency analysis |
-| `--mermaid` | ✅ Available | Include Mermaid diagrams |
-| `--usage-examples` | ⚠️ Disabled | Extract usage patterns |
-| `--business-context` | ⚠️ Disabled | Analyze business domain |
-| `--architecture-insights` | ⚠️ Disabled | Analyze architecture |
-| `--semantic-analysis` | ⚠️ Disabled | Analyze relationships |
-| `--ai-enhanced` | ⚠️ Disabled | Enable all AI features |
+| `--graph` | Available | Generate dependency analysis |
+| `--mermaid` | Available | Include Mermaid diagrams |
+| `--usage-examples` | Disabled | Extract usage patterns |
+| `--business-context` | Disabled | Analyze business domain |
+| `--architecture-insights` | Disabled | Analyze architecture |
+| `--semantic-analysis` | Disabled | Analyze relationships |
+| `--ai-enhanced` | Disabled | Enable all AI features |
 
 ## Examples
 
@@ -135,10 +135,10 @@ m2js src/ --graph --mermaid --output docs/architecture.md
 
 ```json
 {
-  "scripts": {
-    "docs:ai": "m2js src/ --batch",
-    "docs:review": "git diff --name-only HEAD~1 | grep -E '\\.(ts|js)$' | xargs m2js"
-  }
+"scripts": {
+"docs:ai": "m2js src/ --batch",
+"docs:review": "git diff --name-only HEAD~1 | grep -E '\\.(ts|js)$' | xargs m2js"
+}
 }
 ```
 

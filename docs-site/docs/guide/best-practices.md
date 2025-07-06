@@ -1,4 +1,4 @@
-# 🎯 Best Practices
+# Best Practices
 
 Maximize M2JS effectiveness and get the most value from your AI-ready documentation.
 
@@ -6,28 +6,28 @@ Maximize M2JS effectiveness and get the most value from your AI-ready documentat
 
 ### Export Strategy
 
-**✅ Do:**
+** Do:**
 ```typescript
 // Clear, descriptive exports
 export class UserAuthenticationService {
-  async authenticateUser(credentials: LoginCredentials): Promise<AuthResult> {
-    // Implementation
-  }
+async authenticateUser(credentials: LoginCredentials): Promise<AuthResult> {
+// Implementation
+}
 }
 
 export interface LoginCredentials {
-  email: string;
-  password: string;
+email: string;
+password: string;
 }
 
 export type AuthResult = {
-  success: boolean;
-  user?: User;
-  token?: string;
+success: boolean;
+user?: User;
+token?: string;
 };
 ```
 
-**❌ Avoid:**
+** Avoid:**
 ```typescript
 // Unclear internal functions
 function helper() { } // Won't be extracted
@@ -40,43 +40,43 @@ export default function() { }; // Anonymous default
 
 ### JSDoc Best Practices
 
-**✅ Comprehensive Documentation:**
+** Comprehensive Documentation:**
 ```typescript
 /**
- * Processes user payment with fraud detection and validation
- * 
- * @param payment - Payment details including amount and method
- * @param user - User making the payment for fraud detection
- * @returns Promise resolving to payment result with transaction ID
- * 
- * @throws {PaymentValidationError} When payment data is invalid
- * @throws {FraudDetectionError} When suspicious activity detected
- * @throws {InsufficientFundsError} When user has insufficient balance
- * 
- * @example
- * ```typescript
- * const result = await processPayment(
- *   { amount: 99.99, method: 'credit_card' },
- *   { id: '123', email: 'user@example.com' }
- * );
- * console.log(result.transactionId);
- * ```
- */
+* Processes user payment with fraud detection and validation
+* 
+* @param payment - Payment details including amount and method
+* @param user - User making the payment for fraud detection
+* @returns Promise resolving to payment result with transaction ID
+* 
+* @throws {PaymentValidationError} When payment data is invalid
+* @throws {FraudDetectionError} When suspicious activity detected
+* @throws {InsufficientFundsError} When user has insufficient balance
+* 
+* @example
+* ```typescript
+* const result = await processPayment(
+* { amount: 99.99, method: 'credit_card' },
+* { id: '123', email: 'user@example.com' }
+* );
+* console.log(result.transactionId);
+* ```
+*/
 export async function processPayment(
-  payment: PaymentRequest,
-  user: User
+payment: PaymentRequest,
+user: User
 ): Promise<PaymentResult> {
-  // Implementation
+// Implementation
 }
 ```
 
-**❌ Minimal Documentation:**
+** Minimal Documentation:**
 ```typescript
 /**
- * Process payment
- */
+* Process payment
+*/
 export function processPayment(data: any): any {
-  // Implementation
+// Implementation
 }
 ```
 
@@ -84,28 +84,28 @@ export function processPayment(data: any): any {
 
 ### Modular Structure
 
-**✅ Organized by Feature:**
+** Organized by Feature:**
 ```
 src/
-├── auth/
-│   ├── AuthService.ts       # Main service
-│   ├── AuthTypes.ts         # Types and interfaces
-│   └── AuthValidation.ts    # Validation utilities
-├── payment/
-│   ├── PaymentProcessor.ts
-│   ├── PaymentTypes.ts
-│   └── FraudDetection.ts
-└── user/
-    ├── UserService.ts
-    └── UserTypes.ts
+auth/
+AuthService.ts # Main service
+AuthTypes.ts # Types and interfaces
+AuthValidation.ts # Validation utilities
+payment/
+PaymentProcessor.ts
+PaymentTypes.ts
+FraudDetection.ts
+user/
+UserService.ts
+UserTypes.ts
 ```
 
-**❌ Monolithic Files:**
+** Monolithic Files:**
 ```
 src/
-├── everything.ts     # 2000+ lines
-├── utils.ts          # Mixed utilities
-└── types.ts          # All types together
+everything.ts # 2000+ lines
+utils.ts # Mixed utilities
+types.ts # All types together
 ```
 
 ### Batch Processing Strategy
@@ -117,7 +117,7 @@ m2js src/payment/ --batch --output docs/payment/
 m2js src/user/ --batch --output docs/user/
 
 # Avoid processing everything together
-# m2js src/ --batch  # Less organized output
+# m2js src/ --batch # Less organized output
 ```
 
 ## AI Integration Workflows
@@ -155,9 +155,9 @@ m2js src/UserService.ts --no-comments
 
 // Result shows clean interface:
 // class UserService {
-//   createUser(data: CreateUserData): Promise<User>
-//   updateUser(id: string, updates: Partial<User>): Promise<User>
-//   deleteUser(id: string): Promise<void>
+// createUser(data: CreateUserData): Promise<User>
+// updateUser(id: string, updates: Partial<User>): Promise<User>
+// deleteUser(id: string): Promise<void>
 // }
 ```
 
@@ -197,12 +197,12 @@ m2js src/index.ts src/app.ts --output docs/getting-started.md
 
 ### File Size Management
 
-**✅ Optimal File Sizes:**
+** Optimal File Sizes:**
 - **Functions**: 50-200 lines → Best M2JS output
 - **Classes**: 100-300 lines → Good extraction
 - **Modules**: < 500 lines → Manageable context
 
-**❌ Problematic Sizes:**
+** Problematic Sizes:**
 - **Giant files**: > 1000 lines → Consider splitting
 - **Tiny files**: < 20 lines → Consider combining
 
@@ -211,12 +211,12 @@ m2js src/index.ts src/app.ts --output docs/getting-started.md
 **1. Selective Processing:**
 ```bash
 # Process only what you need
-m2js src/services/UserService.ts  # Single important file
-m2js src/core/ --batch             # Core module only
+m2js src/services/UserService.ts # Single important file
+m2js src/core/ --batch # Core module only
 
 # Avoid unnecessary processing
-# m2js node_modules/ --batch       # Never do this
-# m2js dist/ --batch               # Skip compiled files
+# m2js node_modules/ --batch # Never do this
+# m2js dist/ --batch # Skip compiled files
 ```
 
 **2. Parallel Processing:**
@@ -232,65 +232,65 @@ ls src/ | parallel m2js src/{} --batch --output docs/{}/
 
 ### Type Annotations
 
-**✅ Explicit Types:**
+** Explicit Types:**
 ```typescript
 export interface UserPreferences {
-  theme: 'light' | 'dark' | 'auto';
-  notifications: {
-    email: boolean;
-    push: boolean;
-    frequency: 'immediate' | 'daily' | 'weekly';
-  };
-  privacy: {
-    profileVisibility: 'public' | 'friends' | 'private';
-    dataSharing: boolean;
-  };
+theme: 'light' | 'dark' | 'auto';
+notifications: {
+email: boolean;
+push: boolean;
+frequency: 'immediate' | 'daily' | 'weekly';
+};
+privacy: {
+profileVisibility: 'public' | 'friends' | 'private';
+dataSharing: boolean;
+};
 }
 
 export class UserService {
-  async updatePreferences(
-    userId: string,
-    preferences: Partial<UserPreferences>
-  ): Promise<UserPreferences> {
-    // Clear input/output types for AI understanding
-  }
+async updatePreferences(
+userId: string,
+preferences: Partial<UserPreferences>
+): Promise<UserPreferences> {
+// Clear input/output types for AI understanding
+}
 }
 ```
 
-**❌ Implicit Types:**
+** Implicit Types:**
 ```typescript
-export function updateUser(id, data) {  // AI can't understand intent
-  return doSomething(id, data);         // Unclear behavior
+export function updateUser(id, data) { // AI can't understand intent
+return doSomething(id, data); // Unclear behavior
 }
 ```
 
 ### Business Logic Documentation
 
-**✅ Business Rules in Comments:**
+** Business Rules in Comments:**
 ```typescript
 export class OrderService {
-  /**
-   * Processes order with business validation
-   * 
-   * Business Rules:
-   * - Orders over $500 require manager approval
-   * - International orders have 2-day processing delay
-   * - Subscription orders auto-renew unless cancelled
-   * - Promotional codes expire at midnight UTC
-   */
-  async processOrder(order: OrderRequest): Promise<OrderResult> {
-    // Implementation with clear business context
-  }
+/**
+* Processes order with business validation
+* 
+* Business Rules:
+* - Orders over $500 require manager approval
+* - International orders have 2-day processing delay
+* - Subscription orders auto-renew unless cancelled
+* - Promotional codes expire at midnight UTC
+*/
+async processOrder(order: OrderRequest): Promise<OrderResult> {
+// Implementation with clear business context
+}
 }
 ```
 
-**❌ Implementation-Only Comments:**
+** Implementation-Only Comments:**
 ```typescript
 export function processOrder(order: any) {
-  // Call database
-  // Validate input
-  // Send email
-  // Return result
+// Call database
+// Validate input
+// Send email
+// Return result
 }
 ```
 
@@ -302,28 +302,28 @@ export function processOrder(order: any) {
 # .github/workflows/docs.yml
 name: Generate AI Documentation
 on:
-  pull_request:
-    paths: ['src/**/*.ts', 'src/**/*.js']
+pull_request:
+paths: ['src/**/*.ts', 'src/**/*.js']
 
 jobs:
-  generate-docs:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-      - run: npm install -g @paulohenriquevn/m2js
-      
-      # Generate docs for changed files only
-      - run: |
-          git diff --name-only ${{ github.event.pull_request.base.sha }} | \
-          grep -E '\.(ts|js)$' | \
-          xargs m2js
-          
-      # Upload as PR artifact
-      - uses: actions/upload-artifact@v3
-        with:
-          name: ai-documentation
-          path: "*.md"
+generate-docs:
+runs-on: ubuntu-latest
+steps:
+- uses: actions/checkout@v3
+- uses: actions/setup-node@v3
+- run: npm install -g @paulohenriquevn/m2js
+
+# Generate docs for changed files only
+- run: |
+git diff --name-only ${{ github.event.pull_request.base.sha }} | \
+grep -E '\.(ts|js)$' | \
+xargs m2js
+
+# Upload as PR artifact
+- uses: actions/upload-artifact@v3
+with:
+name: ai-documentation
+path: "*.md"
 ```
 
 ### VS Code Integration
@@ -331,22 +331,22 @@ jobs:
 ```json
 // .vscode/tasks.json
 {
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "label": "Generate M2JS Documentation",
-      "type": "shell",
-      "command": "m2js",
-      "args": ["${file}"],
-      "group": "build",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "shared"
-      }
-    }
-  ]
+"version": "2.0.0",
+"tasks": [
+{
+"label": "Generate M2JS Documentation",
+"type": "shell",
+"command": "m2js",
+"args": ["${file}"],
+"group": "build",
+"presentation": {
+"echo": true,
+"reveal": "always",
+"focus": false,
+"panel": "shared"
+}
+}
+]
 }
 ```
 
@@ -372,21 +372,21 @@ find src/ -name "*Interface.ts" -o -name "*API.ts" | xargs m2js > interfaces.md
 
 ## Common Antipatterns
 
-### ❌ What NOT to do
+### What NOT to do
 
 **1. Processing Everything:**
 ```bash
 # Don't process unnecessary files
-m2js node_modules/ --batch     # External dependencies
-m2js dist/ --batch             # Compiled output
-m2js coverage/ --batch         # Test coverage
-m2js .git/ --batch             # Version control
+m2js node_modules/ --batch # External dependencies
+m2js dist/ --batch # Compiled output
+m2js coverage/ --batch # Test coverage
+m2js .git/ --batch # Version control
 ```
 
 **2. Ignoring Organization:**
 ```bash
 # Don't dump everything together
-m2js src/ --batch --output docs/everything.md  # Unorganized
+m2js src/ --batch --output docs/everything.md # Unorganized
 ```
 
 **3. Over-Processing:**
@@ -395,7 +395,7 @@ m2js src/ --batch --output docs/everything.md  # Unorganized
 # Set up smart workflows that only process changed files
 ```
 
-### ✅ Best Practices Summary
+### Best Practices Summary
 
 1. **Organize by feature** - Keep related files together
 2. **Write clear JSDoc** - Business rules and examples

@@ -8,29 +8,29 @@ Real-world examples of using M2JS for different scenarios.
 
 ```typescript
 export class Calculator {
-  add(a: number, b: number): number {
-    return a + b;
-  }
-  
-  multiply(a: number, b: number): number {
-    return a * b;
-  }
+add(a: number, b: number): number {
+return a + b;
+}
+
+multiply(a: number, b: number): number {
+return a * b;
+}
 }
 ```
 
 ### Output
 
 ```markdown
-# 📝 Calculator.ts
+# Calculator.ts
 
-## 🔧 Functions
+## Functions
 
 ### add
 ```typescript
 add(a: number, b: number): number
 ```
 
-### multiply  
+### multiply 
 ```typescript
 multiply(a: number, b: number): number
 ```
@@ -42,37 +42,37 @@ multiply(a: number, b: number): number
 
 ```typescript
 export interface User {
-  id: string;
-  email: string;
+id: string;
+email: string;
 }
 
 export class UserService {
-  async createUser(email: string): Promise<User> {
-    // Implementation
-  }
+async createUser(email: string): Promise<User> {
+// Implementation
+}
 }
 ```
 
 ### AI-Enhanced Output
 
 ```markdown
-# 📝 UserService.ts
+# UserService.ts
 
-## 🧠 Business Context
+## Business Context
 **Domain**: User Management (95% confidence)
 **Patterns**: Service Layer
 
-## 📋 Types
+## Types
 
 ### User
 ```typescript
 interface User {
-  id: string;
-  email: string;
+id: string;
+email: string;
 }
 ```
 
-## 🔧 Functions
+## Functions
 
 ### createUser
 ```typescript

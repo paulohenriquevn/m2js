@@ -1,4 +1,4 @@
-# 🏗️ Architecture Overview
+# Architecture Overview
 
 M2JS is designed as a focused, single-purpose CLI tool that transforms TypeScript/JavaScript code into AI-ready Markdown documentation.
 
@@ -31,9 +31,9 @@ No horizontal layers or premature abstractions.
 
 ```typescript
 // Entry point - handles all user commands
-m2js <file>           → processSingleFile()
-m2js <dir> --batch    → processDirectory()
-m2js <path> --graph   → processGraphAnalysis()
+m2js <file> → processSingleFile()
+m2js <dir> --batch → processDirectory()
+m2js <path> --graph → processGraphAnalysis()
 ```
 
 **Key Functions**:
@@ -110,59 +110,59 @@ Directory Scan → File Filtering → Parallel Processing → Progress Tracking
 
 ```mermaid
 graph TD
-    A[CLI Input] --> B[File Validation]
-    B --> C[Babel Parser]
-    C --> D[AST Traversal]
-    D --> E[Metadata Extraction]
-    E --> F[Markdown Generation]
-    F --> G[File Output]
-    
-    C --> H[Error: Parse Failed]
-    E --> I[Warning: No Exports]
-    F --> J[Success: File Generated]
+A[CLI Input] --> B[File Validation]
+B --> C[Babel Parser]
+C --> D[AST Traversal]
+D --> E[Metadata Extraction]
+E --> F[Markdown Generation]
+F --> G[File Output]
+
+C --> H[Error: Parse Failed]
+E --> I[Warning: No Exports]
+F --> J[Success: File Generated]
 ```
 
 ### Batch Processing
 
 ```mermaid
 graph TD
-    A[Directory Input] --> B[File Scanner]
-    B --> C[File Queue]
-    C --> D[Parallel Processing]
-    D --> E[Individual Parser]
-    E --> F[Markdown Generator]
-    F --> G[File Writer]
-    
-    D --> H[Progress Reporter]
-    D --> I[Error Collector]
-    G --> J[Success Counter]
+A[Directory Input] --> B[File Scanner]
+B --> C[File Queue]
+C --> D[Parallel Processing]
+D --> E[Individual Parser]
+E --> F[Markdown Generator]
+F --> G[File Writer]
+
+D --> H[Progress Reporter]
+D --> I[Error Collector]
+G --> J[Success Counter]
 ```
 
 ### Dependency Analysis
 
 ```mermaid
 graph TD
-    A[Project Files] --> B[Import Extractor]
-    B --> C[Dependency Mapper]
-    C --> D[Graph Builder]
-    D --> E[Metrics Calculator]
-    E --> F[Circular Detector]
-    F --> G[Mermaid Generator]
-    G --> H[Analysis Report]
+A[Project Files] --> B[Import Extractor]
+B --> C[Dependency Mapper]
+C --> D[Graph Builder]
+D --> E[Metrics Calculator]
+E --> F[Circular Detector]
+F --> G[Mermaid Generator]
+G --> H[Analysis Report]
 ```
 
 ## File Structure
 
 ```
 src/
-├── cli.ts                    # CLI interface and routing
-├── parser.ts                 # Core AST parsing logic
-├── generator.ts              # Markdown generation engine
-├── dependency-analyzer.ts    # Project dependency analysis
-├── batch-processor.ts        # Multi-file processing
-├── file-scanner.ts          # Directory traversal utilities
-├── types.ts                 # TypeScript type definitions
-└── utils/                   # Utility functions
+cli.ts # CLI interface and routing
+parser.ts # Core AST parsing logic
+generator.ts # Markdown generation engine
+dependency-analyzer.ts # Project dependency analysis
+batch-processor.ts # Multi-file processing
+file-scanner.ts # Directory traversal utilities
+types.ts # TypeScript type definitions
+utils/ # Utility functions
 ```
 
 ## Technology Stack
@@ -185,13 +185,13 @@ const SUPPORTED_EXTENSIONS = ['.ts', '.tsx', '.js', '.jsx'];
 
 // Babel plugins enabled
 const PARSER_PLUGINS = [
-  'typescript',        // TypeScript syntax
-  'jsx',              // React JSX
-  'decorators-legacy', // Decorator support
-  'classProperties',   // Class field declarations
-  'asyncGenerators',   // Async generator functions
-  'bigInt',           // BigInt literal support
-  'dynamicImport'     // Dynamic import()
+'typescript', // TypeScript syntax
+'jsx', // React JSX
+'decorators-legacy', // Decorator support
+'classProperties', // Class field declarations
+'asyncGenerators', // Async generator functions
+'bigInt', // BigInt literal support
+'dynamicImport' // Dynamic import()
 ];
 ```
 
@@ -229,39 +229,39 @@ M2JS follows a strict fail-fast approach:
 ```typescript
 // Example error handling pattern
 function parseFile(filePath: string): ParsedFile {
-  // 1. Early validation
-  if (!existsSync(filePath)) {
-    throw new Error(`File not found: ${filePath}`);
-  }
-  
-  if (!filePath.match(/\.(ts|tsx|js|jsx)$/)) {
-    throw new Error(`Unsupported file type: ${filePath}`);
-  }
-  
-  // 2. Clear error context
-  try {
-    return babel.parse(content);
-  } catch (error) {
-    throw new Error(`Parse error in ${filePath}: ${error.message}`);
-  }
+// 1. Early validation
+if (!existsSync(filePath)) {
+throw new Error(`File not found: ${filePath}`);
+}
+
+if (!filePath.match(/\.(ts|tsx|js|jsx)$/)) {
+throw new Error(`Unsupported file type: ${filePath}`);
+}
+
+// 2. Clear error context
+try {
+return babel.parse(content);
+} catch (error) {
+throw new Error(`Parse error in ${filePath}: ${error.message}`);
+}
 }
 ```
 
 ### Error Categories
 
 1. **User Errors** (exit code 1)
-   - File not found
-   - Unsupported file type
-   - Invalid syntax
+- File not found
+- Unsupported file type
+- Invalid syntax
 
 2. **System Errors** (exit code 2)
-   - Permission denied
-   - Out of memory
-   - Disk space issues
+- Permission denied
+- Out of memory
+- Disk space issues
 
 3. **Parse Errors** (exit code 3)
-   - Invalid TypeScript/JavaScript syntax
-   - Babel parser failures
+- Invalid TypeScript/JavaScript syntax
+- Babel parser failures
 
 ## Extension Points
 
@@ -272,10 +272,10 @@ These advanced features are temporarily disabled in v1.0.1 due to TypeScript com
 ```typescript
 // Enhanced analysis features (being rebuilt)
 interface EnhancedFeatures {
-  businessContext: boolean;     // Domain analysis
-  usageExamples: boolean;      // Usage pattern extraction
-  architectureInsights: boolean; // Architecture analysis
-  semanticAnalysis: boolean;   // Entity relationships
+businessContext: boolean; // Domain analysis
+usageExamples: boolean; // Usage pattern extraction
+architectureInsights: boolean; // Architecture analysis
+semanticAnalysis: boolean; // Entity relationships
 }
 ```
 
@@ -305,7 +305,7 @@ The architecture supports future enhancements:
 ```typescript
 // CLAUDE.md compliance
 - Files: < 300 lines
-- Functions: < 30 lines  
+- Functions: < 30 lines 
 - Cyclomatic complexity: < 10
 - No `any` types allowed
 - Strict TypeScript mode
@@ -318,11 +318,11 @@ The architecture supports future enhancements:
 ```typescript
 // Package structure
 @paulohenriquevn/m2js/
-├── dist/              # Compiled JavaScript
-├── package.json       # NPM metadata
-├── README.md          # Documentation
-├── CHANGELOG.md       # Version history
-└── LICENSE           # MIT license
+dist/ # Compiled JavaScript
+package.json # NPM metadata
+README.md # Documentation
+CHANGELOG.md # Version history
+LICENSE # MIT license
 ```
 
 ### Global Installation

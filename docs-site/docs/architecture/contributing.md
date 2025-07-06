@@ -1,4 +1,4 @@
-# 🤝 Contributing Guide
+# Contributing Guide
 
 Welcome to M2JS! We're excited to have you contribute to making AI-assisted development more accessible.
 
@@ -45,33 +45,33 @@ npm run validate
 
 ```
 src/
-├── cli.ts                    # CLI interface - entry point
-├── parser.ts                 # Babel AST parsing core
-├── generator.ts              # Markdown generation engine
-├── dependency-analyzer.ts    # Dependency graph analysis
-├── batch-processor.ts        # Multi-file processing
-├── file-scanner.ts          # Directory traversal
-├── types.ts                 # TypeScript definitions
-└── utils/                   # Utility functions
+cli.ts # CLI interface - entry point
+parser.ts # Babel AST parsing core
+generator.ts # Markdown generation engine
+dependency-analyzer.ts # Dependency graph analysis
+batch-processor.ts # Multi-file processing
+file-scanner.ts # Directory traversal
+types.ts # TypeScript definitions
+utils/ # Utility functions
 
 tests/
-├── *.test.ts               # Unit tests
-├── fixtures/               # Test data
-└── integration.test.ts     # End-to-end tests
+*.test.ts # Unit tests
+fixtures/ # Test data
+integration.test.ts # End-to-end tests
 
-docs-site/                  # VitePress documentation
-├── docs/                   # Documentation content
-└── .vitepress/            # Site configuration
+docs-site/ # VitePress documentation
+docs/ # Documentation content
+.vitepress/ # Site configuration
 ```
 
 ### Currently Disabled (Being Rebuilt)
 
 ```
 src/
-├── enhanced-generator.ts    # AI-enhanced analysis (v2.0)
-├── semantic-analyzer.ts     # Business entity analysis
-├── template-generator.ts    # LLM specification templates
-└── usage-pattern-analyzer.ts # Usage pattern extraction
+enhanced-generator.ts # AI-enhanced analysis (v2.0)
+semantic-analyzer.ts # Business entity analysis
+template-generator.ts # LLM specification templates
+usage-pattern-analyzer.ts # Usage pattern extraction
 ```
 
 ## Development Philosophy
@@ -83,50 +83,50 @@ All contributions must follow the [CLAUDE.md](https://github.com/paulohenriquevn
 #### 1. KISS (Keep It Simple, Stupid)
 
 ```typescript
-// ✅ Good: Simple, focused function
+// Good: Simple, focused function
 export function generateMarkdown(parsedFile: ParsedFile): string {
-  const sections: string[] = [];
-  sections.push(generateHeader(parsedFile));
-  sections.push(generateFunctions(parsedFile.functions));
-  sections.push(generateClasses(parsedFile.classes));
-  return sections.join('\n\n');
+const sections: string[] = [];
+sections.push(generateHeader(parsedFile));
+sections.push(generateFunctions(parsedFile.functions));
+sections.push(generateClasses(parsedFile.classes));
+return sections.join('\n\n');
 }
 
-// ❌ Bad: Over-engineered solution
+// Bad: Over-engineered solution
 export class ConfigurableMarkdownTemplateEngineWithPluginSupport {
-  private templateEngine: TemplateEngine;
-  private pluginManager: PluginManager;
-  // ... 200+ lines of complexity
+private templateEngine: TemplateEngine;
+private pluginManager: PluginManager;
+// ... 200+ lines of complexity
 }
 ```
 
 #### 2. Fail-Fast
 
 ```typescript
-// ✅ Good: Clear, immediate failure
+// Good: Clear, immediate failure
 export function parseFile(filePath: string): ParsedFile {
-  if (!existsSync(filePath)) {
-    throw new Error(`File not found: ${filePath}`);
-  }
-  
-  if (!filePath.match(/\.(ts|tsx|js|jsx)$/)) {
-    throw new Error(`Unsupported file type: ${filePath}`);
-  }
-  
-  try {
-    return babel.parse(readFileSync(filePath, 'utf8'));
-  } catch (error) {
-    throw new Error(`Parse error in ${filePath}: ${error.message}`);
-  }
+if (!existsSync(filePath)) {
+throw new Error(`File not found: ${filePath}`);
 }
 
-// ❌ Bad: Silent failures
+if (!filePath.match(/\.(ts|tsx|js|jsx)$/)) {
+throw new Error(`Unsupported file type: ${filePath}`);
+}
+
+try {
+return babel.parse(readFileSync(filePath, 'utf8'));
+} catch (error) {
+throw new Error(`Parse error in ${filePath}: ${error.message}`);
+}
+}
+
+// Bad: Silent failures
 export function parseFile(filePath: string): ParsedFile | null {
-  try {
-    return babel.parse(readFileSync(filePath, 'utf8'));
-  } catch {
-    return null; // User doesn't know what happened
-  }
+try {
+return babel.parse(readFileSync(filePath, 'utf8'));
+} catch {
+return null; // User doesn't know what happened
+}
 }
 ```
 
@@ -145,16 +145,16 @@ Never implement horizontal layers without immediate value.
 Use real files and real parsing in development and testing:
 
 ```typescript
-// ✅ Good: Real file testing
+// Good: Real file testing
 test('should parse real TypeScript file', () => {
-  const result = parseFile('./tests/fixtures/UserService.ts');
-  expect(result.functions).toHaveLength(3);
+const result = parseFile('./tests/fixtures/UserService.ts');
+expect(result.functions).toHaveLength(3);
 });
 
-// ❌ Bad: Mock everything
+// Bad: Mock everything
 test('should parse file', () => {
-  const mockParser = jest.fn().mockReturnValue({ functions: [] });
-  // ... testing mocks, not real behavior
+const mockParser = jest.fn().mockReturnValue({ functions: [] });
+// ... testing mocks, not real behavior
 });
 ```
 
@@ -165,17 +165,17 @@ test('should parse file', () => {
 ```typescript
 // tsconfig.json compliance
 {
-  "strict": true,              // Strict mode enabled
-  "noImplicitAny": true,       // No 'any' types
-  "noImplicitReturns": true,   // All paths return values
-  "noUnusedLocals": true,      // No unused variables
-  "noUnusedParameters": true   // No unused parameters
+"strict": true, // Strict mode enabled
+"noImplicitAny": true, // No 'any' types
+"noImplicitReturns": true, // All paths return values
+"noUnusedLocals": true, // No unused variables
+"noUnusedParameters": true // No unused parameters
 }
 
-// ❌ Never use 'any'
+// Never use 'any'
 function process(data: any): any { }
 
-// ✅ Always use explicit types
+// Always use explicit types
 function processUser(user: User): UserResult { }
 ```
 
@@ -193,14 +193,14 @@ function processUser(user: User): UserResult { }
 
 ```bash
 # Required passing checks
-npm run lint        # Zero warnings allowed
-npm run type-check  # Zero TypeScript errors
-npm test           # All tests must pass
+npm run lint # Zero warnings allowed
+npm run type-check # Zero TypeScript errors
+npm test # All tests must pass
 ```
 
 ## Types of Contributions
 
-### 🐛 Bug Fixes
+### Bug Fixes
 
 **Process:**
 1. Create issue describing the bug
@@ -214,14 +214,14 @@ npm test           # All tests must pass
 ```typescript
 // Issue: M2JS doesn't handle arrow functions in classes
 class UserService {
-  // This wasn't being parsed correctly
-  validateUser = (user: User): boolean => {
-    return user.email && user.password;
-  }
+// This wasn't being parsed correctly
+validateUser = (user: User): boolean => {
+return user.email && user.password;
+}
 }
 ```
 
-### ✨ Feature Additions
+### Feature Additions
 
 **Requirements:**
 - Must follow vertical slice principle
@@ -232,35 +232,35 @@ class UserService {
 **Current Priority Features:**
 
 1. **Additional Language Support**
-   ```typescript
-   // Add support for new file types
-   const SUPPORTED_EXTENSIONS = [
-     '.ts', '.tsx', '.js', '.jsx',
-     '.vue', '.svelte'  // New additions
-   ];
-   ```
+```typescript
+// Add support for new file types
+const SUPPORTED_EXTENSIONS = [
+'.ts', '.tsx', '.js', '.jsx',
+'.vue', '.svelte' // New additions
+];
+```
 
 2. **Enhanced Markdown Output**
-   ```typescript
-   // Add new output formats
-   export interface GeneratorOptions {
-     format: 'standard' | 'github' | 'gitlab' | 'confluence';
-     includeComments: boolean;
-     collapsibleSections: boolean;
-   }
-   ```
+```typescript
+// Add new output formats
+export interface GeneratorOptions {
+format: 'standard' | 'github' | 'gitlab' | 'confluence';
+includeComments: boolean;
+collapsibleSections: boolean;
+}
+```
 
 3. **Performance Optimizations**
-   ```typescript
-   // Caching system for large projects
-   export interface CacheOptions {
-     enabled: boolean;
-     directory: string;
-     ttl: number;
-   }
-   ```
+```typescript
+// Caching system for large projects
+export interface CacheOptions {
+enabled: boolean;
+directory: string;
+ttl: number;
+}
+```
 
-### 📚 Documentation
+### Documentation
 
 **Types:**
 - Code examples and tutorials
@@ -273,84 +273,84 @@ class UserService {
 - Include both simple and complex scenarios
 - Focus on real-world usage patterns
 
-### 🧪 Testing
+### Testing
 
 **Test Categories:**
 
 1. **Unit Tests** (`*.test.ts`)
-   ```typescript
-   describe('Parser', () => {
-     it('should extract exported functions', () => {
-       const code = 'export function test() {}';
-       const result = parseCode(code);
-       expect(result.functions).toHaveLength(1);
-     });
-   });
-   ```
+```typescript
+describe('Parser', () => {
+it('should extract exported functions', () => {
+const code = 'export function test() {}';
+const result = parseCode(code);
+expect(result.functions).toHaveLength(1);
+});
+});
+```
 
 2. **Integration Tests** (`integration.test.ts`)
-   ```typescript
-   describe('CLI Integration', () => {
-     it('should process file end-to-end', async () => {
-       await execAsync('m2js tests/fixtures/example.ts');
-       const output = await readFile('example.md', 'utf8');
-       expect(output).toContain('# 📝 example.ts');
-     });
-   });
-   ```
+```typescript
+describe('CLI Integration', () => {
+it('should process file end-to-end', async () => {
+await execAsync('m2js tests/fixtures/example.ts');
+const output = await readFile('example.md', 'utf8');
+expect(output).toContain('# example.ts');
+});
+});
+```
 
 3. **Performance Tests**
-   ```typescript
-   describe('Performance', () => {
-     it('should process 100KB file under 5 seconds', async () => {
-       const start = Date.now();
-       await parseFile('./tests/fixtures/large-file.ts');
-       const duration = Date.now() - start;
-       expect(duration).toBeLessThan(5000);
-     });
-   });
-   ```
+```typescript
+describe('Performance', () => {
+it('should process 100KB file under 5 seconds', async () => {
+const start = Date.now();
+await parseFile('./tests/fixtures/large-file.ts');
+const duration = Date.now() - start;
+expect(duration).toBeLessThan(5000);
+});
+});
+```
 
 ## Submitting Changes
 
 ### Pull Request Process
 
 1. **Fork & Branch**
-   ```bash
-   git checkout -b feature/amazing-feature
-   git checkout -b fix/parser-bug
-   git checkout -b docs/better-examples
-   ```
+```bash
+git checkout -b feature/amazing-feature
+git checkout -b fix/parser-bug
+git checkout -b docs/better-examples
+```
 
 2. **Development Cycle**
-   ```bash
-   # Make changes
-   npm run dev           # Watch mode
-   
-   # Test changes
-   m2js examples/test.ts
-   npm test
-   
-   # Validate code quality
-   npm run validate
-   ```
+```bash
+# Make changes
+npm run dev # Watch mode
+
+# Test changes
+m2js examples/test.ts
+npm test
+
+# Validate code quality
+npm run validate
+```
 
 3. **Commit Standards**
-   ```bash
-   # Use conventional commits
-   git commit -m "feat: add Vue.js file support"
-   git commit -m "fix: handle arrow functions in classes"
-   git commit -m "docs: add integration examples"
-   git commit -m "test: improve parser coverage"
-   ```
+```bash
+# Use conventional commits
+git commit -m "feat: add Vue.js file support"
+git commit -m "fix: handle arrow functions in classes"
+git commit -m "docs: add integration examples"
+git commit -m "test: improve parser coverage"
+```
 
 4. **Pre-submission Checklist**
-   - [ ] All tests pass (`npm test`)
-   - [ ] TypeScript compiles (`npm run type-check`)
-   - [ ] Linting passes (`npm run lint`)
-   - [ ] Manual testing with real files
-   - [ ] Documentation updated if needed
-   - [ ] CHANGELOG.md updated
+- [ ] All tests pass (`npm test`)
+- [ ] TypeScript compiles (`npm run type-check`)
+- [ ] Linting passes (`npm run lint`)
+- [ ] Manual testing with real files
+- [ ] Documentation updated if needed
+- [ ] CHANGELOG.md updated
 
 ### PR Template
 
@@ -384,29 +384,29 @@ Brief description of the change and which issue it fixes.
 The enhanced analysis features are temporarily disabled. To re-enable:
 
 1. **Fix TypeScript Issues**
-   ```typescript
-   // These files need proper type definitions
-   src/enhanced-generator.ts
-   src/semantic-analyzer.ts
-   src/template-generator.ts
-   src/usage-pattern-analyzer.ts
-   ```
+```typescript
+// These files need proper type definitions
+src/enhanced-generator.ts
+src/semantic-analyzer.ts
+src/template-generator.ts
+src/usage-pattern-analyzer.ts
+```
 
 2. **Integration Requirements**
-   ```typescript
-   // Must integrate with CLI without breaking existing functionality
-   if (options.aiEnhanced) {
-     return generateEnhancedMarkdown(parsedFile, options);
-   } else {
-     return generateMarkdown(parsedFile);
-   }
-   ```
+```typescript
+// Must integrate with CLI without breaking existing functionality
+if (options.aiEnhanced) {
+return generateEnhancedMarkdown(parsedFile, options);
+} else {
+return generateMarkdown(parsedFile);
+}
+```
 
 3. **Performance Standards**
-   ```typescript
-   // AI features must not significantly impact performance
-   // Target: < 2x slowdown compared to basic processing
-   ```
+```typescript
+// AI features must not significantly impact performance
+// Target: < 2x slowdown compared to basic processing
+```
 
 ### Architecture Improvements
 
@@ -419,37 +419,37 @@ The enhanced analysis features are temporarily disabled. To re-enable:
 **Contribution Opportunities:**
 
 1. **Caching System**
-   ```typescript
-   interface CacheManager {
-     get(filePath: string): ParsedFile | null;
-     set(filePath: string, result: ParsedFile): void;
-     invalidate(filePath: string): void;
-   }
-   ```
+```typescript
+interface CacheManager {
+get(filePath: string): ParsedFile | null;
+set(filePath: string, result: ParsedFile): void;
+invalidate(filePath: string): void;
+}
+```
 
 2. **Streaming Parser**
-   ```typescript
-   // Process large files in chunks
-   interface StreamingParser {
-     parseChunk(chunk: string): Partial<ParsedFile>;
-     finalize(): ParsedFile;
-   }
-   ```
+```typescript
+// Process large files in chunks
+interface StreamingParser {
+parseChunk(chunk: string): Partial<ParsedFile>;
+finalize(): ParsedFile;
+}
+```
 
 3. **Plugin Architecture**
-   ```typescript
-   interface Analyzer {
-     name: string;
-     analyze(parsedFile: ParsedFile): AnalysisResult;
-   }
-   ```
+```typescript
+interface Analyzer {
+name: string;
+analyze(parsedFile: ParsedFile): AnalysisResult;
+}
+```
 
 ## Getting Help
 
 ### Development Questions
 
 - **GitHub Discussions**: General questions and ideas
-- **GitHub Issues**: Bug reports and feature requests  
+- **GitHub Issues**: Bug reports and feature requests 
 - **Code Review**: PR feedback and guidance
 
 ### Real-time Communication

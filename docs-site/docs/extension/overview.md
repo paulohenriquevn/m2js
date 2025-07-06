@@ -1,4 +1,4 @@
-# 🔌 VS Code Extension
+# VS Code Extension
 
 M2JS VS Code Extension brings AI-ready code documentation directly to your editor workflow.
 
@@ -29,7 +29,7 @@ code --install-extension m2js-vscode.vsix
 
 ## Features
 
-### 🚀 Quick Actions
+### Quick Actions
 
 **1. Right-click Context Menu**
 ```
@@ -53,7 +53,7 @@ Open any TypeScript/JavaScript file
 → Instant documentation generation
 ```
 
-### 📊 Dependency Visualization
+### Dependency Visualization
 
 **Mermaid Diagrams in VS Code**
 ```typescript
@@ -64,7 +64,7 @@ m2js src/ --graph --mermaid
 // Clickable nodes navigate to files
 ```
 
-### ⚡ Batch Processing
+### Batch Processing
 
 **Workspace Integration**
 ```
@@ -82,17 +82,17 @@ Access via `File → Preferences → Settings → Extensions → M2JS`:
 
 ```json
 {
-  "m2js.outputDirectory": "docs/ai",
-  "m2js.autoGenerate": true,
-  "m2js.includeComments": true,
-  "m2js.showProgressNotifications": true,
-  "m2js.excludePatterns": [
-    "node_modules/**",
-    "dist/**",
-    "build/**",
-    "*.test.ts",
-    "*.spec.ts"
-  ]
+"m2js.outputDirectory": "docs/ai",
+"m2js.autoGenerate": true,
+"m2js.includeComments": true,
+"m2js.showProgressNotifications": true,
+"m2js.excludePatterns": [
+"node_modules/**",
+"dist/**",
+"build/**",
+"*.test.ts",
+"*.spec.ts"
+]
 }
 ```
 
@@ -117,33 +117,33 @@ Access via `File → Preferences → Settings → Extensions → M2JS`:
 // 4. UserService.md created automatically
 
 export class UserService {
-  /**
-   * Authenticates user credentials
-   * @param email - User email address
-   * @param password - User password
-   * @returns Authentication result
-   */
-  async authenticate(email: string, password: string): Promise<AuthResult> {
-    // Implementation
-  }
+/**
+* Authenticates user credentials
+* @param email - User email address
+* @param password - User password
+* @returns Authentication result
+*/
+async authenticate(email: string, password: string): Promise<AuthResult> {
+// Implementation
+}
 }
 ```
 
 **Generated Output:**
 ```markdown
-# 📝 UserService.ts
+# UserService.ts
 
-## 🏗️ Classes
+## Classes
 
 ### UserService
 
 #### authenticate
 /**
- * Authenticates user credentials
- * @param email - User email address
- * @param password - User password
- * @returns Authentication result
- */
+* Authenticates user credentials
+* @param email - User email address
+* @param password - User password
+* @returns Authentication result
+*/
 ```typescript
 async authenticate(email: string, password: string): Promise<AuthResult>
 ```
@@ -156,10 +156,10 @@ Ctrl+Shift+P → "M2JS: Generate for Workspace"
 
 # Creates structure:
 docs/ai/
-├── UserService.md
-├── PaymentService.md
-├── OrderService.md
-└── dependency-graph.md
+UserService.md
+PaymentService.md
+OrderService.md
+dependency-graph.md
 ```
 
 ### Dependency Analysis
@@ -172,10 +172,10 @@ docs/ai/
 
 // Example output:
 graph TD
-    A[UserService] --> B[DatabaseService]
-    A --> C[ValidationService]
-    D[PaymentService] --> B
-    D --> E[ExternalApiService]
+A[UserService] --> B[DatabaseService]
+A --> C[ValidationService]
+D[PaymentService] --> B
+D --> E[ExternalApiService]
 ```
 
 ## Integration Workflows
@@ -215,11 +215,11 @@ graph TD
 ```json
 // .vscode/settings.json
 {
-  "m2js.templates": {
-    "functions": "## 🔧 Functions\n\n${functions}",
-    "classes": "## 🏗️ Classes\n\n${classes}",
-    "interfaces": "## 📋 Interfaces\n\n${interfaces}"
-  }
+"m2js.templates": {
+"functions": "## Functions\n\n${functions}",
+"classes": "## Classes\n\n${classes}",
+"interfaces": "## Interfaces\n\n${interfaces}"
+}
 }
 ```
 
@@ -227,12 +227,12 @@ graph TD
 
 ```json
 {
-  "m2js.watchPatterns": [
-    "src/**/*.ts",
-    "src/**/*.js",
-    "lib/**/*.ts"
-  ],
-  "m2js.autoGenerateOnSave": true
+"m2js.watchPatterns": [
+"src/**/*.ts",
+"src/**/*.js",
+"lib/**/*.ts"
+],
+"m2js.autoGenerateOnSave": true
 }
 ```
 
@@ -240,12 +240,12 @@ graph TD
 
 ```json
 {
-  "m2js.outputFormat": {
-    "includePrivateMethods": false,
-    "includeTypeDefinitions": true,
-    "includeImports": true,
-    "collapsibleSections": true
-  }
+"m2js.outputFormat": {
+"includePrivateMethods": false,
+"includeTypeDefinitions": true,
+"includeImports": true,
+"collapsibleSections": true
+}
 }
 ```
 
@@ -264,15 +264,15 @@ graph TD
 ```json
 // keybindings.json
 [
-  {
-    "key": "ctrl+alt+g",
-    "command": "m2js.generateCurrent",
-    "when": "editorTextFocus"
-  },
-  {
-    "key": "ctrl+alt+shift+g",
-    "command": "m2js.generateWorkspace"
-  }
+{
+"key": "ctrl+alt+g",
+"command": "m2js.generateCurrent",
+"when": "editorTextFocus"
+},
+{
+"key": "ctrl+alt+shift+g",
+"command": "m2js.generateWorkspace"
+}
 ]
 ```
 
@@ -281,10 +281,10 @@ graph TD
 The extension adds a status bar item showing:
 
 ```
-📝 M2JS: Ready    # Extension ready
-📝 M2JS: Busy     # Processing files
-📝 M2JS: 12 files # Files processed
-📝 M2JS: Error    # Processing error
+M2JS: Ready # Extension ready
+M2JS: Busy # Processing files
+M2JS: 12 files # Files processed
+M2JS: Error # Processing error
 ```
 
 Click the status bar item for quick actions menu.
@@ -295,13 +295,13 @@ Click the status bar item for quick actions menu.
 
 ```json
 {
-  "m2js.performance": {
-    "maxFilesPerBatch": 50,
-    "processingTimeout": 30000,
-    "enableProgressReporting": true,
-    "skipLargeFiles": true,
-    "largeFileThreshold": "1MB"
-  }
+"m2js.performance": {
+"maxFilesPerBatch": 50,
+"processingTimeout": 30000,
+"enableProgressReporting": true,
+"skipLargeFiles": true,
+"largeFileThreshold": "1MB"
+}
 }
 ```
 
@@ -339,11 +339,11 @@ Solution: Use selective processing or increase timeout
 
 ```json
 {
-  "m2js.debug": {
-    "enabled": true,
-    "logLevel": "verbose",
-    "outputChannel": "M2JS Debug"
-  }
+"m2js.debug": {
+"enabled": true,
+"logLevel": "verbose",
+"outputChannel": "M2JS Debug"
+}
 }
 ```
 
@@ -371,20 +371,20 @@ F5 (or Run → Start Debugging)
 ```typescript
 // src/extension.ts - Main extension entry point
 export function activate(context: vscode.ExtensionContext) {
-  // Register commands
-  const disposable = vscode.commands.registerCommand(
-    'm2js.generateCurrent',
-    () => generateForCurrentFile()
-  );
-  
-  context.subscriptions.push(disposable);
+// Register commands
+const disposable = vscode.commands.registerCommand(
+'m2js.generateCurrent',
+() => generateForCurrentFile()
+);
+
+context.subscriptions.push(disposable);
 }
 
 // src/commands/
-├── generateCurrent.ts    # Single file processing
-├── generateWorkspace.ts  # Batch processing
-├── showDependencyGraph.ts # Dependency analysis
-└── configureSettings.ts  # Settings management
+generateCurrent.ts # Single file processing
+generateWorkspace.ts # Batch processing
+showDependencyGraph.ts # Dependency analysis
+configureSettings.ts # Settings management
 ```
 
 ### Testing
@@ -424,7 +424,7 @@ npm run test:manual
 
 ### Community Requests
 
-Vote for features on [GitHub Issues](https://github.com/paulohenriquevn/m2js-vscode/issues) with 👍 reactions.
+Vote for features on [GitHub Issues](https://github.com/paulohenriquevn/m2js-vscode/issues) with reactions.
 
 ## Support
 

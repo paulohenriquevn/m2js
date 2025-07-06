@@ -1,4 +1,4 @@
-# 🔧 Configuration
+# Configuration
 
 Customize M2JS behavior for your specific workflow and project requirements.
 
@@ -8,12 +8,12 @@ Customize M2JS behavior for your specific workflow and project requirements.
 
 ```bash
 # Input/Output
-m2js <path>                    # Source file or directory
-m2js src/file.ts -o output.md  # Custom output file
+m2js <path> # Source file or directory
+m2js src/file.ts -o output.md # Custom output file
 
 # Processing Control
-m2js file.ts --no-comments     # Skip comment extraction
-m2js file.ts --graph           # Generate dependency graph
+m2js file.ts --no-comments # Skip comment extraction
+m2js file.ts --graph # Generate dependency graph
 m2js file.ts --graph --mermaid # Include Mermaid diagrams
 ```
 
@@ -38,11 +38,11 @@ m2js file.ts --graph --mermaid # Include Mermaid diagrams
 
 ```json
 {
-  "scripts": {
-    "docs:ai": "m2js src/ --batch",
-    "docs:services": "m2js src/services/ --batch",
-    "docs:review": "m2js $(git diff --name-only main | grep -E '\\.(ts|js)$')"
-  }
+"scripts": {
+"docs:ai": "m2js src/ --batch",
+"docs:services": "m2js src/services/ --batch",
+"docs:review": "m2js $(git diff --name-only main | grep -E '\\.(ts|js)$')"
+}
 }
 ```
 
@@ -50,13 +50,13 @@ m2js file.ts --graph --mermaid # Include Mermaid diagrams
 
 ```json
 {
-  "scripts": {
-    "docs:generate": "m2js src/ --batch --output docs/ai/",
-    "docs:api": "m2js src/services/ src/api/ --batch --output docs/api/",
-    "docs:graph": "m2js src/ --graph --mermaid --output docs/architecture.md",
-    "docs:clean": "rm -rf docs/ai/ && npm run docs:generate",
-    "review:prep": "git diff --name-only HEAD~1 | grep -E '\\.(ts|js)$' | xargs m2js"
-  }
+"scripts": {
+"docs:generate": "m2js src/ --batch --output docs/ai/",
+"docs:api": "m2js src/services/ src/api/ --batch --output docs/api/",
+"docs:graph": "m2js src/ --graph --mermaid --output docs/architecture.md",
+"docs:clean": "rm -rf docs/ai/ && npm run docs:generate",
+"review:prep": "git diff --name-only HEAD~1 | grep -E '\\.(ts|js)$' | xargs m2js"
+}
 }
 ```
 
@@ -65,7 +65,7 @@ m2js file.ts --graph --mermaid # Include Mermaid diagrams
 ```bash
 # Set default output directory
 export M2JS_OUTPUT_DIR="docs/ai"
-m2js src/file.ts  # Outputs to docs/ai/file.md
+m2js src/file.ts # Outputs to docs/ai/file.md
 
 # Enable verbose logging
 export M2JS_VERBOSE="true"
@@ -83,21 +83,21 @@ M2JS_OUTPUT_DIR=review/ m2js src/changed-files/
 # .github/workflows/docs.yml
 name: Generate Documentation
 on:
-  push:
-    paths: ['src/**/*.ts', 'src/**/*.js']
+push:
+paths: ['src/**/*.ts', 'src/**/*.js']
 
 jobs:
-  docs:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-      - run: npm install -g @paulohenriquevn/m2js
-      - run: m2js src/ --batch --output docs/ai/
-      - uses: actions/upload-artifact@v3
-        with:
-          name: documentation
-          path: docs/ai/
+docs:
+runs-on: ubuntu-latest
+steps:
+- uses: actions/checkout@v3
+- uses: actions/setup-node@v3
+- run: npm install -g @paulohenriquevn/m2js
+- run: m2js src/ --batch --output docs/ai/
+- uses: actions/upload-artifact@v3
+with:
+name: documentation
+path: docs/ai/
 ```
 
 ### VS Code Tasks
@@ -105,16 +105,16 @@ jobs:
 ```json
 // .vscode/tasks.json
 {
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "label": "Generate M2JS Documentation",
-      "type": "shell",
-      "command": "m2js",
-      "args": ["${file}"],
-      "group": "build"
-    }
-  ]
+"version": "2.0.0",
+"tasks": [
+{
+"label": "Generate M2JS Documentation",
+"type": "shell",
+"command": "m2js",
+"args": ["${file}"],
+"group": "build"
+}
+]
 }
 ```
 
