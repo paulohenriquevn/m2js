@@ -1,0 +1,205 @@
+name: M2JS CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Test Suite
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 20.x]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run TypeScript type checking
+      run: npm run type-check
+
+    - name: Run ESLint
+      run: npm run lint
+
+    - name: Run unit tests
+      run: npm test
+
+    - name: Run integration tests
+      run: npm run test:integration
+
+    - name: Build project
+      run: npm run build
+
+    - name: Test CLI globally
+      run: |
+        npm link
+        m2js --version
+        m2js examples/User.ts --output test-output.md
+        cat test-output.md | head -20
+
+  coverage:
+    name: Code Coverage
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run tests with coverage
+      run: npm run test:coverage
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage/lcov.info
+        flags: unittests
+        name: m2js-coverage
+
+  extension-test:
+    name: VS Code Extension Tests
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+
+    - name: Install main project dependencies
+      run: npm ci
+
+    - name: Build main project
+      run: npm run build
+
+    - name: Install extension dependencies
+      run: |
+        cd vscode-extension
+        npm ci
+
+    - name: Compile extension
+      run: |
+        cd vscode-extension
+        npm run compile
+
+    - name: Package extension
+      run: |
+        cd vscode-extension
+        npm install -g vsce
+        vsce package --no-dependencies
+
+    - name: Upload extension artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: m2js-extension
+        path: vscode-extension/*.vsix
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run security audit
+      run: npm audit --audit-level=high
+
+    - name: Run CodeQL Analysis
+      uses: github/codeql-action/init@v2
+      with:
+        languages: javascript
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v2
+
+  performance:
+    name: Performance Tests
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build project
+      run: npm run build
+
+    - name: Run performance benchmarks
+      run: |
+        npm link
+        
+        # Test performance with various file sizes
+        echo "🚀 Testing performance with different file sizes..."
+        
+        # Small file (< 1KB)
+        time m2js examples/User.ts --output perf-small.md
+        echo "✅ Small file processed"
+        
+        # Medium file (create a larger test file)
+        cat examples/User.ts examples/service.ts examples/utils.ts > medium-test.ts
+        time m2js medium-test.ts --output perf-medium.md
+        echo "✅ Medium file processed"
+        
+        # Large file (duplicate content multiple times)
+        for i in {1..10}; do cat examples/User.ts >> large-test.ts; done
+        time m2js large-test.ts --output perf-large.md
+        echo "✅ Large file processed"
+        
+        # Test enhanced analysis performance
+        time m2js examples/User.ts --ai-enhanced --output perf-enhanced.md
+        echo "✅ Enhanced analysis processed"
+        
+        # Display results
+        echo "📊 Performance Results:"
+        ls -lh perf-*.md
+
+    - name: Upload performance results
+      uses: actions/upload-artifact@v3
+      with:
+        name: performance-results
+        path: perf-*.md

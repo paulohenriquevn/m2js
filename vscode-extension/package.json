@@ -1,0 +1,295 @@
+{
+  "name": "m2js-vscode",
+  "displayName": "M2JS - Markdown from JavaScript",
+  "description": "Transform TypeScript/JavaScript into LLM-friendly Markdown documentation with AI-enhanced analysis",
+  "version": "0.1.0",
+  "publisher": "paulohenriquevn",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/paulohenriquevn/m2js.git",
+    "directory": "vscode-extension"
+  },
+  "bugs": {
+    "url": "https://github.com/paulohenriquevn/m2js/issues"
+  },
+  "homepage": "https://github.com/paulohenriquevn/m2js#readme",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other",
+    "Documentation",
+    "AI",
+    "Formatters"
+  ],
+  "keywords": [
+    "typescript",
+    "javascript",
+    "documentation",
+    "ai",
+    "llm",
+    "markdown",
+    "analysis",
+    "template"
+  ],
+  "activationEvents": [
+    "onLanguage:typescript",
+    "onLanguage:javascript",
+    "onCommand:m2js.generateDocs",
+    "onCommand:m2js.createTemplate"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "m2js.generateDocs",
+        "title": "📝 Generate M2JS Documentation",
+        "category": "M2JS"
+      },
+      {
+        "command": "m2js.generateDocsEnhanced",
+        "title": "🧠 Generate AI-Enhanced Analysis",
+        "category": "M2JS"
+      },
+      {
+        "command": "m2js.createTemplate",
+        "title": "🎯 Create LLM Template",
+        "category": "M2JS"
+      },
+      {
+        "command": "m2js.analyzeProject",
+        "title": "📊 Analyze Project Dependencies",
+        "category": "M2JS"
+      },
+      {
+        "command": "m2js.openTemplateWizard",
+        "title": "🪄 Template Wizard",
+        "category": "M2JS"
+      },
+      {
+        "command": "m2js.showDomains",
+        "title": "🎯 Show Available Domains",
+        "category": "M2JS"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "m2js.generateDocs",
+          "when": "resourceExtname =~ /\\.(ts|tsx|js|jsx)$/",
+          "group": "m2js@1"
+        },
+        {
+          "command": "m2js.generateDocsEnhanced", 
+          "when": "resourceExtname =~ /\\.(ts|tsx|js|jsx)$/",
+          "group": "m2js@2"
+        },
+        {
+          "command": "m2js.createTemplate",
+          "when": "explorerResourceIsFolder",
+          "group": "m2js@3"
+        },
+        {
+          "command": "m2js.analyzeProject",
+          "when": "explorerResourceIsFolder",
+          "group": "m2js@4"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "m2js.generateDocs",
+          "when": "resourceExtname =~ /\\.(ts|tsx|js|jsx)$/",
+          "group": "m2js@1"
+        },
+        {
+          "command": "m2js.generateDocsEnhanced",
+          "when": "resourceExtname =~ /\\.(ts|tsx|js|jsx)$/", 
+          "group": "m2js@2"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "m2js.generateDocs",
+          "when": "resourceExtname =~ /\\.(ts|tsx|js|jsx)$/"
+        },
+        {
+          "command": "m2js.generateDocsEnhanced",
+          "when": "resourceExtname =~ /\\.(ts|tsx|js|jsx)$/"
+        },
+        {
+          "command": "m2js.createTemplate",
+          "when": "workspaceFolderCount > 0"
+        },
+        {
+          "command": "m2js.analyzeProject",
+          "when": "workspaceFolderCount > 0"
+        },
+        {
+          "command": "m2js.openTemplateWizard"
+        },
+        {
+          "command": "m2js.showDomains"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "M2JS",
+      "properties": {
+        "m2js.enableAutoAnalysis": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically analyze files when opened"
+        },
+        "m2js.showInlineHints": {
+          "type": "boolean", 
+          "default": true,
+          "description": "Show business context hints inline"
+        },
+        "m2js.defaultOutputFormat": {
+          "type": "string",
+          "enum": ["standard", "ai-enhanced", "template"],
+          "default": "standard",
+          "description": "Default output format for M2JS analysis"
+        },
+        "m2js.cliPath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to M2JS CLI (leave empty for auto-detection)"
+        },
+        "m2js.outputDirectory": {
+          "type": "string",
+          "default": "m2js-output",
+          "description": "Directory name for M2JS output files"
+        },
+        "m2js.autoOpenResults": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically open generated files"
+        },
+        "m2js.includePrivateMembers": {
+          "type": "boolean",
+          "default": false,
+          "description": "Include private class members in analysis"
+        },
+        "m2js.enableBusinessContext": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable business context analysis"
+        },
+        "m2js.enableArchitectureInsights": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable architecture pattern detection"
+        },
+        "m2js.enableSemanticAnalysis": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable semantic relationship analysis"
+        },
+        "m2js.tokenOptimization": {
+          "type": "string",
+          "enum": ["minimal", "balanced", "detailed"],
+          "default": "balanced",
+          "description": "Token optimization level for LLM context"
+        },
+        "m2js.preferredDomain": {
+          "type": "string",
+          "enum": ["auto", "ecommerce", "blog", "api", "custom"],
+          "default": "auto",
+          "description": "Preferred domain template for new projects"
+        },
+        "m2js.notifications": {
+          "type": "object",
+          "default": {
+            "showProgress": true,
+            "showSuccess": true,
+            "showWarnings": true
+          },
+          "properties": {
+            "showProgress": {
+              "type": "boolean",
+              "default": true,
+              "description": "Show progress notifications"
+            },
+            "showSuccess": {
+              "type": "boolean", 
+              "default": true,
+              "description": "Show success notifications"
+            },
+            "showWarnings": {
+              "type": "boolean",
+              "default": true,
+              "description": "Show warning notifications"
+            }
+          },
+          "description": "Notification preferences"
+        },
+        "m2js.webview": {
+          "type": "object",
+          "default": {
+            "theme": "auto",
+            "fontSize": "14px",
+            "showLineNumbers": true,
+            "enableSyntaxHighlighting": true
+          },
+          "properties": {
+            "theme": {
+              "type": "string",
+              "enum": ["auto", "light", "dark"],
+              "default": "auto",
+              "description": "Webview theme preference"
+            },
+            "fontSize": {
+              "type": "string",
+              "default": "14px",
+              "description": "Font size for webview content"
+            },
+            "showLineNumbers": {
+              "type": "boolean",
+              "default": true,
+              "description": "Show line numbers in code blocks"
+            },
+            "enableSyntaxHighlighting": {
+              "type": "boolean",
+              "default": true,
+              "description": "Enable syntax highlighting"
+            }
+          },
+          "description": "Webview display preferences"
+        }
+      }
+    },
+    "views": {
+      "explorer": [
+        {
+          "id": "m2jsProjectView",
+          "name": "M2JS Project",
+          "when": "workspaceFolderCount > 0"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "m2js",
+          "title": "M2JS",
+          "icon": "$(markdown)"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "16.x",
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "child_process": "^1.0.2"
+  }
+}

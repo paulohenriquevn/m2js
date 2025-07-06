@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": [
+    "node_modules",
+    "dist",
+    "tests",
+    "src/enhanced-generator.ts",
+    "src/semantic-analyzer.ts", 
+    "src/template-generator.ts",
+    "src/usage-pattern-analyzer.ts"
+  ]
+}

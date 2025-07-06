@@ -1,0 +1,43 @@
+# CodeQL Configuration for M2JS Security Scanning
+
+name: "M2JS CodeQL Config"
+
+# Disable default queries that may be too noisy
+disable-default-queries: false
+
+# Custom query suites and individual queries
+queries:
+  - name: security-and-quality
+    uses: security-and-quality
+
+# Configure specific languages
+paths:
+  - src/
+  - vscode-extension/src/
+  - tests/
+
+paths-ignore:
+  - node_modules/
+  - dist/
+  - coverage/
+  - "**/*.test.ts"
+  - "**/*.spec.ts"
+  - examples/
+  - docs/
+
+# Custom query filters
+query-filters:
+  - exclude:
+      id: js/unused-local-variable
+  - exclude:
+      id: js/debugger-statement
+  - include:
+      tags:
+        - security
+        - correctness
+        - maintainability
+
+# Additional configuration for JavaScript/TypeScript
+packs:
+  - codeql/javascript-queries:AlertSuppression.ql
+  - codeql/javascript-queries:Security.ql
