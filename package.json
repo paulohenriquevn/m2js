@@ -1,6 +1,6 @@
 {
   "name": "@paulohenriquevn/m2js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "🚀 Transform TypeScript/JavaScript code into LLM-friendly Markdown summaries. Extract exported functions, classes, and JSDoc comments for better AI context with 60%+ token reduction.",
   "main": "dist/index.js",
   "bin": {
