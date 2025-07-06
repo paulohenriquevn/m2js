@@ -19,6 +19,17 @@
   color: #2c3e50;
 }
 
+/* Force override the site title in navigation */
+.VPNavBarTitle .title span {
+  display: none;
+}
+
+.VPNavBarTitle .title::after {
+  content: "M2JS";
+  color: var(--vp-c-text-1);
+  font-weight: 600;
+}
+
 /* Ensure navigation is visible */
 .VPNav {
   background: var(--vp-nav-bg-color, #fff);

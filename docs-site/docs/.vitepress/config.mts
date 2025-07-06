@@ -10,6 +10,12 @@ export default defineConfig({
   // GitHub Pages config - CRITICAL: Must match repository name  
   base: '/m2js/',
   
+  // Force override default site data
+  transformPageData(pageData) {
+    pageData.title = pageData.title?.replace('VitePress', 'M2JS') || 'M2JS';
+    return pageData;
+  },
+  
   // Ensure proper asset path handling
   outDir: '../dist',
   assetsDir: 'assets',

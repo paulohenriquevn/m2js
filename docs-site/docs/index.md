@@ -1,5 +1,6 @@
 ---
 layout: home
+title: M2JS | Transform Code into AI-Ready Docs
 
 hero:
   name: "M2JS"
