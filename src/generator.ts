@@ -1,7 +1,6 @@
 /* eslint-disable max-lines */
 /* eslint-disable max-lines-per-function */
 /* eslint-disable max-depth */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import {
   ParsedFile,
@@ -706,7 +705,7 @@ function generateMermaidDiagram(graph: DependencyGraph): string {
             }
           }
         }
-      } catch (e) {
+      } catch {
         // If resolution fails, try to find by basename
         const basename = path.basename(edge.to);
         for (const [nodePath] of nodeMap.entries()) {

@@ -16,11 +16,10 @@ import {
 } from './generator';
 // import { generateEnhancedMarkdown } from './enhanced-generator';
 // import { generateTemplate, listAvailableDomains } from './template-generator';
-import { CliOptions, GraphOptions, TemplateOptions, ParsedFile } from './types';
+import { CliOptions, GraphOptions } from './types';
 import { isDirectory, isFile, scanDirectory } from './file-scanner';
 import { processBatch } from './batch-processor';
 import { analyzeDependencies } from './dependency-analyzer';
-import { availableDomains } from './domain-templates';
 
 const program = new Command();
 
@@ -161,7 +160,9 @@ async function processSingleFile(
 
   if (needsEnhancement) {
     // Enhanced generation temporarily disabled due to build issues
-    console.log(chalk.yellow('⚠️  Enhanced analysis features temporarily disabled'));
+    console.log(
+      chalk.yellow('⚠️  Enhanced analysis features temporarily disabled')
+    );
     console.log(chalk.blue('📄 Generating standard markdown...'));
     markdown = generateMarkdown(parsedFile);
   } else {

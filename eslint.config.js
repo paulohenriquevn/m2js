@@ -5,6 +5,18 @@ import prettierConfig from 'eslint-config-prettier';
 
 export default [
   {
+    ignores: [
+      'dist/**/*',
+      'node_modules/**/*',
+      'coverage/**/*',
+      'src/enhanced-generator.ts',
+      'src/semantic-analyzer.ts', 
+      'src/template-generator.ts',
+      'src/usage-pattern-analyzer.ts',
+      'src/architecture-analyzer.ts'
+    ]
+  },
+  {
     files: ['src/**/*.ts'],
     languageOptions: {
       parser: tsParser,
