@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "vitepress dev docs",
-    "build": "vitepress build docs",
+    "build": "NODE_ENV=production vitepress build docs --base /m2js/",
     "preview": "vitepress preview docs",
     "deploy": "npm run build && gh-pages -d docs/.vitepress/dist"
   },

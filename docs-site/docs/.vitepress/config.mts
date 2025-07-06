@@ -7,10 +7,11 @@ export default defineConfig({
   description: 'Transform TypeScript/JavaScript into LLM-friendly Markdown documentation',
   lang: 'en-US',
   
-  // GitHub Pages config
+  // GitHub Pages config - CRITICAL: Must match repository name  
   base: '/m2js/',
   
-  // Force proper asset handling
+  // Ensure proper asset path handling
+  outDir: '../dist',
   assetsDir: 'assets',
   
   // Theme config
@@ -138,6 +139,19 @@ export default defineConfig({
   
   // Build options
   cleanUrls: true,
+  
+  // Vite config for proper asset handling
+  vite: {
+    base: '/m2js/',
+    build: {
+      assetsDir: 'assets',
+      rollupOptions: {
+        output: {
+          assetFileNames: 'assets/[name].[hash][extname]'
+        }
+      }
+    }
+  },
   
   // Markdown config
   markdown: {
