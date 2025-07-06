@@ -10,6 +10,9 @@ export default defineConfig({
   // GitHub Pages config
   base: '/m2js/',
   
+  // Force proper asset handling
+  assetsDir: 'assets',
+  
   // Theme config
   themeConfig: {
     // Site identity
@@ -119,7 +122,8 @@ export default defineConfig({
   // Head tags
   head: [
     ['link', { rel: 'icon', href: '/m2js/favicon.ico' }],
-    ['meta', { name: 'theme-color', content: '#ff6600' }],
+    ['meta', { name: 'theme-color', content: '#646cff' }],
+    ['meta', { name: 'viewport', content: 'width=device-width,initial-scale=1' }],
     ['meta', { name: 'og:type', content: 'website' }],
     ['meta', { name: 'og:locale', content: 'en' }],
     ['meta', { name: 'og:title', content: 'M2JS | Transform Code into AI-Ready Docs' }],
