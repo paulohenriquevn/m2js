@@ -22,6 +22,16 @@ export interface M2JSConfig {
     includeSuggestions: boolean;
   };
 
+  // Duplicate code analysis settings
+  duplicateCode: {
+    minLines: number;
+    minTokens: number;
+    ignorePatterns: string[];
+    includeContext: boolean;
+    includeSuggestions: boolean;
+    format: 'table' | 'json';
+  };
+
   // Code extraction settings
   extraction: {
     includeComments: boolean;
@@ -57,6 +67,20 @@ const DEFAULT_CONFIG: M2JSConfig = {
     format: 'table',
     includeMetrics: true,
     includeSuggestions: true,
+  },
+  duplicateCode: {
+    minLines: 5,
+    minTokens: 50,
+    ignorePatterns: [
+      '**/*.test.*',
+      '**/*.spec.*',
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/build/**',
+    ],
+    includeContext: true,
+    includeSuggestions: true,
+    format: 'table',
   },
   extraction: {
     includeComments: true,

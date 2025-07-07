@@ -21,6 +21,7 @@ import { isDirectory, isFile, scanDirectory } from './file-scanner';
 import { processBatch } from './batch-processor';
 import { analyzeDependencies } from './dependency-analyzer';
 import { executeDeadCodeAnalysis, getDeadCodeHelpText } from './dead-code-cli';
+import { executeDuplicateCodeAnalysis, getDuplicateCodeHelpText } from './duplicate-code-cli';
 import { ConfigLoader } from './config-loader';
 
 // Read version from package.json
@@ -70,12 +71,27 @@ program
     'detect unused exports and imports (dead code analysis)'
   )
   .option(
+    '--detect-duplicates',
+    'detect duplicate code blocks using jscpd integration'
+  )
+  .option(
+    '--min-lines <number>',
+    'minimum lines to consider as duplicate (default: 5)',
+    parseInt
+  )
+  .option(
+    '--min-tokens <number>',
+    'minimum tokens to consider as duplicate (default: 50)',
+    parseInt
+  )
+  .option(
     '--format <type>',
-    'output format for dead code analysis: table, json (default: table)',
+    'output format for analysis: table, json (default: table)',
     'table'
   )
   .option('--init-config', 'generate example .m2jsrc configuration file')
   .option('--help-dead-code', 'show detailed help for dead code analysis')
+  .option('--help-duplicates', 'show detailed help for duplicate code analysis')
   .action(async (inputPath: string | undefined, options: CliOptions) => {
     try {
       // Handle special commands first
@@ -89,12 +105,17 @@ program
         return;
       }
 
+      if (options.helpDuplicates) {
+        console.log(getDuplicateCodeHelpText());
+        return;
+      }
+
       // Check if path is required for the command
       if (!inputPath) {
         console.error(chalk.red('Error: path argument is required'));
         console.log(
           chalk.blue(
-            'Use --init-config to generate configuration or --help-dead-code for help'
+            'Use --init-config to generate configuration, --help-dead-code or --help-duplicates for help'
           )
         );
         process.exit(1);
@@ -124,6 +145,12 @@ async function processInput(
   // Route to dead code analysis if --detect-unused option is used
   if (options.detectUnused) {
     await processDeadCodeAnalysis(resolvedPath, options);
+    return;
+  }
+
+  // Route to duplicate code analysis if --detect-duplicates option is used
+  if (options.detectDuplicates) {
+    await processDuplicateCodeAnalysis(resolvedPath, options);
     return;
   }
 
@@ -399,6 +426,57 @@ async function processDeadCodeAnalysis(
   };
 
   await executeDeadCodeAnalysis(files, deadCodeOptions);
+}
+
+async function processDuplicateCodeAnalysis(
+  inputPath: string,
+  options: CliOptions
+): Promise<void> {
+  const resolvedPath = path.resolve(inputPath);
+
+  // Determine input type and collect files
+  let files: string[] = [];
+
+  const isDir = await isDirectory(resolvedPath);
+  const isFileTarget = await isFile(resolvedPath);
+
+  if (isDir) {
+    console.log(
+      chalk.blue(`Scanning directory: ${path.basename(resolvedPath)}`)
+    );
+    const scanResult = await scanDirectory(resolvedPath);
+    files = scanResult.files;
+
+    if (files.length === 0) {
+      throw new Error(
+        `No TypeScript/JavaScript files found in directory: ${resolvedPath}`
+      );
+    }
+
+    console.log(
+      chalk.blue(`Found ${files.length} TypeScript/JavaScript files`)
+    );
+  } else if (isFileTarget) {
+    if (!resolvedPath.match(/\.(ts|tsx|js|jsx)$/)) {
+      throw new Error(
+        `Unsupported file type: ${resolvedPath}. Only .ts, .tsx, .js, .jsx are supported.`
+      );
+    }
+    files = [resolvedPath];
+  } else {
+    throw new Error(`Path not found: ${resolvedPath}`);
+  }
+
+  // Execute duplicate code analysis
+  const duplicateOptions = {
+    format: options.format as 'table' | 'json',
+    minLines: options.minLines,
+    minTokens: options.minTokens,
+    includeContext: true,
+    includeSuggestions: true,
+  };
+
+  await executeDuplicateCodeAnalysis(files, duplicateOptions);
 }
 
 /**

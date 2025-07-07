@@ -69,9 +69,13 @@ export interface CliOptions {
   semanticAnalysis?: boolean;
   aiEnhanced?: boolean;
   detectUnused?: boolean;
+  detectDuplicates?: boolean;
+  minLines?: number;
+  minTokens?: number;
   format?: 'table' | 'json';
   initConfig?: boolean;
   helpDeadCode?: boolean;
+  helpDuplicates?: boolean;
 }
 
 export interface ScanResult {

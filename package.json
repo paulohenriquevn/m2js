@@ -98,6 +98,7 @@
     "@babel/traverse": "^7.28.0",
     "@babel/types": "^7.28.0",
     "chalk": "^4.1.2",
-    "commander": "^14.0.0"
+    "commander": "^14.0.0",
+    "jscpd": "^4.0.5"
   }
 }
