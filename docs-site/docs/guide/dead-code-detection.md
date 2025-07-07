@@ -1,8 +1,8 @@
-# 🧹 Dead Code Detection Guide
+# Dead Code Detection Guide
 
 M2JS Dead Code Detection is an intelligent assistant that goes beyond traditional linters to provide **confidence-based analysis** and **actionable removal suggestions** for unused code in TypeScript/JavaScript projects.
 
-## 🆚 Why Not Just Use ESLint?
+## Why Not Just Use ESLint?
 
 ### **The Honest Truth: We're Not Replacing ESLint**
 
@@ -19,19 +19,19 @@ src/config.ts:5:1 - warning: 'default' is defined but never used
 
 ### **What M2JS Tells You:**
 ```bash
-🔥 Remove function: unusedFunction [HIGH CONFIDENCE] ✅ SAFE TO REMOVE
+Remove function: unusedFunction [HIGH CONFIDENCE] SAFE TO REMOVE
     # Remove lines around 25 in utils.ts
 
-⚠️  Review function: createApi [MEDIUM CONFIDENCE] ⚠️ REVIEW NEEDED  
+Review function: createApi [MEDIUM CONFIDENCE] REVIEW NEEDED  
     Risk: Export name suggests it may be used by external packages
 
-🚨 Review default export [LOW CONFIDENCE] 🚨 HIGH RISK
+Review default export [LOW CONFIDENCE] HIGH RISK
     Risks: Default export, Configuration file - may be loaded dynamically
 ```
 
 **Your reaction:** *"Perfect! I can safely remove unusedFunction right now, review createApi later, and be extra careful with that config default export."*
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Installation
 
@@ -56,11 +56,11 @@ m2js --init-config
 m2js --help-dead-code
 ```
 
-## 🧠 Intelligence Behind the Analysis
+## Intelligence Behind the Analysis
 
 ### **Confidence Levels Explained**
 
-#### **🟢 HIGH Confidence - Safe to Remove**
+#### HIGH Confidence - Safe to Remove
 - Simple internal functions with clear names
 - Variables/constants not following external API patterns
 - Functions clearly marked as internal/private in naming
@@ -73,7 +73,7 @@ const TEMP_VALUE = 42;
 class PrivateUtility {}
 ```
 
-#### **🟡 MEDIUM Confidence - Review Recommended**
+#### MEDIUM Confidence - Review Recommended
 - Functions with external-style naming patterns
 - Exports in main directories but not obviously public
 - Type definitions that might be used in annotations
@@ -86,7 +86,7 @@ export const API_CONFIG = {};
 export interface UserData {}
 ```
 
-#### **🔴 LOW Confidence - High Risk**
+#### LOW Confidence - High Risk
 - Default exports (can be imported with any name)
 - Exports in index files or public directories
 - Configuration files that might be loaded dynamically
@@ -101,32 +101,32 @@ export default class SomeClass {}  // Could be imported as anything
 
 ### **Risk Assessment Factors**
 
-#### **🚨 Public API Patterns**
+#### Public API Patterns
 - Files in `lib/`, `public/`, `api/` directories
 - Files named `index.*` (common entry points)
 - Export names matching `create*`, `use*`, `get*`, `*Config`, `*Utils`
 
-#### **⚠️ Framework & Side-Effect Patterns**
+#### Framework & Side-Effect Patterns
 - React imports (might be used implicitly in JSX)
 - CSS/SCSS imports (side-effect imports)
 - Polyfill imports (`core-js`, etc.)
 
-#### **🔍 Type System Patterns**
+#### Type System Patterns
 - Interface/Type exports (might be used in type annotations only)
 - Names ending in `Type`, `Interface`, or starting with `I`
 
-#### **📁 File Location Signals**
+#### File Location Signals
 - Test files (`.test.*`, `.spec.*`) - might be used by test frameworks
 - Configuration files - might be loaded dynamically
 
-## 🛠️ Practical Usage Guide
+## Practical Usage Guide
 
 ### **Phase 1: Quick Wins (Start Here)**
 ```bash
 # 1. Run analysis
 m2js src --detect-unused
 
-# 2. Look for "✅ SAFE TO REMOVE" items  
+# 2. Look for "SAFE TO REMOVE" items  
 # 3. Copy-paste the provided commands
 # 4. Remove safe items immediately
 ```
@@ -134,7 +134,7 @@ m2js src --detect-unused
 **Example workflow:**
 ```bash
 # M2JS Output:
-🔥 Remove function: tempHelper
+Remove function: tempHelper
    # Remove lines around 25 in utils.ts
 
 # You execute:
@@ -143,7 +143,7 @@ m2js src --detect-unused
 
 ### **Phase 2: Review Items (Medium Risk)**
 ```bash
-# 1. Look for "⚠️ REVIEW BEFORE REMOVING" items
+# 1. Look for "REVIEW BEFORE REMOVING" items
 # 2. Check each risk factor mentioned
 # 3. Verify no external usage
 # 4. Remove if confirmed safe
@@ -152,22 +152,22 @@ m2js src --detect-unused
 **Decision tree for medium confidence:**
 ```
 Is this function/export used by:
-├─ External packages? ❌ → DON'T REMOVE
-├─ Other teams/projects? ❌ → DON'T REMOVE  
-├─ Dynamic imports? ❌ → DON'T REMOVE
-├─ Test frameworks? ❌ → DON'T REMOVE
-└─ None of the above? ✅ → SAFE TO REMOVE
+├─ External packages? NO → DON'T REMOVE
+├─ Other teams/projects? NO → DON'T REMOVE  
+├─ Dynamic imports? NO → DON'T REMOVE
+├─ Test frameworks? NO → DON'T REMOVE
+└─ None of the above? YES → SAFE TO REMOVE
 ```
 
 ### **Phase 3: High-Risk Analysis (Careful)**
 ```bash
-# 1. Look for "🚨 HIGH RISK" items
+# 1. Look for "HIGH RISK" items
 # 2. Read all risk factors carefully
 # 3. Consider keeping unless absolutely certain
 # 4. Document decisions for future reference
 ```
 
-## ⚙️ Configuration & Performance
+## Configuration & Performance
 
 ### **Project Setup**
 ```bash
@@ -215,7 +215,7 @@ M2JS_CHUNK_SIZE=10 M2JS_CACHE_SIZE=2000 m2js src --detect-unused
 M2JS_SHOW_PROGRESS=false m2js src --detect-unused --format json
 ```
 
-## 🔄 Workflow Integration
+## Workflow Integration
 
 ### **Pre-Refactoring Cleanup**
 ```bash
@@ -260,7 +260,7 @@ m2js src --detect-unused     # Understand current code health
 m2js src --ai-enhanced       # Get AI-ready documentation
 ```
 
-## 🎯 Advanced Patterns
+## Advanced Patterns
 
 ### **Monorepo Setup**
 ```bash
@@ -313,7 +313,7 @@ m2js legacy-system --detect-unused | grep "HIGH RISK" -A5 > review-later.txt
 }
 ```
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### **Common Issues**
 
@@ -359,7 +359,7 @@ m2js --init-config
 }
 ```
 
-## 📚 Examples & Case Studies
+## Examples & Case Studies
 
 ### **Real-World Example: E-commerce Cleanup**
 
@@ -399,7 +399,7 @@ m2js src --detect-unused
 - 60% faster code reviews (less noise)
 - 90% developer confidence in removal decisions
 
-## 🔗 Integration with Other Tools
+## Integration with Other Tools
 
 ### **With ESLint**
 ```json
@@ -420,21 +420,21 @@ m2js src --detect-unused
 }
 ```
 
-## 🚀 Best Practices
+## Best Practices
 
 ### **Do's**
-- ✅ Start with HIGH confidence removals
-- ✅ Always run tests after removing code
-- ✅ Use configuration files for team consistency
-- ✅ Integrate into your development workflow
-- ✅ Document decisions for LOW confidence items
+- Start with HIGH confidence removals
+- Always run tests after removing code
+- Use configuration files for team consistency
+- Integrate into your development workflow
+- Document decisions for LOW confidence items
 
 ### **Don'ts**
-- ❌ Remove LOW confidence items without careful analysis
-- ❌ Skip testing after removals
-- ❌ Ignore risk factors mentioned in output
-- ❌ Remove framework-specific patterns blindly
-- ❌ Use as the only tool (complement with ESLint)
+- Remove LOW confidence items without careful analysis
+- Skip testing after removals
+- Ignore risk factors mentioned in output
+- Remove framework-specific patterns blindly
+- Use as the only tool (complement with ESLint)
 
 ### **Team Guidelines**
 1. **Daily Development:** Use for quick cleanup during feature work

@@ -24,22 +24,22 @@ hero:
       link: https://github.com/paulohenriquevn/m2js
 
 features:
-  - title: 🚀 60-90% Token Reduction
+  - title: 60-90% Token Reduction
     details: Dramatically reduce LLM context size while preserving complete meaning and business logic
   
-  - title: 🧹 Smart Dead Code Detection
+  - title: Smart Dead Code Detection
     details: Find unused exports/imports with confidence levels, risk assessment, and actionable removal commands
   
-  - title: 🤖 AI-Enhanced Analysis
+  - title: AI-Enhanced Analysis
     details: Automatic business domain detection, architecture insights, and semantic relationship mapping
   
-  - title: ⚙️ Zero Configuration
+  - title: Zero Configuration
     details: Works out-of-the-box with smart defaults. Just install and run - no setup required
   
-  - title: 🔒 Privacy First
+  - title: Privacy First
     details: All processing runs locally. Zero cloud integration, no telemetry, works offline
   
-  - title: 🔧 VS Code Integration
+  - title: VS Code Integration
     details: Native IDE extension with interactive webviews and one-click documentation generation
 ---
 
@@ -47,10 +47,10 @@ features:
 
 **M2JS solves two critical development challenges:**
 
-### 🤖 AI-Ready Documentation
+### AI-Ready Documentation
 Transform verbose TypeScript code into clean, AI-ready documentation with massive token savings.
 
-### 🧹 Intelligent Dead Code Detection
+### Intelligent Dead Code Detection
 Find and safely remove unused code with confidence-based analysis that goes beyond traditional linters.
 
 ::: details Click to see the transformation
@@ -206,7 +206,7 @@ console.log('Logged in:', result.user.email);
 
 :::
 
-### 🧹 Smart Dead Code Detection Example
+### Smart Dead Code Detection Example
 
 ::: details Click to see dead code analysis in action
 
@@ -219,10 +219,10 @@ m2js src/ --detect-unused
 **Output**: Smart analysis with confidence levels
 
 ```bash
-🧹 Dead Code Analysis Report
-📁 Analyzing 45 files...
+Dead Code Analysis Report
+Analyzing 45 files...
 
-❌ Dead Exports (12 found):
+Dead Exports (12 found):
 ┌─────────────────────────────────────────────────┐
 │ src/utils.ts:25 [HIGH]
 │ └─ function internalHelper
@@ -230,34 +230,34 @@ m2js src/ --detect-unused
 │
 │ src/api.ts:15 [MEDIUM]
 │ └─ function createApi
-│    ⚠️ Risk factors:
+│    Risk factors:
 │      • Export name suggests it may be used by external packages
 │
 │ src/config.ts:5 [LOW] 
 │ └─ default export
-│    ⚠️ Risk factors:
+│    Risk factors:
 │      • Default export - may be imported with different names
 │      • Configuration file - may be loaded dynamically
 └─────────────────────────────────────────────────┘
 
-🛠️ Removal Suggestions:
+Removal Suggestions:
 ┌─────────────────────────────────────────────────┐
-│ ✅ SAFE TO REMOVE:
-│ 🔥 Remove function: internalHelper
+│ SAFE TO REMOVE:
+│ Remove function: internalHelper
 │   utils.ts:25
 │   # Remove lines around 25 in utils.ts
 │
-│ ⚠️ REVIEW BEFORE REMOVING:
-│ ⚡ Remove function: createApi
+│ REVIEW BEFORE REMOVING:
+│ Remove function: createApi
 │   api.ts:15
-│   ⚠️ Export name suggests it may be used by external packages
+│   Export name suggests it may be used by external packages
 │
-│ 🚨 HIGH RISK:
+│ HIGH RISK:
 │ 3 suggestions require careful analysis
 │ Manual review strongly recommended
 └─────────────────────────────────────────────────┘
 
-💡 Next Steps:
+Next Steps:
 1. Start with safe-to-remove items (high confidence)
 2. Use provided commands for quick removal
 3. Review medium-risk items manually
@@ -346,7 +346,7 @@ path: docs/ai/
 
 :::
 
-## 🆚 M2JS vs Traditional Linters: The Honest Truth
+## M2JS vs Traditional Linters: The Honest Truth
 
 ### **Are We Reinventing the Wheel? No, but we're making it intelligent.**
 
@@ -379,7 +379,7 @@ M2JS consistently delivers massive token savings across different project sizes:
 | **10-100KB** | 1-5s | **70-80%** | 50-100MB |
 | **100KB-1MB** | 5-15s | **80-90%** | 100-200MB |
 
-### **Dead Code Analysis Performance**
+### Dead Code Analysis Performance
 | Project Size | Files | Processing Time | Memory Usage | Cache Hit Rate |
 |--------------|-------|-----------------|--------------|----------------|
 | **Small** | < 50 | < 5s | < 100MB | N/A (first run) |

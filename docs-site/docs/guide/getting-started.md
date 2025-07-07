@@ -2,8 +2,8 @@
 
 Get up and running with M2JS in under 2 minutes! Choose your path:
 
-- **🤖 AI Documentation** - Transform code into LLM-friendly docs
-- **🧹 Dead Code Detection** - Find and safely remove unused code 
+- **AI Documentation** - Transform code into LLM-friendly docs
+- **Dead Code Detection** - Find and safely remove unused code 
 
 ## Installation
 
@@ -36,7 +36,7 @@ code --install-extension paulohenriquevn.m2js-vscode
 
 ## Choose Your Path
 
-### 🤖 AI Documentation
+### AI Documentation
 
 ```bash
 # Analyze a single TypeScript file
@@ -45,7 +45,7 @@ m2js UserService.ts
 # Output will be saved as UserService.md
 ```
 
-### 🧹 Dead Code Detection
+### Dead Code Detection
 
 ```bash
 # Analyze your project for unused code
@@ -58,7 +58,7 @@ m2js --init-config
 m2js --help-dead-code
 ```
 
-### 🔧 VS Code Extension
+### VS Code Extension
 
 1. **Right-click** any `.ts`, `.tsx`, `.js`, or `.jsx` file
 2. Select **"Generate M2JS Documentation"** or **"Analyze Dead Code"**
@@ -164,7 +164,7 @@ async findByEmail(email: string): Promise<User | null>
 
 ## Common Use Cases
 
-### 🤖 For AI Coding Assistants
+### For AI Coding Assistants
 
 ```bash
 # Generate optimized context for ChatGPT/Claude
@@ -173,7 +173,7 @@ m2js src/services/ --ai-enhanced --batch
 # Copy results to AI assistant for better responses
 ```
 
-### 🧹 For Code Maintenance
+### For Code Maintenance
 
 ```bash
 # Quick cleanup before refactoring
@@ -186,7 +186,7 @@ m2js src/ --detect-unused | grep "SAFE TO REMOVE" -A2
 m2js src/ --detect-unused --format json > dead-code-report.json
 ```
 
-### 📚 For Documentation
+### For Documentation
 
 ```bash
 # Generate project documentation
@@ -196,7 +196,7 @@ m2js src/ --batch --output docs/api/
 m2js src/ --graph --mermaid
 ```
 
-### 👥 For Team Onboarding
+### For Team Onboarding
 
 ```bash
 # Create comprehensive analysis for new developers
@@ -255,7 +255,7 @@ m2js --init-config
 - **[Best Practices](/guide/best-practices)** - Team workflows and patterns
 :::
 
-## 🚀 Quick Examples
+## Quick Examples
 
 ### AI Documentation Workflow
 ```bash
@@ -272,13 +272,13 @@ m2js UserService.ts
 m2js src/ --detect-unused
 
 # 2. Remove safe items immediately
-# Follow "✅ SAFE TO REMOVE" suggestions
+# Follow "SAFE TO REMOVE" suggestions
 
 # 3. Review medium-risk items
-# Check "⚠️ REVIEW BEFORE REMOVING" warnings
+# Check "REVIEW BEFORE REMOVING" warnings
 
 # 4. Keep high-risk items
-# Document "🚨 HIGH RISK" decisions
+# Document "HIGH RISK" decisions
 ```
 
 ## Need Help?
