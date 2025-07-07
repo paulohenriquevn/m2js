@@ -1,0 +1,468 @@
+# M2JS - LLM Documentation Guide
+
+## Overview
+M2JS (Markdown from JavaScript) is a CLI tool that transforms TypeScript/JavaScript code into LLM-friendly Markdown documentation AND intelligently detects dead code with confidence levels and actionable removal suggestions.
+
+## Core Functionality
+
+### 1. AI-Ready Documentation Generation
+- Extracts exported functions, classes, interfaces, and types from TS/JS files
+- Converts to clean Markdown format optimized for LLM consumption
+- Achieves 60-90% token reduction while preserving complete meaning
+- Includes JSDoc comments and type information
+- Generates dependency graphs and architecture insights
+
+### 2. Smart Dead Code Detection
+- Analyzes unused exports and imports across entire codebase
+- Provides confidence levels: HIGH (safe to remove), MEDIUM (review recommended), LOW (high risk)
+- Performs risk assessment for public APIs, framework patterns, and configuration files
+- Generates actionable removal suggestions with ready-to-execute commands
+- Cross-file analysis to understand actual usage patterns
+
+## Key Differentiators vs Traditional Tools
+
+### vs ESLint
+- ESLint: "This is unused" (binary detection)
+- M2JS: "This is unused AND here's how to safely remove it" (confidence-based with context)
+
+### vs ts-unused-exports
+- ts-unused-exports: Lists unused exports
+- M2JS: Lists unused exports + confidence levels + risk factors + removal commands
+
+### vs knip
+- knip: Project-wide unused code detection
+- M2JS: Same detection + intelligence about removal safety + actionable suggestions
+
+## Architecture
+
+### Technology Stack
+- Node.js 16+ runtime
+- TypeScript 5.0+ for type safety
+- Babel Parser for AST analysis (supports TS, TSX, JS, JSX)
+- Commander.js for CLI interface
+- Chalk for terminal output formatting
+- No external API dependencies (everything runs locally)
+
+### Core Components
+1. **File Scanner** - Discovers and filters TypeScript/JavaScript files
+2. **AST Parser** - Uses Babel to parse code into Abstract Syntax Trees
+3. **Export Analyzer** - Extracts all exported functions, classes, variables, types
+4. **Import Analyzer** - Tracks import statements and their usage
+5. **Cross-Reference Engine** - Matches exports to imports across files
+6. **Risk Assessment Engine** - Evaluates removal safety with context awareness
+7. **Suggestion Generator** - Creates actionable removal commands
+8. **Markdown Generator** - Converts code to LLM-optimized documentation
+9. **Performance Optimizer** - LRU caching, chunk processing, progress indicators
+
+### Dead Code Analysis Pipeline
+1. Scan project files (respects .gitignore and configurable patterns)
+2. Parse each file into AST using Babel
+3. Extract all exports (functions, classes, variables, types, default exports)
+4. Extract all imports and track their usage in code
+5. Cross-reference exports against imports across entire project
+6. Identify never-imported exports as "dead"
+7. Assess removal risk based on multiple factors:
+   - Export naming patterns (createX, useX, getX suggest external API)
+   - File location (index.js, lib/, public/ are risky)
+   - Export type (default exports are higher risk)
+   - Framework patterns (React, Vue detection)
+   - Configuration file detection
+8. Generate confidence levels and actionable suggestions
+9. Output formatted results with removal commands
+
+## Risk Assessment Intelligence
+
+### HIGH Confidence Indicators
+- Simple internal function names (helper, internal, temp, private)
+- Clearly unused variables and constants
+- Functions not matching external API patterns
+- Non-public file locations
+
+### MEDIUM Confidence Indicators  
+- External-style naming (createUser, getConfig, ApiClient)
+- Exports in main source directories
+- Type definitions and interfaces
+- Utility functions that could be public APIs
+
+### LOW Confidence Indicators
+- Default exports (can be imported with any name)
+- Exports in index files or entry points
+- Configuration files (may be loaded dynamically)
+- Framework-specific patterns
+- Public directory locations (lib/, public/, api/)
+
+### Risk Factors Detected
+- Public API naming patterns
+- Framework imports (React, Vue may be used implicitly)
+- Side-effect imports (CSS, polyfills)
+- Test file patterns
+- Configuration file patterns
+- Dynamic import possibilities
+
+## Performance Features
+
+### Intelligent Caching
+- LRU cache for parsed file results
+- Timestamp-based cache invalidation
+- 80%+ cache hit rates on subsequent runs
+- Configurable cache size (default: 1000 files)
+
+### Memory Optimization
+- Chunk processing to handle large codebases
+- Garbage collection between processing batches
+- Configurable chunk sizes (default: 50 files)
+- Memory-efficient AST processing
+
+### Progress Indicators
+- Real-time progress bars for large projects
+- File-by-file processing status
+- Time estimates and completion metrics
+- Configurable progress display
+
+## Configuration System
+
+### .m2jsrc Configuration File
+```json
+{
+  "deadCode": {
+    "enableCache": true,
+    "maxCacheSize": 1000,
+    "chunkSize": 50,
+    "showProgress": true,
+    "format": "table",
+    "includeMetrics": true,
+    "includeSuggestions": true
+  },
+  "files": {
+    "extensions": [".ts", ".tsx", ".js", ".jsx"],
+    "ignorePatterns": [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/*.test.*",
+      "**/*.spec.*"
+    ],
+    "maxFileSize": 10
+  }
+}
+```
+
+### Environment Variables
+- M2JS_CACHE_ENABLED: Enable/disable parsing cache
+- M2JS_CACHE_SIZE: Maximum files in cache
+- M2JS_CHUNK_SIZE: Files processed per chunk
+- M2JS_SHOW_PROGRESS: Display progress indicators
+- M2JS_MAX_FILE_SIZE: Maximum file size in MB
+
+## CLI Commands
+
+### Basic Usage
+```bash
+# AI Documentation Generation
+m2js src/UserService.ts                    # Single file analysis
+m2js src/ --batch                          # Directory processing
+m2js src/ --output docs/api/               # Custom output location
+
+# Dead Code Detection
+m2js src/ --detect-unused                  # Analyze entire project
+m2js src/ --detect-unused --format json    # JSON output for CI/CD
+m2js --init-config                         # Generate configuration file
+m2js --help-dead-code                      # Detailed dead code help
+```
+
+### Advanced Options
+```bash
+# Performance tuning
+M2JS_CHUNK_SIZE=100 m2js large-project --detect-unused
+M2JS_CACHE_SIZE=2000 m2js src --detect-unused
+M2JS_SHOW_PROGRESS=false m2js src --detect-unused --format json
+
+# Custom file filtering
+m2js src/ --detect-unused --ignore-patterns "**/*.stories.*,**/storybook/**"
+```
+
+## Output Formats
+
+### Dead Code Analysis Output
+```
+Dead Code Analysis Report
+Analyzing 45 files...
+
+Dead Exports (12 found):
+┌─────────────────────────────────────────────────┐
+│ src/utils.ts:25 [HIGH]
+│ └─ function internalHelper
+│    Export never imported - safe to remove
+│
+│ src/api.ts:15 [MEDIUM]
+│ └─ function createApi
+│    Risk factors:
+│      • Export name suggests it may be used by external packages
+│
+│ src/config.ts:5 [LOW] 
+│ └─ default export
+│    Risk factors:
+│      • Default export - may be imported with different names
+│      • Configuration file - may be loaded dynamically
+└─────────────────────────────────────────────────┘
+
+Removal Suggestions:
+┌─────────────────────────────────────────────────┐
+│ SAFE TO REMOVE:
+│ Remove function: internalHelper
+│   utils.ts:25
+│   # Remove lines around 25 in utils.ts
+│
+│ REVIEW BEFORE REMOVING:
+│ Remove function: createApi
+│   api.ts:15
+│   Export name suggests it may be used by external packages
+│
+│ HIGH RISK:
+│ 3 suggestions require careful analysis
+│ Manual review strongly recommended
+└─────────────────────────────────────────────────┘
+```
+
+### AI Documentation Output
+```markdown
+# UserService.ts
+
+## Business Context
+**Domain**: User Management (95% confidence)
+**Framework**: TypeScript
+**Patterns**: Service Layer, Repository Pattern
+
+## Functions
+
+### createUser
+```typescript
+async createUser(userData: Omit<User, 'id'>): Promise<User>
+```
+**Purpose**: Create a new user with validation
+**Business Rules**: Auto-generates ID using timestamp
+**Usage Pattern**: User registration workflow
+
+### findByEmail
+```typescript
+async findByEmail(email: string): Promise<User | null>
+```
+**Purpose**: Find user by email address
+**Usage Pattern**: User lookup and authentication
+**Returns**: User object or null if not found
+```
+
+## Team Integration Workflows
+
+### Pre-Refactoring Cleanup
+```bash
+npm run lint                 # Fix code quality issues
+m2js src --detect-unused     # Remove dead code safely
+npm run test                 # Ensure nothing breaks
+# Now refactor with confidence
+```
+
+### Code Review Process
+```bash
+# Reviewer workflow
+m2js src --detect-unused > dead-code-report.txt
+# Review the report alongside code changes
+# Suggest removing safe items in review comments
+```
+
+### CI/CD Integration
+```yaml
+# .github/workflows/code-quality.yml
+- name: Dead Code Analysis
+  run: |
+    npm install -g @paulohenriquevn/m2js
+    m2js src --detect-unused --format json > dead-code.json
+    
+    # Fail if too much dead code accumulates
+    DEAD_COUNT=$(jq '.deadExports | length' dead-code.json)
+    if [ "$DEAD_COUNT" -gt 50 ]; then
+      echo "Too much dead code detected: $DEAD_COUNT items"
+      exit 1
+    fi
+```
+
+## Framework-Specific Patterns
+
+### React Projects
+- Detects React imports that may be used implicitly in JSX
+- Recognizes Storybook patterns (*.stories.*)
+- Identifies test setup files and entry points
+- Handles component export patterns
+
+### Node.js APIs
+- Recognizes route handlers that may be auto-registered
+- Identifies middleware that may be used dynamically
+- Detects configuration files loaded at runtime
+- Handles express/fastify patterns
+
+### TypeScript Specific
+- Analyzes type-only imports and exports
+- Detects interface usage in type annotations
+- Handles generic type parameters
+- Recognizes declaration file patterns
+
+## Performance Benchmarks
+
+### Dead Code Analysis Performance
+- Small projects (<50 files): <5 seconds, <100MB memory
+- Medium projects (50-500 files): 10-30 seconds, 100-300MB memory
+- Large projects (500-2000 files): 30-120 seconds, 300-500MB memory
+- Enterprise projects (>2000 files): 2-10 minutes, 500MB-1GB memory
+
+### AI Documentation Performance
+- Files <10KB: <1 second, 60-70% token reduction
+- Files 10-100KB: 1-5 seconds, 70-80% token reduction
+- Files 100KB-1MB: 5-15 seconds, 80-90% token reduction
+
+### Cache Performance
+- First run: 0% cache hit rate (establishes cache)
+- Subsequent runs: 60-90% cache hit rate
+- Cache invalidation: Automatic on file modification
+- Memory usage: ~1KB per cached file
+
+## Common Use Cases
+
+### Legacy Code Modernization
+1. Run initial analysis to understand current state
+2. Remove high-confidence dead code immediately
+3. Review medium-confidence items with team
+4. Document decisions for low-confidence items
+5. Track progress over time with metrics
+
+### Development Workflow Integration
+1. Daily cleanup: Quick runs during feature development
+2. Pre-commit hooks: Prevent dead code accumulation
+3. Code reviews: Include M2JS analysis in PR process
+4. Refactoring preparation: Clean before major changes
+
+### AI-Assisted Development
+1. Extract code context for LLM prompts
+2. Generate documentation for external AI tools
+3. Create summaries for architecture reviews
+4. Prepare context for code generation requests
+
+## Best Practices
+
+### Do's
+- Start with HIGH confidence removals
+- Always run tests after removing code
+- Use configuration files for team consistency
+- Integrate into development workflow
+- Document decisions for LOW confidence items
+
+### Don'ts
+- Remove LOW confidence items without careful analysis
+- Skip testing after removals
+- Ignore risk factors mentioned in output
+- Remove framework-specific patterns blindly
+- Use as the only tool (complement with ESLint)
+
+### Team Guidelines
+1. Daily Development: Use for quick cleanup during feature work
+2. Code Reviews: Include M2JS analysis in PR reviews
+3. Refactoring: Always run before major refactoring
+4. Legacy Migration: Use for understanding existing codebases
+5. Documentation: Combine with AI documentation for complete context
+
+## Troubleshooting
+
+### Common Issues
+**False Positives**: Function appears unused but is actually used
+- Solution: Check for dynamic imports, string-based requires, framework auto-registration
+- Add patterns to ignore list in configuration
+
+**Performance Issues**: Slow analysis on large projects
+- Solution: Tune chunk size, increase cache size, check file size limits
+- Use environment variables for optimization
+
+**Too Many False Positives**: Conservative analysis needed
+- Solution: Adjust ignore patterns, use JSON output for programmatic filtering
+- Focus on HIGH confidence items only
+
+### Framework-Specific Issues
+**React**: JSX may use imports implicitly
+- Solution: M2JS detects React patterns automatically
+- Add Storybook and test patterns to ignore list
+
+**Node.js**: Route handlers may be auto-registered
+- Solution: Add route directories to ignore patterns
+- Document dynamic loading patterns for team
+
+## Security and Privacy
+
+### Local Processing
+- All analysis runs locally on your machine
+- No code is ever sent to external servers
+- No telemetry or data collection
+- Works completely offline
+
+### Export-Only Analysis
+- Only analyzes exported code (public interface)
+- Private implementation details never included in documentation
+- Respects code privacy and security
+
+### Configuration Security
+- Configuration files should not contain secrets
+- Environment variables for performance tuning only
+- No API keys or tokens required
+
+## Installation and Setup
+
+### NPM Installation
+```bash
+# Global installation (recommended)
+npm install -g @paulohenriquevn/m2js
+
+# Project-specific installation
+npm install --save-dev @paulohenriquevn/m2js
+```
+
+### Verification
+```bash
+m2js --version                    # Verify installation
+m2js --help                      # General help
+m2js --help-dead-code            # Dead code specific help
+```
+
+### First Usage
+```bash
+# Generate configuration
+m2js --init-config
+
+# Analyze your project
+m2js src --detect-unused
+
+# Generate documentation
+m2js src/UserService.ts
+```
+
+## Exit Codes
+- 0: Success (includes informational dead code reports)
+- 1: General error (file not found, unsupported type)
+- 2: Parse error (invalid syntax)
+- 3: Permission error
+- 4: Configuration error (.m2jsrc issues)
+
+## Supported File Types
+- .ts (TypeScript)
+- .tsx (TypeScript React)
+- .js (JavaScript)
+- .jsx (JavaScript React)
+
+## Version Information
+- Current version: 1.0.1
+- Node.js requirement: >=16.0.0
+- TypeScript support: Full (including latest features)
+- License: MIT
+
+## Links and Resources
+- NPM Package: @paulohenriquevn/m2js
+- GitHub Repository: https://github.com/paulohenriquevn/m2js
+- VS Code Extension: Search "M2JS" in VS Code marketplace
+- Documentation: Complete guides available in repository
+
+This documentation provides comprehensive information about M2JS for LLM consumption, covering all features, technical details, usage patterns, and integration workflows.

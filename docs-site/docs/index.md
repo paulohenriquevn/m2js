@@ -11,11 +11,14 @@ hero:
     alt: M2JS Logo
   actions:
     - theme: brand
+      text: Install via NPM
+      link: https://www.npmjs.com/package/@paulohenriquevn/m2js
+    - theme: brand
       text: Get Started
       link: /guide/quick-start
     - theme: alt
       text: VS Code Extension
-      link: /extension/overview
+      link: https://marketplace.visualstudio.com/items?itemName=paulohenriquevn.m2js-vscode
     - theme: alt
       text: Dead Code Detection
       link: /guide/dead-code-detection
@@ -346,6 +349,57 @@ path: docs/ai/
 
 :::
 
+## Installation & Download
+
+### NPM Package (Recommended)
+
+::: code-group
+
+```bash [Global Installation]
+# Install globally (recommended for CLI usage)
+npm install -g @paulohenriquevn/m2js
+
+# Verify installation
+m2js --version
+```
+
+```bash [Project Dependency]
+# Install as project dependency
+npm install --save-dev @paulohenriquevn/m2js
+
+# Use in package.json scripts
+{
+  "scripts": {
+    "docs": "m2js src/ --batch",
+    "cleanup": "m2js src/ --detect-unused"
+  }
+}
+```
+
+```bash [VS Code Extension]
+# Install from VS Code Marketplace
+# Search for "M2JS" in Extensions
+
+# Or install via command line
+code --install-extension paulohenriquevn.m2js-vscode
+```
+
+:::
+
+### Download Links
+
+- **NPM Package**: [https://www.npmjs.com/package/@paulohenriquevn/m2js](https://www.npmjs.com/package/@paulohenriquevn/m2js)
+- **VS Code Extension**: [https://marketplace.visualstudio.com/items?itemName=paulohenriquevn.m2js-vscode](https://marketplace.visualstudio.com/items?itemName=paulohenriquevn.m2js-vscode)
+- **GitHub Repository**: [https://github.com/paulohenriquevn/m2js](https://github.com/paulohenriquevn/m2js)
+- **Documentation**: [https://paulohenriquevn.github.io/m2js/](https://paulohenriquevn.github.io/m2js/)
+
+### Requirements
+
+- **Node.js**: 16.0.0 or higher
+- **NPM**: 7.0.0 or higher (comes with Node.js)
+- **Operating System**: Windows, macOS, Linux
+- **File Types**: .ts, .tsx, .js, .jsx
+
 ## M2JS vs Traditional Linters: The Honest Truth
 
 ### **Are We Reinventing the Wheel? No, but we're making it intelligent.**
@@ -419,10 +473,10 @@ M2JS consistently delivers massive token savings across different project sizes:
 - [**CLI Reference**](/reference/cli) - All commands and options
 - [**Best Practices**](/guide/best-practices) - Real-world usage patterns
 
-### Tools & Extensions
-- [**VS Code Extension**](/extension/overview) - One-click integration
-- [**GitHub Pages Deployment**](/deployment/github-pages) - CI/CD integration
-- [**NPM Package**](https://www.npmjs.com/package/@paulohenriquevn/m2js) - Latest releases
+### Downloads & Tools
+- [**NPM Package**](https://www.npmjs.com/package/@paulohenriquevn/m2js) - Install CLI tool globally or as dependency
+- [**VS Code Extension**](https://marketplace.visualstudio.com/items?itemName=paulohenriquevn.m2js-vscode) - IDE integration with one-click analysis
+- [**GitHub Pages Deployment**](/deployment/github-pages) - CI/CD integration guide
 
 ### Community
 - [**GitHub Repository**](https://github.com/paulohenriquevn/m2js) - Issues, features, source code
@@ -435,8 +489,9 @@ M2JS consistently delivers massive token savings across different project sizes:
 
 **Get started in under 2 minutes:**
 
-[Get Started →](/guide/quick-start){ .get-started-btn }
-[VS Code Extension →](/extension/overview){ .extension-btn }
+[Install NPM Package →](https://www.npmjs.com/package/@paulohenriquevn/m2js){ .get-started-btn }
+[Get Started Guide →](/guide/quick-start){ .extension-btn }
+[VS Code Extension →](https://marketplace.visualstudio.com/items?itemName=paulohenriquevn.m2js-vscode){ .extension-btn }
 
 <style>
 .get-started-btn, .extension-btn {
