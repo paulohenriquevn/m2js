@@ -1,6 +1,6 @@
 {
   "name": "@paulohenriquevn/m2js",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Transform TypeScript/JavaScript code into LLM-friendly Markdown summaries + Smart Dead Code Detection. Extract exported functions, classes, and JSDoc comments for better AI context with 60%+ token reduction. Intelligent dead code removal with confidence levels and risk assessment.",
   "main": "dist/index.js",
   "bin": {
