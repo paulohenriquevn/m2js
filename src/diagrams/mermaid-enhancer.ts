@@ -32,7 +32,7 @@ export class MermaidEnhancer {
     if (options.title) {
       sections.push(`## ${options.title}`);
     } else {
-      sections.push('## 🗺️ Enhanced Dependency Map');
+      sections.push('## Enhanced Dependency Map');
     }
 
     // Add description
@@ -107,7 +107,7 @@ export class MermaidEnhancer {
 
       const fileName = path.basename(file);
       const classification = this.classifyFile(fileName);
-      const icon = NEUTRAL_NODE_TYPES[classification]?.icon || '📄';
+      const icon = NEUTRAL_NODE_TYPES[classification]?.icon || 'FILE';
 
       // Create styled node definition
       nodeDefinitions.push(

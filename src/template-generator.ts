@@ -47,7 +47,7 @@ export class TemplateGenerator {
   listDomains(): string {
     const sections: string[] = [];
 
-    sections.push('# 🎯 Available Domain Templates');
+    sections.push('# Available Domain Templates');
     sections.push('');
     sections.push(
       'Choose a domain template to guide your LLM-assisted development:'
@@ -164,9 +164,9 @@ export class TemplateGenerator {
     const fileName = `${spec.name}.ts`;
     const filePath =
       options.output || `./src/${this.inferDirectory(spec)}/${fileName}`;
-    sections.push(`# 📁 ${filePath}`);
+    sections.push(`# ${filePath}`);
     sections.push('');
-    sections.push('> **🤖 LLM IMPLEMENTATION GUIDE**');
+    sections.push('> **LLM IMPLEMENTATION GUIDE**');
     sections.push(
       '> This is a specification template for AI-guided development.'
     );
@@ -218,7 +218,7 @@ export class TemplateGenerator {
   ): string {
     const sections: string[] = [];
 
-    sections.push('## 🎯 Business Context');
+    sections.push('## Business Context');
     sections.push(`**Domain**: ${spec.category.domain}`);
     sections.push(
       `**Component Type**: ${spec.type} (${spec.category.pattern})`
@@ -243,11 +243,11 @@ export class TemplateGenerator {
   private generateComponentOverviewSection(spec: ComponentSpec): string {
     const sections: string[] = [];
 
-    sections.push('## 📋 Component Overview');
+    sections.push('## Component Overview');
     sections.push(`**Name**: ${spec.name}`);
     sections.push(`**Description**: ${spec.description}`);
     sections.push('');
-    sections.push('### 📦 Exports to Implement');
+    sections.push('### Exports to Implement');
     sections.push(
       `This component should export ${spec.exports.length} item(s):`
     );
@@ -271,7 +271,7 @@ export class TemplateGenerator {
     const interfaces = spec.exports.filter(e => e.type === 'interface');
 
     if (functions.length > 0) {
-      sections.push('## 🔧 Functions to Implement');
+      sections.push('## Functions to Implement');
       sections.push('');
       functions.forEach(func => {
         sections.push(this.generateFunctionSpec(func));
@@ -280,7 +280,7 @@ export class TemplateGenerator {
     }
 
     if (classes.length > 0) {
-      sections.push('## 🏗️ Classes to Implement');
+      sections.push('## Classes to Implement');
       sections.push('');
       classes.forEach(cls => {
         sections.push(this.generateClassSpec(cls));
@@ -289,7 +289,7 @@ export class TemplateGenerator {
     }
 
     if (interfaces.length > 0) {
-      sections.push('## 📋 Interfaces to Implement');
+      sections.push('## Interfaces to Implement');
       sections.push('');
       interfaces.forEach(iface => {
         sections.push(this.generateInterfaceSpec(iface));
@@ -398,7 +398,7 @@ export class TemplateGenerator {
   private generateImplementationSection(spec: ComponentSpec): string {
     const sections: string[] = [];
 
-    sections.push('## 🔨 Implementation Guide');
+    sections.push('## Implementation Guide');
     sections.push(`**Approach**: ${spec.implementation.approach}`);
     sections.push('');
 
@@ -471,7 +471,7 @@ export class TemplateGenerator {
   private generateTestingSection(spec: ComponentSpec): string {
     const sections: string[] = [];
 
-    sections.push('## 🧪 Testing Guide');
+    sections.push('## Testing Guide');
     sections.push(
       `**Testing Approach**: ${spec.implementation.testing.approach}`
     );

@@ -20,7 +20,7 @@ export class ClassDiagramGenerator {
     const sections: string[] = [];
 
     // Add title
-    const title = options.title || `🏗️ Class Diagram - ${parsedFile.fileName}`;
+    const title = options.title || `Class Diagram - ${parsedFile.fileName}`;
     sections.push(`## ${title}`);
 
     // Add description
@@ -159,7 +159,7 @@ export class ClassDiagramGenerator {
     const sections: string[] = [];
 
     // Add title
-    const title = options.title || '🏗️ Multi-File Class Diagram';
+    const title = options.title || 'Multi-File Class Diagram';
     sections.push(`## ${title}`);
 
     // Start Mermaid block

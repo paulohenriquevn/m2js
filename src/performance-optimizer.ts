@@ -14,8 +14,8 @@ interface FileCacheEntry {
   content: string;
   exports: ExportInfo[];
   imports: ImportInfo[];
-  mtime: number;  // Last modified time
-  size: number;   // File size for quick validation
+  mtime: number; // Last modified time
+  size: number; // File size for quick validation
 }
 
 /**
@@ -23,15 +23,19 @@ interface FileCacheEntry {
  */
 export interface PerformanceOptions {
   enableCache: boolean;
-  maxCacheSize: number;  // Max number of files to cache
-  chunkSize: number;     // Number of files to process in each chunk
+  maxCacheSize: number; // Max number of files to cache
+  chunkSize: number; // Number of files to process in each chunk
   showProgress: boolean;
 }
 
 /**
  * Progress callback function
  */
-export type ProgressCallback = (processed: number, total: number, currentFile: string) => void;
+export type ProgressCallback = (
+  processed: number,
+  total: number,
+  currentFile: string
+) => void;
 
 /**
  * File parsing cache manager
@@ -65,17 +69,19 @@ class FileParsingCache {
   /**
    * Get cached parsing results
    */
-  get(filePath: string): { exports: ExportInfo[]; imports: ImportInfo[] } | null {
+  get(
+    filePath: string
+  ): { exports: ExportInfo[]; imports: ImportInfo[] } | null {
     if (!this.isValid(filePath)) return null;
 
     const cached = this.cache.get(filePath)!;
-    
+
     // Update access order (LRU)
     this.updateAccessOrder(filePath);
-    
+
     return {
-      exports: [...cached.exports],  // Return copies to prevent mutation
-      imports: [...cached.imports]
+      exports: [...cached.exports], // Return copies to prevent mutation
+      imports: [...cached.imports],
     };
   }
 
@@ -83,14 +89,14 @@ class FileParsingCache {
    * Cache parsing results
    */
   set(
-    filePath: string, 
-    content: string, 
-    exports: ExportInfo[], 
+    filePath: string,
+    content: string,
+    exports: ExportInfo[],
     imports: ImportInfo[]
   ): void {
     try {
       const stats = statSync(filePath);
-      
+
       // Evict old entries if cache is full
       while (this.cache.size >= this.maxSize && this.accessOrder.length > 0) {
         const oldest = this.accessOrder.shift()!;
@@ -99,10 +105,10 @@ class FileParsingCache {
 
       this.cache.set(filePath, {
         content,
-        exports: [...exports],  // Store copies
+        exports: [...exports], // Store copies
         imports: [...imports],
         mtime: stats.mtimeMs,
-        size: stats.size
+        size: stats.size,
       });
 
       this.updateAccessOrder(filePath);
@@ -120,7 +126,7 @@ class FileParsingCache {
     if (index !== -1) {
       this.accessOrder.splice(index, 1);
     }
-    
+
     // Add to end (most recently used)
     this.accessOrder.push(filePath);
   }
@@ -138,7 +144,7 @@ class FileParsingCache {
    */
   getStats(): { size: number; hitRate?: number } {
     return {
-      size: this.cache.size
+      size: this.cache.size,
     };
   }
 }
@@ -158,7 +164,7 @@ export class OptimizedFileProcessor {
       maxCacheSize: 1000,
       chunkSize: 50,
       showProgress: false,
-      ...options
+      ...options,
     };
 
     this.cache = new FileParsingCache(this.options.maxCacheSize);
@@ -169,7 +175,10 @@ export class OptimizedFileProcessor {
    */
   async processFiles(
     files: string[],
-    parseFunction: (filePath: string, content: string) => { exports: ExportInfo[]; imports: ImportInfo[] },
+    parseFunction: (
+      filePath: string,
+      content: string
+    ) => { exports: ExportInfo[]; imports: ImportInfo[] },
     progressCallback?: ProgressCallback
   ): Promise<{ allExports: ExportInfo[]; allImports: ImportInfo[] }> {
     const allExports: ExportInfo[] = [];
@@ -178,7 +187,7 @@ export class OptimizedFileProcessor {
     // Process files in chunks to manage memory
     for (let i = 0; i < files.length; i += this.options.chunkSize) {
       const chunk = files.slice(i, i + this.options.chunkSize);
-      
+
       for (const filePath of chunk) {
         try {
           let result: { exports: ExportInfo[]; imports: ImportInfo[] };
@@ -206,7 +215,11 @@ export class OptimizedFileProcessor {
 
           // Report progress
           if (progressCallback) {
-            progressCallback(i + chunk.indexOf(filePath) + 1, files.length, filePath);
+            progressCallback(
+              i + chunk.indexOf(filePath) + 1,
+              files.length,
+              filePath
+            );
           }
         } catch (error) {
           throw new Error(
@@ -238,7 +251,7 @@ export class OptimizedFileProcessor {
       cacheHits: this.cacheHits,
       cacheMisses: this.cacheMisses,
       hitRate: total > 0 ? this.cacheHits / total : 0,
-      cacheSize: this.cache.getStats().size
+      cacheSize: this.cache.getStats().size,
     };
   }
 
@@ -259,14 +272,16 @@ export class OptimizedDataStructures {
   /**
    * Create efficient lookup map for imports
    */
-  static createImportLookupMap(imports: ImportInfo[]): Map<string, Set<string>> {
+  static createImportLookupMap(
+    imports: ImportInfo[]
+  ): Map<string, Set<string>> {
     const importMap = new Map<string, Set<string>>();
 
     for (const imp of imports) {
       // Resolve relative import paths efficiently
       const resolvedPath = this.resolveImportPath(imp.file, imp.from);
       let importNames = importMap.get(resolvedPath);
-      
+
       if (!importNames) {
         importNames = new Set();
         importMap.set(resolvedPath, importNames);
@@ -289,7 +304,10 @@ export class OptimizedDataStructures {
    */
   private static pathCache = new Map<string, string>();
 
-  private static resolveImportPath(fromFile: string, importPath: string): string {
+  private static resolveImportPath(
+    fromFile: string,
+    importPath: string
+  ): string {
     const cacheKey = `${fromFile}:${importPath}`;
     const cached = this.pathCache.get(cacheKey);
     if (cached) return cached;
@@ -297,7 +315,7 @@ export class OptimizedDataStructures {
     const fromDir = path.dirname(fromFile);
     const resolved = path.resolve(fromDir, importPath);
     const result = path.resolve(resolved);
-    
+
     // Cache the result
     this.pathCache.set(cacheKey, result);
     return result;
@@ -315,7 +333,7 @@ export class OptimizedDataStructures {
 
     for (let i = 0; i < exports.length; i += batchSize) {
       const batch = exports.slice(i, i + batchSize);
-      
+
       for (const exp of batch) {
         const normalizedPath = path.resolve(exp.file);
         const importedNames = importMap.get(normalizedPath);
@@ -352,10 +370,10 @@ export class ProgressIndicator {
    */
   update(processed: number, total: number, currentFile: string): void {
     const now = Date.now();
-    
+
     // Throttle updates to avoid overwhelming the console
     if (now - this.lastUpdate < 100 && processed < total) return;
-    
+
     this.lastUpdate = now;
 
     const percentage = Math.round((processed / total) * 100);
@@ -364,14 +382,18 @@ export class ProgressIndicator {
     const remaining = Math.max(0, estimatedTotal - elapsed);
 
     const fileName = path.basename(currentFile);
-    const progress = '█'.repeat(Math.floor(percentage / 2)) + '░'.repeat(50 - Math.floor(percentage / 2));
-    
+    const progress =
+      '█'.repeat(Math.floor(percentage / 2)) +
+      '░'.repeat(50 - Math.floor(percentage / 2));
+
     process.stdout.write(
-      `\r🔍 [${progress}] ${percentage}% (${processed}/${total}) ${fileName} - ${remaining.toFixed(1)}s remaining`
+      `\r[${progress}] ${percentage}% (${processed}/${total}) ${fileName} - ${remaining.toFixed(1)}s remaining`
     );
 
     if (processed === total) {
-      process.stdout.write(`\n✅ Analysis complete in ${elapsed.toFixed(1)}s\n`);
+      process.stdout.write(
+        `\nAnalysis complete in ${elapsed.toFixed(1)}s\n`
+      );
     }
   }
 }

@@ -89,7 +89,7 @@ function generateBusinessContextSection(context: unknown): string {
     businessRules?: string[];
   };
 
-  sections.push('## 🎯 Business Context');
+  sections.push('## Business Context');
   sections.push(
     `**Domain**: ${ctx.domain} (${ctx.confidence}% confidence)`
   );
@@ -215,7 +215,7 @@ function generateArchitectureSection(
 ): string {
   const sections: string[] = [];
 
-  sections.push('## 🏗️ Architecture Insights');
+  sections.push('## Architecture Insights');
 
   // Layer information
   if (insights.layerArchitecture) {
@@ -386,7 +386,7 @@ export function generateEnhancedDependencyAnalysis(
 function generateFullArchitectureSection(insights: unknown): string {
   const sections: string[] = [];
 
-  sections.push('## 🏗️ Complete Architecture Analysis');
+  sections.push('## Complete Architecture Analysis');
 
   // Layer architecture
   sections.push(`### ${insights.layerArchitecture.pattern}`);
@@ -406,13 +406,13 @@ function generateFullArchitectureSection(insights: unknown): string {
     insights.designPrinciples.forEach((principle: unknown) => {
       sections.push(`**${principle.principle}**`);
       if (principle.evidence.length > 0) {
-        sections.push('✅ Evidence:');
+        sections.push('Evidence:');
         principle.evidence.forEach((evidence: string) => {
           sections.push(`- ${evidence}`);
         });
       }
       if (principle.violations.length > 0) {
-        sections.push('⚠️ Potential Issues:');
+        sections.push('Potential Issues:');
         principle.violations.forEach((violation: string) => {
           sections.push(`- ${violation}`);
         });

@@ -59,7 +59,9 @@ export async function analyzeDeadCode(
 
   // Initialize performance optimizer
   const processor = new OptimizedFileProcessor(performanceOptions);
-  const progressIndicator = performanceOptions.showProgress ? new ProgressIndicator() : null;
+  const progressIndicator = performanceOptions.showProgress
+    ? new ProgressIndicator()
+    : null;
 
   // Extract exports and imports from all files using optimized processor
   const { allExports, allImports } = await processor.processFiles(
@@ -69,19 +71,29 @@ export async function analyzeDeadCode(
       const imports = extractImports(filePath, content);
       return { exports, imports };
     },
-    progressIndicator ? (processed, total, currentFile) => {
-      progressIndicator.update(processed, total, currentFile);
-    } : undefined
+    progressIndicator
+      ? (processed, total, currentFile) => {
+          progressIndicator.update(processed, total, currentFile);
+        }
+      : undefined
   );
 
   // Find dead exports by cross-referencing exports vs imports (optimized)
-  const deadExports = findDeadExportsOptimized(allExports, allImports, projectPath);
+  const deadExports = findDeadExportsOptimized(
+    allExports,
+    allImports,
+    projectPath
+  );
 
   // Find unused imports by checking if they're referenced in code
   const unusedImports = findUnusedImports(files);
 
   // Generate removal suggestions with confidence levels
-  const suggestions = generateRemovalSuggestions(deadExports, unusedImports, projectPath);
+  const suggestions = generateRemovalSuggestions(
+    deadExports,
+    unusedImports,
+    projectPath
+  );
 
   // Calculate metrics with performance stats
   const analysisTime = Date.now() - startTime;
@@ -369,8 +381,11 @@ function findDeadExports(
         riskFactors: [], // Default, will be updated
       };
 
-      const riskAssessment = assessExportRemovalRisk(baseDeadExport, projectPath);
-      
+      const riskAssessment = assessExportRemovalRisk(
+        baseDeadExport,
+        projectPath
+      );
+
       deadExports.push({
         ...baseDeadExport,
         confidence: riskAssessment.confidence,
@@ -506,7 +521,7 @@ function analyzeFileForUnusedImports(
         };
 
         const riskAssessment = assessImportRemovalRisk(baseUnusedImport);
-        
+
         unusedImports.push({
           ...baseUnusedImport,
           confidence: riskAssessment.confidence,
@@ -576,12 +591,17 @@ function calculateMetrics(
   // Estimate savings based on average lines per export/import
   const avgLinesPerExport = 15; // Conservative estimate
   const avgLinesPerImport = 1; // Import lines are usually single line
-  
+
   const estimatedSavingsKB = Math.round(
-    ((deadExports.length * avgLinesPerExport + unusedImports.length * avgLinesPerImport) * 50) / 1024
+    ((deadExports.length * avgLinesPerExport +
+      unusedImports.length * avgLinesPerImport) *
+      50) /
+      1024
   ); // ~50 chars per line
 
-  const metrics: DeadCodeMetrics & { performanceStats?: typeof performanceStats } = {
+  const metrics: DeadCodeMetrics & {
+    performanceStats?: typeof performanceStats;
+  } = {
     totalFiles: files.length,
     totalExports: allExports.length,
     totalImports: allImports.length,
@@ -590,11 +610,11 @@ function calculateMetrics(
     analysisTimeMs,
     estimatedSavingsKB,
   };
-  
+
   if (performanceStats) {
     metrics.performanceStats = performanceStats;
   }
-  
+
   return metrics;
 }
 

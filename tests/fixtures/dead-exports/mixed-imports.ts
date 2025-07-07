@@ -10,7 +10,7 @@ export function demonstrateUsage(): string {
   const result = usedFunction();
   const instance = new UsedClass();
   const value = instance.getValue();
-  
+
   // UnusedClass and UNUSED_CONSTANT are imported but never used
   return `${result} - ${value} - ${USED_CONSTANT}`;
 }

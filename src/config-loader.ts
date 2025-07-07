@@ -21,7 +21,7 @@ export interface M2JSConfig {
     includeMetrics: boolean;
     includeSuggestions: boolean;
   };
-  
+
   // Code extraction settings
   extraction: {
     includeComments: boolean;
@@ -30,14 +30,14 @@ export interface M2JSConfig {
     includeArchitectureInsights: boolean;
     includeSemanticAnalysis: boolean;
   };
-  
+
   // File processing settings
   files: {
     extensions: string[];
     ignorePatterns: string[];
     maxFileSize: number; // in MB
   };
-  
+
   // Output settings
   output: {
     format: 'markdown' | 'json';
@@ -94,7 +94,7 @@ export class ConfigLoader {
    * Load configuration from multiple sources with precedence:
    * 1. Environment variables (highest priority)
    * 2. .m2jsrc in current directory
-   * 3. .m2jsrc in home directory  
+   * 3. .m2jsrc in home directory
    * 4. Default configuration (lowest priority)
    */
   static loadConfig(projectPath?: string): M2JSConfig {
@@ -108,7 +108,10 @@ export class ConfigLoader {
     // Try to load from project directory
     if (projectPath) {
       const projectConfigPath = path.join(projectPath, '.m2jsrc');
-      config = this.mergeConfigs(config, this.loadConfigFile(projectConfigPath));
+      config = this.mergeConfigs(
+        config,
+        this.loadConfigFile(projectConfigPath)
+      );
     }
 
     // Try to load from current directory
@@ -137,7 +140,7 @@ export class ConfigLoader {
 
     try {
       const content = readFileSync(filePath, 'utf-8');
-      
+
       // Support both JSON and JavaScript module formats
       if (filePath.endsWith('.json') || content.trim().startsWith('{')) {
         return JSON.parse(content);
@@ -146,7 +149,9 @@ export class ConfigLoader {
         return JSON.parse(content);
       }
     } catch (error) {
-      console.warn(`Warning: Failed to load config from ${filePath}: ${(error as Error).message}`);
+      console.warn(
+        `Warning: Failed to load config from ${filePath}: ${(error as Error).message}`
+      );
       return null;
     }
   }
@@ -154,7 +159,10 @@ export class ConfigLoader {
   /**
    * Deep merge two configuration objects
    */
-  private static mergeConfigs(base: M2JSConfig, override: Partial<M2JSConfig> | null): M2JSConfig {
+  private static mergeConfigs(
+    base: M2JSConfig,
+    override: Partial<M2JSConfig> | null
+  ): M2JSConfig {
     if (!override) return base;
 
     const merged = { ...base };
@@ -188,24 +196,30 @@ export class ConfigLoader {
       result.deadCode.enableCache = env.M2JS_CACHE_ENABLED === 'true';
     }
     if (env.M2JS_CACHE_SIZE !== undefined) {
-      result.deadCode.maxCacheSize = parseInt(env.M2JS_CACHE_SIZE, 10) || result.deadCode.maxCacheSize;
+      result.deadCode.maxCacheSize =
+        parseInt(env.M2JS_CACHE_SIZE, 10) || result.deadCode.maxCacheSize;
     }
     if (env.M2JS_CHUNK_SIZE !== undefined) {
-      result.deadCode.chunkSize = parseInt(env.M2JS_CHUNK_SIZE, 10) || result.deadCode.chunkSize;
+      result.deadCode.chunkSize =
+        parseInt(env.M2JS_CHUNK_SIZE, 10) || result.deadCode.chunkSize;
     }
     if (env.M2JS_SHOW_PROGRESS !== undefined) {
       result.deadCode.showProgress = env.M2JS_SHOW_PROGRESS === 'true';
     }
     if (env.M2JS_FORMAT !== undefined) {
-      result.deadCode.format = (env.M2JS_FORMAT as 'table' | 'json') || result.deadCode.format;
+      result.deadCode.format =
+        (env.M2JS_FORMAT as 'table' | 'json') || result.deadCode.format;
     }
 
     // File processing settings
     if (env.M2JS_MAX_FILE_SIZE !== undefined) {
-      result.files.maxFileSize = parseInt(env.M2JS_MAX_FILE_SIZE, 10) || result.files.maxFileSize;
+      result.files.maxFileSize =
+        parseInt(env.M2JS_MAX_FILE_SIZE, 10) || result.files.maxFileSize;
     }
     if (env.M2JS_IGNORE_PATTERNS !== undefined) {
-      result.files.ignorePatterns = env.M2JS_IGNORE_PATTERNS.split(',').map(p => p.trim());
+      result.files.ignorePatterns = env.M2JS_IGNORE_PATTERNS.split(',').map(p =>
+        p.trim()
+      );
     }
 
     return result;
@@ -234,47 +248,51 @@ export class ConfigLoader {
    * Generate example configuration file content
    */
   static generateExampleConfig(): string {
-    return JSON.stringify({
-      // Dead code analysis settings
-      deadCode: {
-        enableCache: true,
-        maxCacheSize: 1000,
-        chunkSize: 50,
-        showProgress: true,
-        format: 'table',
-        includeMetrics: true,
-        includeSuggestions: true
+    return JSON.stringify(
+      {
+        // Dead code analysis settings
+        deadCode: {
+          enableCache: true,
+          maxCacheSize: 1000,
+          chunkSize: 50,
+          showProgress: true,
+          format: 'table',
+          includeMetrics: true,
+          includeSuggestions: true,
+        },
+
+        // Code extraction settings
+        extraction: {
+          includeComments: true,
+          includeUsageExamples: false,
+          includeBusinessContext: false,
+          includeArchitectureInsights: false,
+          includeSemanticAnalysis: false,
+        },
+
+        // File processing settings
+        files: {
+          extensions: ['.ts', '.tsx', '.js', '.jsx'],
+          ignorePatterns: [
+            '**/node_modules/**',
+            '**/dist/**',
+            '**/build/**',
+            '**/.next/**',
+            '**/coverage/**',
+            '**/*.test.*',
+            '**/*.spec.*',
+          ],
+          maxFileSize: 10,
+        },
+
+        // Output settings
+        output: {
+          format: 'markdown',
+          preserveStructure: true,
+        },
       },
-      
-      // Code extraction settings  
-      extraction: {
-        includeComments: true,
-        includeUsageExamples: false,
-        includeBusinessContext: false,
-        includeArchitectureInsights: false,
-        includeSemanticAnalysis: false
-      },
-      
-      // File processing settings
-      files: {
-        extensions: ['.ts', '.tsx', '.js', '.jsx'],
-        ignorePatterns: [
-          '**/node_modules/**',
-          '**/dist/**',
-          '**/build/**',
-          '**/.next/**',
-          '**/coverage/**',
-          '**/*.test.*',
-          '**/*.spec.*'
-        ],
-        maxFileSize: 10
-      },
-      
-      // Output settings
-      output: {
-        format: 'markdown',
-        preserveStructure: true
-      }
-    }, null, 2);
+      null,
+      2
+    );
   }
 }

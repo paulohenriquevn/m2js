@@ -31,7 +31,10 @@ program
     'Transform TypeScript/JavaScript code into LLM-friendly Markdown summaries'
   )
   .version('1.0.0')
-  .argument('[path]', 'TypeScript/JavaScript file or directory to convert (optional for some commands)')
+  .argument(
+    '[path]',
+    'TypeScript/JavaScript file or directory to convert (optional for some commands)'
+  )
   .option('-o, --output <file>', 'specify output file (only for single files)')
   .option('--no-comments', 'skip comment extraction')
   .option(
@@ -68,14 +71,8 @@ program
     'output format for dead code analysis: table, json (default: table)',
     'table'
   )
-  .option(
-    '--init-config',
-    'generate example .m2jsrc configuration file'
-  )
-  .option(
-    '--help-dead-code',
-    'show detailed help for dead code analysis'
-  )
+  .option('--init-config', 'generate example .m2jsrc configuration file')
+  .option('--help-dead-code', 'show detailed help for dead code analysis')
   .action(async (inputPath: string | undefined, options: CliOptions) => {
     try {
       // Handle special commands first
@@ -83,7 +80,7 @@ program
         await generateConfigFile();
         return;
       }
-      
+
       if (options.helpDeadCode) {
         console.log(getDeadCodeHelpText());
         return;
@@ -91,14 +88,18 @@ program
 
       // Check if path is required for the command
       if (!inputPath) {
-        console.error(chalk.red('❌ Error: path argument is required'));
-        console.log(chalk.blue('💡 Use --init-config to generate configuration or --help-dead-code for help'));
+        console.error(chalk.red('Error: path argument is required'));
+        console.log(
+          chalk.blue(
+            'Use --init-config to generate configuration or --help-dead-code for help'
+          )
+        );
         process.exit(1);
       }
 
       await processInput(inputPath, options);
     } catch (error) {
-      console.error(chalk.red(`❌ Error: ${(error as Error).message}`));
+      console.error(chalk.red(`Error: ${(error as Error).message}`));
       process.exit(1);
     }
   });
@@ -144,8 +145,8 @@ async function processSingleFile(
 ): Promise<void> {
   const resolvedPath = path.resolve(inputPath);
 
-  console.log(chalk.blue(`📁 Reading ${path.basename(resolvedPath)}...`));
-  console.log(chalk.blue(`🗂️  Resolving file path...`));
+  console.log(chalk.blue(`Reading ${path.basename(resolvedPath)}...`));
+  console.log(chalk.blue(`Resolving file path...`));
 
   try {
     await fs.access(resolvedPath);
@@ -159,7 +160,7 @@ async function processSingleFile(
     );
   }
 
-  console.log(chalk.blue('🔍 Parsing with Babel...'));
+  console.log(chalk.blue('Parsing with Babel...'));
   const content = await fs.readFile(resolvedPath, 'utf-8');
   const parsedFile = parseFile(resolvedPath, content);
 
@@ -168,28 +169,28 @@ async function processSingleFile(
   if (exportMetadata.totalFunctions > 0) {
     console.log(
       chalk.blue(
-        `✨ Extracting exported functions (${exportMetadata.totalFunctions} found)...`
+        `Extracting exported functions (${exportMetadata.totalFunctions} found)...`
       )
     );
   }
   if (exportMetadata.totalClasses > 0) {
     console.log(
       chalk.blue(
-        `🏗️  Extracting exported classes (${exportMetadata.totalClasses} found)...`
+        `Extracting exported classes (${exportMetadata.totalClasses} found)...`
       )
     );
   }
   if (parsedFile.functions.length > 0 || parsedFile.classes.length > 0) {
-    console.log(chalk.blue('📝 Extracting JSDoc comments...'));
+    console.log(chalk.blue('Extracting JSDoc comments...'));
   }
 
   if (parsedFile.functions.length === 0 && parsedFile.classes.length === 0) {
-    console.log(chalk.yellow('⚠️  No exported functions or classes found'));
+    console.log(chalk.yellow('No exported functions or classes found'));
     return;
   }
 
-  console.log(chalk.blue('📋 Organizing hierarchical structure...'));
-  console.log(chalk.blue('📄 Generating enhanced markdown...'));
+  console.log(chalk.blue('Organizing hierarchical structure...'));
+  console.log(chalk.blue('Generating enhanced markdown...'));
 
   // Check if AI enhancements are requested
   const needsEnhancement =
@@ -204,9 +205,9 @@ async function processSingleFile(
   if (needsEnhancement) {
     // Enhanced generation temporarily disabled due to build issues
     console.log(
-      chalk.yellow('⚠️  Enhanced analysis features temporarily disabled')
+      chalk.yellow('Enhanced analysis features temporarily disabled')
     );
-    console.log(chalk.blue('📄 Generating standard markdown...'));
+    console.log(chalk.blue('Generating standard markdown...'));
     markdown = generateMarkdown(parsedFile);
   } else {
     markdown = generateMarkdown(parsedFile);
@@ -216,7 +217,7 @@ async function processSingleFile(
   await fs.writeFile(outputPath, markdown, 'utf-8');
 
   console.log(
-    chalk.green(`✅ Created ${path.basename(outputPath)} with enhanced context`)
+    chalk.green(`Created ${path.basename(outputPath)} with enhanced context`)
   );
 
   // Enhanced statistics with path information
@@ -229,7 +230,7 @@ async function processSingleFile(
       displayPath = `./${displayPath}`;
     }
   }
-  console.log(chalk.cyan(`📁 Source: ${displayPath}`));
+  console.log(chalk.cyan(`Source: ${displayPath}`));
 
   // Show export metadata
   const exportStats: string[] = [];
@@ -246,17 +247,17 @@ async function processSingleFile(
   if (exportMetadata.hasDefaultExport) {
     exportStats.push(`1 default ${exportMetadata.defaultExportType}`);
   }
-  console.log(chalk.cyan(`📦 Exports: ${exportStats.join(', ')}`));
+  console.log(chalk.cyan(`Exports: ${exportStats.join(', ')}`));
 
   // Generate structure preview
-  console.log(chalk.cyan('📋 Generated enhanced structure:'));
+  console.log(chalk.cyan('Generated enhanced structure:'));
   if (parsedFile.functions.length > 0) {
     console.log(
-      chalk.cyan(`    📁 Functions (${parsedFile.functions.length})`)
+      chalk.cyan(`    Functions (${parsedFile.functions.length})`)
     );
   }
   if (parsedFile.classes.length > 0) {
-    console.log(chalk.cyan(`    📁 Classes (${parsedFile.classes.length})`));
+    console.log(chalk.cyan(`    Classes (${parsedFile.classes.length})`));
     parsedFile.classes.forEach(cls => {
       const publicMethodsCount = cls.methods.filter(m => !m.isPrivate).length;
       console.log(
@@ -271,7 +272,7 @@ async function processSingleFile(
 
   console.log(
     chalk.cyan(
-      `💾 Saved to ${path.basename(outputPath)} (${inputStats.size} → ${outputStats.size} bytes, ${reduction}% reduction)`
+      `Saved to ${path.basename(outputPath)} (${inputStats.size} → ${outputStats.size} bytes, ${reduction}% reduction)`
     )
   );
 }
@@ -281,14 +282,14 @@ async function processDirectory(
   options: CliOptions
 ): Promise<void> {
   console.log(
-    chalk.blue(`📁 Scanning directory ${path.basename(directoryPath)}...`)
+    chalk.blue(`Scanning directory ${path.basename(directoryPath)}...`)
   );
 
   // Warn about --output option for directories
   if (options.output) {
     console.log(
       chalk.yellow(
-        '⚠️  Note: --output option is ignored for directory processing'
+        'Note: --output option is ignored for directory processing'
       )
     );
   }
@@ -298,7 +299,7 @@ async function processDirectory(
     includeComments: !options.noComments,
     onProgress: (current: number, total: number, fileName: string): void => {
       console.log(
-        chalk.blue(`📊 Processing files (${current}/${total}): ${fileName}`)
+        chalk.blue(`Processing files (${current}/${total}): ${fileName}`)
       );
     },
     onFileProcessed: (
@@ -309,12 +310,12 @@ async function processDirectory(
       if (success) {
         console.log(
           chalk.green(
-            `✅ Generated ${path.basename(filePath, path.extname(filePath))}.md`
+            `Generated ${path.basename(filePath, path.extname(filePath))}.md`
           )
         );
       } else {
         console.log(
-          chalk.red(`❌ Failed ${path.basename(filePath)}: ${error}`)
+          chalk.red(`Failed ${path.basename(filePath)}: ${error}`)
         );
       }
     },
@@ -323,12 +324,12 @@ async function processDirectory(
   const result = await processBatch(batchOptions);
 
   // Display final summary
-  console.log(chalk.cyan('📋 Batch processing complete:'));
-  console.log(chalk.cyan(`📊 Total files: ${result.totalFiles}`));
-  console.log(chalk.green(`✅ Successful: ${result.successCount}`));
+  console.log(chalk.cyan('Batch processing complete:'));
+  console.log(chalk.cyan(`Total files: ${result.totalFiles}`));
+  console.log(chalk.green(`Successful: ${result.successCount}`));
 
   if (result.failureCount > 0) {
-    console.log(chalk.red(`❌ Failed: ${result.failureCount}`));
+    console.log(chalk.red(`Failed: ${result.failureCount}`));
 
     // List failed files
     const failedFiles = result.processedFiles
@@ -344,7 +345,7 @@ async function processDirectory(
 
   console.log(
     chalk.cyan(
-      `🎯 Generated ${result.successCount} markdown files in the same directory as source files`
+      `Generated ${result.successCount} markdown files in the same directory as source files`
     )
   );
 }
@@ -363,7 +364,7 @@ async function processDeadCodeAnalysis(
 
   if (isDir) {
     console.log(
-      chalk.blue(`📁 Scanning directory: ${path.basename(resolvedPath)}`)
+      chalk.blue(`Scanning directory: ${path.basename(resolvedPath)}`)
     );
     const scanResult = await scanDirectory(resolvedPath);
     files = scanResult.files;
@@ -375,7 +376,7 @@ async function processDeadCodeAnalysis(
     }
 
     console.log(
-      chalk.blue(`🔍 Found ${files.length} TypeScript/JavaScript files`)
+      chalk.blue(`Found ${files.length} TypeScript/JavaScript files`)
     );
   } else if (isFileTarget) {
     if (!resolvedPath.match(/\.(ts|tsx|js|jsx)$/)) {
@@ -402,36 +403,44 @@ async function processDeadCodeAnalysis(
  */
 async function generateConfigFile(): Promise<void> {
   const configPath = path.join(process.cwd(), '.m2jsrc');
-  
+
   try {
     // Check if config already exists
     await fs.access(configPath);
-    console.log(chalk.yellow('⚠️  .m2jsrc already exists in current directory'));
-    console.log(chalk.blue('💡 Delete it first if you want to regenerate'));
+    console.log(
+      chalk.yellow('.m2jsrc already exists in current directory')
+    );
+    console.log(chalk.blue('Delete it first if you want to regenerate'));
     return;
   } catch {
     // File doesn't exist, proceed with creation
   }
 
   const exampleConfig = ConfigLoader.generateExampleConfig();
-  
+
   try {
     await fs.writeFile(configPath, exampleConfig, 'utf-8');
-    console.log(chalk.green('✅ Generated .m2jsrc configuration file'));
-    console.log(chalk.blue('📝 Edit the file to customize M2JS behavior'));
-    console.log(chalk.dim(`📁 Location: ${configPath}`));
-    
-    console.log(chalk.cyan('\n🚀 Key configuration options:'));
-    console.log(chalk.cyan('• deadCode.enableCache - Enable file parsing cache'));
+    console.log(chalk.green('Generated .m2jsrc configuration file'));
+    console.log(chalk.blue('Edit the file to customize M2JS behavior'));
+    console.log(chalk.dim(`Location: ${configPath}`));
+
+    console.log(chalk.cyan('\nKey configuration options:'));
+    console.log(
+      chalk.cyan('• deadCode.enableCache - Enable file parsing cache')
+    );
     console.log(chalk.cyan('• deadCode.showProgress - Show progress bar'));
     console.log(chalk.cyan('• files.ignorePatterns - Files/folders to skip'));
     console.log(chalk.cyan('• deadCode.format - Default output format'));
-    
-    console.log(chalk.blue('\n💡 You can also use environment variables:'));
+
+    console.log(chalk.blue('\nYou can also use environment variables:'));
     console.log(chalk.blue('• M2JS_CACHE_ENABLED=false m2js --detect-unused'));
-    console.log(chalk.blue('• M2JS_SHOW_PROGRESS=true m2js src --detect-unused'));
+    console.log(
+      chalk.blue('• M2JS_SHOW_PROGRESS=true m2js src --detect-unused')
+    );
   } catch (error) {
-    console.error(chalk.red(`❌ Failed to create config file: ${(error as Error).message}`));
+    console.error(
+      chalk.red(`Failed to create config file: ${(error as Error).message}`)
+    );
     process.exit(1);
   }
 }
@@ -442,12 +451,12 @@ async function processGraphAnalysis(
 ): Promise<void> {
   const resolvedPath = path.resolve(inputPath);
 
-  console.log(chalk.blue('📊 Starting dependency graph analysis...'));
+  console.log(chalk.blue('Starting dependency graph analysis...'));
 
   // Check if --mermaid option was used without --graph
   if (options.mermaid && !options.graph) {
     console.log(
-      chalk.yellow('⚠️  --mermaid option requires --graph. Ignoring --mermaid.')
+      chalk.yellow('--mermaid option requires --graph. Ignoring --mermaid.')
     );
   }
 
@@ -459,7 +468,7 @@ async function processGraphAnalysis(
 
   if (isDir) {
     console.log(
-      chalk.blue(`📁 Scanning directory: ${path.basename(resolvedPath)}`)
+      chalk.blue(`Scanning directory: ${path.basename(resolvedPath)}`)
     );
     const scanResult = await scanDirectory(resolvedPath);
     files = scanResult.files;
@@ -471,13 +480,13 @@ async function processGraphAnalysis(
     }
 
     console.log(
-      chalk.blue(`🔍 Found ${files.length} TypeScript/JavaScript files`)
+      chalk.blue(`Found ${files.length} TypeScript/JavaScript files`)
     );
   } else if (isFileTarget) {
     // Single file - warn that graph analysis works better with directories
     console.log(
       chalk.yellow(
-        '⚠️  Graph analysis works best with directories. Analyzing single file...'
+        'Graph analysis works best with directories. Analyzing single file...'
       )
     );
     files = [resolvedPath];
@@ -486,7 +495,7 @@ async function processGraphAnalysis(
   }
 
   // Analyze dependencies
-  console.log(chalk.blue('🔗 Analyzing dependencies...'));
+  console.log(chalk.blue('Analyzing dependencies...'));
 
   const graphOptions: GraphOptions = {
     includeMermaid: options.mermaid || false,
@@ -497,7 +506,7 @@ async function processGraphAnalysis(
   try {
     const dependencyGraph = analyzeDependencies(files, graphOptions);
 
-    console.log(chalk.blue('📄 Generating dependency graph markdown...'));
+    console.log(chalk.blue('Generating dependency graph markdown...'));
     const markdown = generateDependencyMarkdown(dependencyGraph, graphOptions);
 
     // Determine output path
@@ -517,33 +526,33 @@ async function processGraphAnalysis(
     // Write output
     await fs.writeFile(outputPath, markdown, 'utf-8');
 
-    console.log(chalk.green(`✅ Dependency graph generated successfully!`));
+    console.log(chalk.green(`Dependency graph generated successfully!`));
 
     // Display summary
     const { metrics } = dependencyGraph;
-    console.log(chalk.cyan('📋 Analysis Summary:'));
-    console.log(chalk.cyan(`📊 Total modules analyzed: ${metrics.totalNodes}`));
-    console.log(chalk.cyan(`🔗 Total dependencies: ${metrics.totalEdges}`));
+    console.log(chalk.cyan('Analysis Summary:'));
+    console.log(chalk.cyan(`Total modules analyzed: ${metrics.totalNodes}`));
+    console.log(chalk.cyan(`Total dependencies: ${metrics.totalEdges}`));
     console.log(
-      chalk.cyan(`📦 Internal dependencies: ${metrics.internalDependencies}`)
+      chalk.cyan(`Internal dependencies: ${metrics.internalDependencies}`)
     );
     console.log(
-      chalk.cyan(`🌐 External dependencies: ${metrics.externalDependencies}`)
+      chalk.cyan(`External dependencies: ${metrics.externalDependencies}`)
     );
 
     if (metrics.circularDependencies.length > 0) {
       console.log(
         chalk.yellow(
-          `⚠️  Circular dependencies detected: ${metrics.circularDependencies.length}`
+          `Circular dependencies detected: ${metrics.circularDependencies.length}`
         )
       );
     } else {
-      console.log(chalk.green('✅ No circular dependencies found'));
+      console.log(chalk.green('No circular dependencies found'));
     }
 
     console.log(
       chalk.cyan(
-        `💾 Output saved to: ${path.relative(process.cwd(), outputPath)}`
+        `Output saved to: ${path.relative(process.cwd(), outputPath)}`
       )
     );
   } catch (error) {

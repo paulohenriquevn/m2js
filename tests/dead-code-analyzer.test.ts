@@ -150,7 +150,7 @@ describe('Dead Code Analyzer', () => {
       const report = await analyzeDeadCode(files);
 
       expect(report.unusedImports.length).toBeGreaterThan(0);
-      
+
       // Should detect UnusedClass import
       const unusedClass = report.unusedImports.find(
         imp => imp.name === 'UnusedClass'
@@ -167,9 +167,7 @@ describe('Dead Code Analyzer', () => {
       expect(unusedReact?.type).toBe('default');
 
       // Should detect fs namespace import
-      const unusedFs = report.unusedImports.find(
-        imp => imp.name === 'fs'
-      );
+      const unusedFs = report.unusedImports.find(imp => imp.name === 'fs');
       expect(unusedFs).toBeDefined();
       expect(unusedFs?.type).toBe('namespace');
     });
@@ -267,7 +265,9 @@ describe('Dead Code Analyzer', () => {
 
     it('should throw error for non-existent file', async () => {
       const files = [path.join(fixturesPath, 'non-existent.ts')];
-      await expect(analyzeDeadCode(files)).rejects.toThrow('Failed to process file');
+      await expect(analyzeDeadCode(files)).rejects.toThrow(
+        'Failed to process file'
+      );
     });
 
     it('should handle parse errors gracefully', async () => {

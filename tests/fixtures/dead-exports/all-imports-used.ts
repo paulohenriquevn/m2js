@@ -10,6 +10,6 @@ export function useAllImports(): string {
   const result = usedFunction();
   const instance = new UsedClass();
   const value = instance.getValue();
-  
+
   return `${result} - ${value} - ${USED_CONSTANT}`;
 }

@@ -3,14 +3,8 @@
  * Generates intelligent removal suggestions with confidence levels
  */
 
-import { readFileSync } from 'fs';
 import path from 'path';
-import {
-  DeadExport,
-  UnusedImport,
-  RemovalSuggestion,
-  DeadCodeReport,
-} from './dead-code-types';
+import { DeadExport, UnusedImport, RemovalSuggestion } from './dead-code-types';
 
 /**
  * Generate safe removal suggestions for dead code
@@ -24,13 +18,21 @@ export function generateRemovalSuggestions(
 
   // Generate suggestions for dead exports
   deadExports.forEach((deadExport, index) => {
-    const suggestion = createExportRemovalSuggestion(deadExport, index, projectPath);
+    const suggestion = createExportRemovalSuggestion(
+      deadExport,
+      index,
+      projectPath
+    );
     suggestions.push(suggestion);
   });
 
   // Generate suggestions for unused imports
   unusedImports.forEach((unusedImport, index) => {
-    const suggestion = createImportRemovalSuggestion(unusedImport, index + deadExports.length, projectPath);
+    const suggestion = createImportRemovalSuggestion(
+      unusedImport,
+      index + deadExports.length,
+      projectPath
+    );
     suggestions.push(suggestion);
   });
 
@@ -38,11 +40,11 @@ export function generateRemovalSuggestions(
   return suggestions.sort((a, b) => {
     const priorityOrder = { high: 3, medium: 2, low: 1 };
     const safetyOrder = { safe: 3, 'review-needed': 2, risky: 1 };
-    
+
     if (a.priority !== b.priority) {
       return priorityOrder[b.priority] - priorityOrder[a.priority];
     }
-    
+
     return safetyOrder[b.safety] - safetyOrder[a.safety];
   });
 }
@@ -137,7 +139,9 @@ export function assessExportRemovalRisk(
 
   // Check for common naming patterns that suggest external usage
   if (isLikelyExternalAPI(exportName)) {
-    riskFactors.push('Export name suggests it may be used by external packages');
+    riskFactors.push(
+      'Export name suggests it may be used by external packages'
+    );
   }
 
   // Check for test files
@@ -176,9 +180,10 @@ export function assessExportRemovalRisk(
 /**
  * Generate confidence levels and risk assessment for unused imports
  */
-export function assessImportRemovalRisk(
-  unusedImport: UnusedImport
-): { confidence: 'high' | 'medium' | 'low'; riskFactors: string[] } {
+export function assessImportRemovalRisk(unusedImport: UnusedImport): {
+  confidence: 'high' | 'medium' | 'low';
+  riskFactors: string[];
+} {
   const riskFactors: string[] = [];
   const importName = unusedImport.name;
   const fromPath = unusedImport.from;
@@ -205,7 +210,7 @@ export function assessImportRemovalRisk(
 
   // External packages are generally safe to remove if unused
   const isExternal = !fromPath.startsWith('./') && !fromPath.startsWith('../');
-  
+
   // Determine confidence
   let confidence: 'high' | 'medium' | 'low';
   if (riskFactors.length === 0 && isExternal) {
@@ -224,40 +229,44 @@ export function assessImportRemovalRisk(
  */
 function isPublicAPI(deadExport: DeadExport, projectPath: string): boolean {
   const relativePath = path.relative(projectPath, deadExport.file);
-  
+
   // Check if it's in an index file (common pattern for public APIs)
   if (path.basename(deadExport.file).startsWith('index.')) {
     return true;
   }
-  
+
   // Check if it's in a 'lib', 'public', or 'api' directory at root level
   // Note: 'src' is too broad - most internal code is in src
   const segments = relativePath.split(path.sep);
   if (segments.length > 0 && ['lib', 'public', 'api'].includes(segments[0])) {
     return true;
   }
-  
+
   // Check if it's in top-level src/index.ts or similar public entry points
-  if (segments.length === 2 && segments[0] === 'src' && path.basename(deadExport.file).startsWith('index.')) {
+  if (
+    segments.length === 2 &&
+    segments[0] === 'src' &&
+    path.basename(deadExport.file).startsWith('index.')
+  ) {
     return true;
   }
-  
+
   return false;
 }
 
 function isLikelyExternalAPI(exportName: string): boolean {
   // Common patterns for external APIs
   const apiPatterns = [
-    /^create[A-Z]/,  // createComponent, createStore
-    /^use[A-Z]/,     // useHook, useEffect (React)
-    /^get[A-Z]/,     // getConfig, getData
-    /^set[A-Z]/,     // setConfig, setData
-    /^init[A-Z]/,    // initializeApp, initConfig (not just "init")
-    /[A-Z]Config$/,  // AppConfig, UserConfig (not internal configs)
-    /[A-Z]Utils$/,   // StringUtils, DateUtils (not internal utils)
-    /[A-Z]Helper$/,  // ApiHelper, DataHelper (not internal helpers)
+    /^create[A-Z]/, // createComponent, createStore
+    /^use[A-Z]/, // useHook, useEffect (React)
+    /^get[A-Z]/, // getConfig, getData
+    /^set[A-Z]/, // setConfig, setData
+    /^init[A-Z]/, // initializeApp, initConfig (not just "init")
+    /[A-Z]Config$/, // AppConfig, UserConfig (not internal configs)
+    /[A-Z]Utils$/, // StringUtils, DateUtils (not internal utils)
+    /[A-Z]Helper$/, // ApiHelper, DataHelper (not internal helpers)
   ];
-  
+
   return apiPatterns.some(pattern => pattern.test(exportName));
 }
 
@@ -273,7 +282,7 @@ function isConfigFile(fileName: string): boolean {
     /^bootstrap\./,
     /^polyfill\./,
   ];
-  
+
   return configPatterns.some(pattern => pattern.test(fileName));
 }
 
@@ -282,18 +291,20 @@ function isSideEffectImport(fromPath: string): boolean {
     /polyfill/,
     /setup/,
     /bootstrap/,
-    /core-js/,    // Add core-js as a side-effect import
+    /core-js/, // Add core-js as a side-effect import
     /\.css$/,
     /\.scss$/,
     /\.less$/,
   ];
-  
+
   return sideEffectPatterns.some(pattern => pattern.test(fromPath));
 }
 
 function isPolyfillImport(fromPath: string, importName: string): boolean {
-  return /polyfill|core-js|regenerator/.test(fromPath) || 
-         /polyfill|regenerator/.test(importName);
+  return (
+    /polyfill|core-js|regenerator/.test(fromPath) ||
+    /polyfill|regenerator/.test(importName)
+  );
 }
 
 function isTypeImport(importName: string): boolean {
@@ -303,22 +314,27 @@ function isTypeImport(importName: string): boolean {
 
 function isFrameworkImport(fromPath: string, importName: string): boolean {
   // React patterns
-  if (fromPath === 'react' && ['React', 'Component', 'PureComponent'].includes(importName)) {
+  if (
+    fromPath === 'react' &&
+    ['React', 'Component', 'PureComponent'].includes(importName)
+  ) {
     return true;
   }
-  
+
   // Vue patterns
   if (fromPath === 'vue' && ['Vue', 'createApp'].includes(importName)) {
     return true;
   }
-  
+
   return false;
 }
 
 /**
  * Utility functions for mapping confidence to priority/safety
  */
-function mapConfidenceToPriority(confidence: 'high' | 'medium' | 'low'): 'high' | 'medium' | 'low' {
+function mapConfidenceToPriority(
+  confidence: 'high' | 'medium' | 'low'
+): 'high' | 'medium' | 'low' {
   return confidence; // Direct mapping for now
 }
 
@@ -329,11 +345,11 @@ function mapConfidenceToSafety(
   if (confidence === 'low') {
     return 'risky';
   }
-  
+
   if (hasRisks) {
-    return 'review-needed';  // Both high and medium confidence with risks need review
+    return 'review-needed'; // Both high and medium confidence with risks need review
   }
-  
+
   return confidence === 'high' ? 'safe' : 'review-needed';
 }
 
@@ -345,7 +361,7 @@ function generateExportImpact(deadExport: DeadExport): string {
     interface: 'type interface',
     type: 'type alias',
   };
-  
+
   return `Remove unused ${typeDescriptions[deadExport.type]} (~${estimateLines(deadExport.type)} lines)`;
 }
 
@@ -361,7 +377,7 @@ function estimateLines(type: string): number {
     interface: 5,
     type: 2,
   };
-  
+
   return estimates[type] || 5;
 }
 

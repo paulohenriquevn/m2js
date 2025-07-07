@@ -47,13 +47,17 @@ describe('Suggestion Engine', () => {
 
       expect(result.confidence).toBe('medium');
       expect(result.riskFactors.length).toBeGreaterThan(0);
-      expect(result.riskFactors).toContain('Appears to be public API - may have external consumers');
-      expect(result.riskFactors).toContain('Export name suggests it may be used by external packages');
+      expect(result.riskFactors).toContain(
+        'Appears to be public API - may have external consumers'
+      );
+      expect(result.riskFactors).toContain(
+        'Export name suggests it may be used by external packages'
+      );
     });
 
     it('should assign low confidence to high-risk exports', () => {
       const deadExport: DeadExport = {
-        file: '/test/project/api/config.ts',  // Changed to api directory for public API detection
+        file: '/test/project/api/config.ts', // Changed to api directory for public API detection
         name: 'default',
         type: 'interface',
         line: 1,
@@ -66,10 +70,18 @@ describe('Suggestion Engine', () => {
 
       expect(result.confidence).toBe('low');
       expect(result.riskFactors.length).toBeGreaterThan(2);
-      expect(result.riskFactors).toContain('Appears to be public API - may have external consumers');
-      expect(result.riskFactors).toContain('Type definition - may be used in type annotations');
-      expect(result.riskFactors).toContain('Default export - may be imported with different names');
-      expect(result.riskFactors).toContain('Configuration file - may be loaded dynamically');
+      expect(result.riskFactors).toContain(
+        'Appears to be public API - may have external consumers'
+      );
+      expect(result.riskFactors).toContain(
+        'Type definition - may be used in type annotations'
+      );
+      expect(result.riskFactors).toContain(
+        'Default export - may be imported with different names'
+      );
+      expect(result.riskFactors).toContain(
+        'Configuration file - may be loaded dynamically'
+      );
     });
 
     it('should detect test file exports correctly', () => {
@@ -85,7 +97,9 @@ describe('Suggestion Engine', () => {
 
       const result = assessExportRemovalRisk(deadExport, testProjectPath);
 
-      expect(result.riskFactors).toContain('Located in test file - may be used by test framework');
+      expect(result.riskFactors).toContain(
+        'Located in test file - may be used by test framework'
+      );
     });
 
     it('should detect public API patterns in lib directory', () => {
@@ -101,7 +115,9 @@ describe('Suggestion Engine', () => {
 
       const result = assessExportRemovalRisk(deadExport, testProjectPath);
 
-      expect(result.riskFactors).toContain('Appears to be public API - may have external consumers');
+      expect(result.riskFactors).toContain(
+        'Appears to be public API - may have external consumers'
+      );
     });
   });
 
@@ -139,7 +155,9 @@ describe('Suggestion Engine', () => {
       const result = assessImportRemovalRisk(unusedImport);
 
       expect(result.confidence).toBe('medium');
-      expect(result.riskFactors).toContain('Framework import - may be used implicitly');
+      expect(result.riskFactors).toContain(
+        'Framework import - may be used implicitly'
+      );
     });
 
     it('should detect side-effect imports', () => {
@@ -158,7 +176,9 @@ describe('Suggestion Engine', () => {
 
       // Both side-effect and polyfill patterns should match core-js/stable
       expect(result.riskFactors).toContain('May be imported for side effects');
-      expect(result.riskFactors).toContain('Appears to be polyfill or setup import');
+      expect(result.riskFactors).toContain(
+        'Appears to be polyfill or setup import'
+      );
     });
 
     it('should detect type-only imports', () => {
@@ -175,7 +195,9 @@ describe('Suggestion Engine', () => {
 
       const result = assessImportRemovalRisk(unusedImport);
 
-      expect(result.riskFactors).toContain('May be used in type annotations only');
+      expect(result.riskFactors).toContain(
+        'May be used in type annotations only'
+      );
     });
 
     it('should assign low confidence to multiple risk factors', () => {
@@ -216,7 +238,9 @@ describe('Suggestion Engine', () => {
           line: 5,
           reason: 'Never imported',
           confidence: 'medium',
-          riskFactors: ['Appears to be public API - may have external consumers'],
+          riskFactors: [
+            'Appears to be public API - may have external consumers',
+          ],
         },
         {
           file: '/test/project/src/config.ts',
@@ -261,7 +285,9 @@ describe('Suggestion Engine', () => {
       expect(suggestions[0].command).toBeDefined();
 
       // Medium confidence should have review-needed safety
-      const mediumSuggestion = suggestions.find(s => s.file.includes('index.ts'));
+      const mediumSuggestion = suggestions.find(s =>
+        s.file.includes('index.ts')
+      );
       expect(mediumSuggestion?.safety).toBe('review-needed');
       expect(mediumSuggestion?.warnings).toBeDefined();
       expect(mediumSuggestion?.warnings?.length).toBeGreaterThan(0);
@@ -305,13 +331,19 @@ describe('Suggestion Engine', () => {
 
       expect(suggestions).toHaveLength(2);
 
-      const exportSuggestion = suggestions.find(s => s.type === 'remove-export');
+      const exportSuggestion = suggestions.find(
+        s => s.type === 'remove-export'
+      );
       expect(exportSuggestion).toBeDefined();
       expect(exportSuggestion?.action).toContain('Remove function: helper');
 
-      const importSuggestion = suggestions.find(s => s.type === 'remove-import');
+      const importSuggestion = suggestions.find(
+        s => s.type === 'remove-import'
+      );
       expect(importSuggestion).toBeDefined();
-      expect(importSuggestion?.action).toContain('Remove unused import: unused');
+      expect(importSuggestion?.action).toContain(
+        'Remove unused import: unused'
+      );
     });
 
     it('should handle empty inputs gracefully', () => {
@@ -383,7 +415,11 @@ describe('Suggestion Engine', () => {
         },
       ];
 
-      const suggestions = generateRemovalSuggestions(deadExports, [], testProjectPath);
+      const suggestions = generateRemovalSuggestions(
+        deadExports,
+        [],
+        testProjectPath
+      );
 
       expect(suggestions[0].file).toBe('src/deep/nested/utils.ts');
       expect(suggestions[0].file).not.toContain('/test/project');
@@ -411,9 +447,15 @@ describe('Suggestion Engine', () => {
         },
       ];
 
-      const suggestions = generateRemovalSuggestions(deadExports, [], testProjectPath);
+      const suggestions = generateRemovalSuggestions(
+        deadExports,
+        [],
+        testProjectPath
+      );
 
-      const variableSuggestion = suggestions.find(s => s.action.includes('variable'));
+      const variableSuggestion = suggestions.find(s =>
+        s.action.includes('variable')
+      );
       const classSuggestion = suggestions.find(s => s.action.includes('class'));
 
       expect(variableSuggestion?.impact).toContain('(~1 lines)');
@@ -466,7 +508,9 @@ describe('Suggestion Engine', () => {
       expect(highSuggestion?.command).toBeDefined();
 
       // Medium confidence with risks should be review-needed
-      const mediumSuggestion = suggestions.find(s => s.action.includes('createApi'));
+      const mediumSuggestion = suggestions.find(s =>
+        s.action.includes('createApi')
+      );
       expect(mediumSuggestion?.priority).toBe('medium');
       expect(mediumSuggestion?.safety).toBe('review-needed');
       expect(mediumSuggestion?.warnings).toBeDefined();

@@ -58,12 +58,12 @@ function generateEnhancedHeader(parsedFile: ParsedFile): string {
     }
   }
 
-  return `# 📁 ${escapeMarkdown(displayPath)}`;
+  return `# ${escapeMarkdown(displayPath)}`;
 }
 
 function generateExportsSection(parsedFile: ParsedFile): string {
   const { exportMetadata } = parsedFile;
-  const sections: string[] = ['## 📦 Exports'];
+  const sections: string[] = ['## Exports'];
 
   // Add export counts
   if (exportMetadata.totalFunctions > 0) {
@@ -99,7 +99,7 @@ function generateExportsSection(parsedFile: ParsedFile): string {
 }
 
 function generateFunctionsSection(functions: ParsedFunction[]): string {
-  const sections: string[] = ['## 🔧 Functions'];
+  const sections: string[] = ['## Functions'];
 
   // Use compact format for utility files with many simple functions
   if (shouldUseCompactFormat(functions)) {
@@ -244,7 +244,7 @@ function escapeMarkdown(text: string): string {
 }
 
 function generateClassesSection(classes: ParsedClass[]): string {
-  const sections: string[] = ['## 🏗️ Classes'];
+  const sections: string[] = ['## Classes'];
 
   classes.forEach(cls => {
     sections.push(generateClassMarkdown(cls));
@@ -438,7 +438,7 @@ function generateGraphHeader(graph: DependencyGraph): string {
     }
   }
 
-  return `# 📊 Dependency Analysis - ${escapeMarkdown(displayPath)}`;
+  return `# Dependency Analysis - ${escapeMarkdown(displayPath)}`;
 }
 
 /**
@@ -526,7 +526,7 @@ function generateModuleDependencies(graph: DependencyGraph): string {
  */
 function generateGraphMetrics(graph: DependencyGraph): string {
   const { metrics } = graph;
-  const sections: string[] = ['## 📈 Dependency Metrics'];
+  const sections: string[] = ['## Dependency Metrics'];
 
   sections.push(`- **Total Modules**: ${metrics.totalNodes}`);
   sections.push(`- **Total Dependencies**: ${metrics.totalEdges}`);
@@ -543,10 +543,10 @@ function generateGraphMetrics(graph: DependencyGraph): string {
 
   // Circular dependencies status
   if (metrics.circularDependencies.length === 0) {
-    sections.push('- **Circular Dependencies**: ❌ None detected');
+    sections.push('- **Circular Dependencies**: None detected');
   } else {
     sections.push(
-      `- **Circular Dependencies**: ⚠️ ${metrics.circularDependencies.length} detected`
+      `- **Circular Dependencies**: ${metrics.circularDependencies.length} detected`
     );
   }
 
@@ -557,7 +557,7 @@ function generateGraphMetrics(graph: DependencyGraph): string {
  * Generate circular dependencies warning
  */
 function generateCircularDependencies(cycles: string[][]): string {
-  const sections: string[] = ['## ⚠️ Circular Dependencies'];
+  const sections: string[] = ['## Circular Dependencies'];
 
   cycles.forEach((cycle, index) => {
     const cycleDisplay = cycle.map(file => path.basename(file)).join(' → ');
@@ -576,7 +576,7 @@ function generateCircularDependencies(cycles: string[][]): string {
  * Generate architecture layers
  */
 function generateArchitectureLayers(graph: DependencyGraph): string {
-  const sections: string[] = ['## 🏗️ Architecture Layers'];
+  const sections: string[] = ['## Architecture Layers'];
 
   // Simple layer detection based on common patterns
   const layers = detectArchitectureLayers(graph);
@@ -661,7 +661,7 @@ function getFileDescription(fileName: string): string {
  * Generate Mermaid diagram
  */
 function generateMermaidDiagram(graph: DependencyGraph): string {
-  const sections: string[] = ['## 🗺️ Visual Dependency Map'];
+  const sections: string[] = ['## Visual Dependency Map'];
 
   sections.push('```mermaid');
   sections.push('graph TD');
