@@ -4,7 +4,7 @@ import { defineConfig } from 'vitepress'
 
 export default defineConfig({
   title: 'M2JS',
-  description: 'Transform TypeScript/JavaScript into LLM-friendly Markdown documentation',
+  description: 'Transform TypeScript/JavaScript into LLM-friendly Markdown + Smart Dead Code Detection with confidence levels',
   lang: 'en-US',
   
   // GitHub Pages config - CRITICAL: Must match repository name  
@@ -51,6 +51,8 @@ export default defineConfig({
           text: 'Getting Started',
           items: [
             { text: 'Quick Start', link: '/guide/quick-start' },
+            { text: 'Getting Started', link: '/guide/getting-started' },
+            { text: 'Dead Code Detection', link: '/guide/dead-code-detection' },
             { text: 'Best Practices', link: '/guide/best-practices' },
             { text: 'Configuration', link: '/guide/configuration' }
           ]
@@ -133,13 +135,13 @@ export default defineConfig({
     ['meta', { name: 'viewport', content: 'width=device-width,initial-scale=1' }],
     ['meta', { name: 'og:type', content: 'website' }],
     ['meta', { name: 'og:locale', content: 'en' }],
-    ['meta', { name: 'og:title', content: 'M2JS | Transform Code into AI-Ready Docs' }],
+    ['meta', { name: 'og:title', content: 'M2JS | AI-Ready Docs + Smart Dead Code Detection' }],
     ['meta', { name: 'og:site_name', content: 'M2JS' }],
     ['meta', { name: 'og:image', content: '/m2js/og-image.png' }],
     ['meta', { name: 'og:url', content: 'https://paulohenriquevn.github.io/m2js/' }],
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
-    ['meta', { name: 'twitter:title', content: 'M2JS | Transform Code into AI-Ready Docs' }],
-    ['meta', { name: 'twitter:description', content: 'CLI tool that transforms TypeScript/JavaScript into LLM-friendly Markdown with 60-90% token reduction' }],
+    ['meta', { name: 'twitter:title', content: 'M2JS | AI-Ready Docs + Smart Dead Code Detection' }],
+    ['meta', { name: 'twitter:description', content: 'CLI tool that transforms TypeScript/JavaScript into LLM-friendly Markdown + intelligently detects and removes dead code with confidence levels' }],
     ['meta', { name: 'twitter:image', content: '/m2js/og-image.png' }]
   ],
   

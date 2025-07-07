@@ -1,6 +1,9 @@
 # Getting Started
 
-Get up and running with M2JS in under 2 minutes! 
+Get up and running with M2JS in under 2 minutes! Choose your path:
+
+- **🤖 AI Documentation** - Transform code into LLM-friendly docs
+- **🧹 Dead Code Detection** - Find and safely remove unused code 
 
 ## Installation
 
@@ -31,9 +34,9 @@ code --install-extension paulohenriquevn.m2js-vscode
 
 :::
 
-## Your First Analysis
+## Choose Your Path
 
-### 1. Basic Usage
+### 🤖 AI Documentation
 
 ```bash
 # Analyze a single TypeScript file
@@ -42,19 +45,23 @@ m2js UserService.ts
 # Output will be saved as UserService.md
 ```
 
-### 2. AI-Enhanced Analysis
+### 🧹 Dead Code Detection
 
 ```bash
-# Get the full AI-powered analysis
-m2js UserService.ts --ai-enhanced
+# Analyze your project for unused code
+m2js src/ --detect-unused
 
-# Include business context and architecture insights
+# Generate configuration for better performance
+m2js --init-config
+
+# Get detailed help
+m2js --help-dead-code
 ```
 
-### 3. VS Code Extension
+### 🔧 VS Code Extension
 
 1. **Right-click** any `.ts`, `.tsx`, `.js`, or `.jsx` file
-2. Select **" Generate AI-Enhanced Analysis"**
+2. Select **"Generate M2JS Documentation"** or **"Analyze Dead Code"**
 3. View results in interactive webview
 4. **Copy to clipboard** for your AI assistant
 
@@ -157,7 +164,7 @@ async findByEmail(email: string): Promise<User | null>
 
 ## Common Use Cases
 
-### For AI Coding Assistants
+### 🤖 For AI Coding Assistants
 
 ```bash
 # Generate optimized context for ChatGPT/Claude
@@ -166,7 +173,20 @@ m2js src/services/ --ai-enhanced --batch
 # Copy results to AI assistant for better responses
 ```
 
-### For Documentation
+### 🧹 For Code Maintenance
+
+```bash
+# Quick cleanup before refactoring
+m2js src/ --detect-unused
+
+# Safe removal workflow
+m2js src/ --detect-unused | grep "SAFE TO REMOVE" -A2
+
+# CI/CD integration
+m2js src/ --detect-unused --format json > dead-code-report.json
+```
+
+### 📚 For Documentation
 
 ```bash
 # Generate project documentation
@@ -176,37 +196,90 @@ m2js src/ --batch --output docs/api/
 m2js src/ --graph --mermaid
 ```
 
-### For Team Onboarding
+### 👥 For Team Onboarding
 
 ```bash
 # Create comprehensive analysis for new developers
 m2js src/ --ai-enhanced --architecture-insights --semantic-analysis
+
+# Understand code health
+m2js src/ --detect-unused
 ```
 
 ## Configuration
 
-Create a `.m2jsrc.json` file in your project root:
+Create a `.m2jsrc` file in your project root:
 
+```bash
+# Generate configuration file
+m2js --init-config
+```
+
+**Example .m2jsrc:**
 ```json
 {
-"aiEnhanced": true,
-"businessContext": true,
-"architectureInsights": true,
-"semanticAnalysis": true,
-"tokenOptimization": "balanced",
-"outputDirectory": "docs/api",
-"includePrivateMembers": false
+  "deadCode": {
+    "enableCache": true,
+    "maxCacheSize": 1000,
+    "chunkSize": 50,
+    "showProgress": true,
+    "format": "table"
+  },
+  "files": {
+    "ignorePatterns": [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/*.test.*",
+      "**/*.spec.*"
+    ],
+    "maxFileSize": 10
+  },
+  "aiEnhanced": true,
+  "businessContext": true,
+  "outputDirectory": "docs/api"
 }
 ```
 
 ## Next Steps
 
-::: tip What's Next?
+::: tip AI Documentation
 - **[CLI Reference](/reference/cli)** - Learn all available commands and options
 - **[VS Code Extension](/extension/overview)** - Explore IDE integration features 
 - **[AI Enhancement](/guide/ai-enhancement)** - Deep dive into AI-powered features
 - **[Examples](/examples/basic)** - See real-world usage scenarios
 :::
+
+::: tip Dead Code Detection
+- **[Dead Code Detection Guide](/guide/dead-code-detection)** - Complete guide to smart cleanup
+- **[CLI Reference](/reference/cli)** - All dead code detection commands
+- **[Best Practices](/guide/best-practices)** - Team workflows and patterns
+:::
+
+## 🚀 Quick Examples
+
+### AI Documentation Workflow
+```bash
+# 1. Transform code for AI
+m2js UserService.ts
+
+# 2. Copy output to ChatGPT/Claude
+# 3. Get better AI responses with context
+```
+
+### Dead Code Cleanup Workflow
+```bash
+# 1. Analyze project
+m2js src/ --detect-unused
+
+# 2. Remove safe items immediately
+# Follow "✅ SAFE TO REMOVE" suggestions
+
+# 3. Review medium-risk items
+# Check "⚠️ REVIEW BEFORE REMOVING" warnings
+
+# 4. Keep high-risk items
+# Document "🚨 HIGH RISK" decisions
+```
 
 ## Need Help?
 
@@ -214,3 +287,4 @@ Create a `.m2jsrc.json` file in your project root:
 - **Discussions**: [GitHub Discussions](https://github.com/paulohenriquevn/m2js/discussions) 
 - **Documentation**: You're reading it! 
 - **Star the project**: [GitHub Repository](https://github.com/paulohenriquevn/m2js)
+- **Dead Code Help**: `m2js --help-dead-code`

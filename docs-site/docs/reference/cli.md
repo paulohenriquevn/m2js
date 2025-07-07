@@ -1,18 +1,19 @@
 # CLI Reference
 
-Complete command-line reference for M2JS.
+Complete command-line reference for M2JS - AI documentation + smart dead code detection.
 
 ## Basic Usage
 
 ```bash
-# Process single file
+# AI Documentation
 m2js src/UserService.ts
-
-# Process with custom output
 m2js src/UserService.ts --output docs/UserService.md
-
-# Process directory
 m2js src/ --batch
+
+# Smart Dead Code Detection
+m2js src/ --detect-unused
+m2js src/ --detect-unused --format json
+m2js --init-config
 ```
 
 ## Command Options
@@ -27,7 +28,16 @@ m2js src/ --batch
 | `--help` | `-h` | Show help | `m2js --help` |
 | `--version` | `-V` | Show version | `m2js --version` |
 
-### Analysis Options
+### Dead Code Detection Options
+
+| Option | Description | Example |
+|--------|-------------|---------|
+| `--detect-unused` | Analyze unused exports and imports | `m2js src/ --detect-unused` |
+| `--format <type>` | Output format: table, json | `m2js src/ --detect-unused --format json` |
+| `--init-config` | Generate .m2jsrc configuration file | `m2js --init-config` |
+| `--help-dead-code` | Show detailed dead code help | `m2js --help-dead-code` |
+
+### AI Documentation Options
 
 | Option | Status | Description |
 |--------|--------|-------------|
