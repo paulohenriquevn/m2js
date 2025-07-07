@@ -23,6 +23,9 @@ import { analyzeDependencies } from './dependency-analyzer';
 import { executeDeadCodeAnalysis, getDeadCodeHelpText } from './dead-code-cli';
 import { ConfigLoader } from './config-loader';
 
+// Read version from package.json
+const packageJson = require('../package.json');
+
 const program = new Command();
 
 program
@@ -30,7 +33,7 @@ program
   .description(
     'Transform TypeScript/JavaScript code into LLM-friendly Markdown summaries'
   )
-  .version('1.0.0')
+  .version(packageJson.version)
   .argument(
     '[path]',
     'TypeScript/JavaScript file or directory to convert (optional for some commands)'
