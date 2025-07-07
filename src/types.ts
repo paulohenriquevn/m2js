@@ -68,6 +68,10 @@ export interface CliOptions {
   architectureInsights?: boolean;
   semanticAnalysis?: boolean;
   aiEnhanced?: boolean;
+  detectUnused?: boolean;
+  format?: 'table' | 'json';
+  initConfig?: boolean;
+  helpDeadCode?: boolean;
 }
 
 export interface ScanResult {

@@ -20,6 +20,8 @@ import { CliOptions, GraphOptions } from './types';
 import { isDirectory, isFile, scanDirectory } from './file-scanner';
 import { processBatch } from './batch-processor';
 import { analyzeDependencies } from './dependency-analyzer';
+import { executeDeadCodeAnalysis, getDeadCodeHelpText } from './dead-code-cli';
+import { ConfigLoader } from './config-loader';
 
 const program = new Command();
 
@@ -29,7 +31,7 @@ program
     'Transform TypeScript/JavaScript code into LLM-friendly Markdown summaries'
   )
   .version('1.0.0')
-  .argument('<path>', 'TypeScript/JavaScript file or directory to convert')
+  .argument('[path]', 'TypeScript/JavaScript file or directory to convert (optional for some commands)')
   .option('-o, --output <file>', 'specify output file (only for single files)')
   .option('--no-comments', 'skip comment extraction')
   .option(
@@ -57,8 +59,43 @@ program
     '--ai-enhanced',
     'enable all AI-friendly analysis features (business context, usage examples, architecture, semantic)'
   )
-  .action(async (inputPath: string, options: CliOptions) => {
+  .option(
+    '--detect-unused',
+    'detect unused exports and imports (dead code analysis)'
+  )
+  .option(
+    '--format <type>',
+    'output format for dead code analysis: table, json (default: table)',
+    'table'
+  )
+  .option(
+    '--init-config',
+    'generate example .m2jsrc configuration file'
+  )
+  .option(
+    '--help-dead-code',
+    'show detailed help for dead code analysis'
+  )
+  .action(async (inputPath: string | undefined, options: CliOptions) => {
     try {
+      // Handle special commands first
+      if (options.initConfig) {
+        await generateConfigFile();
+        return;
+      }
+      
+      if (options.helpDeadCode) {
+        console.log(getDeadCodeHelpText());
+        return;
+      }
+
+      // Check if path is required for the command
+      if (!inputPath) {
+        console.error(chalk.red('❌ Error: path argument is required'));
+        console.log(chalk.blue('💡 Use --init-config to generate configuration or --help-dead-code for help'));
+        process.exit(1);
+      }
+
       await processInput(inputPath, options);
     } catch (error) {
       console.error(chalk.red(`❌ Error: ${(error as Error).message}`));
@@ -78,6 +115,12 @@ async function processInput(
 
   if (!isDir && !isFileTarget) {
     throw new Error(`Path not found: ${resolvedPath}`);
+  }
+
+  // Route to dead code analysis if --detect-unused option is used
+  if (options.detectUnused) {
+    await processDeadCodeAnalysis(resolvedPath, options);
+    return;
   }
 
   // Route to graph analysis if --graph option is used
@@ -304,6 +347,93 @@ async function processDirectory(
       `🎯 Generated ${result.successCount} markdown files in the same directory as source files`
     )
   );
+}
+
+async function processDeadCodeAnalysis(
+  inputPath: string,
+  options: CliOptions
+): Promise<void> {
+  const resolvedPath = path.resolve(inputPath);
+
+  // Determine input type and collect files
+  let files: string[] = [];
+
+  const isDir = await isDirectory(resolvedPath);
+  const isFileTarget = await isFile(resolvedPath);
+
+  if (isDir) {
+    console.log(
+      chalk.blue(`📁 Scanning directory: ${path.basename(resolvedPath)}`)
+    );
+    const scanResult = await scanDirectory(resolvedPath);
+    files = scanResult.files;
+
+    if (files.length === 0) {
+      throw new Error(
+        `No TypeScript/JavaScript files found in directory: ${resolvedPath}`
+      );
+    }
+
+    console.log(
+      chalk.blue(`🔍 Found ${files.length} TypeScript/JavaScript files`)
+    );
+  } else if (isFileTarget) {
+    if (!resolvedPath.match(/\.(ts|tsx|js|jsx)$/)) {
+      throw new Error(
+        `Unsupported file type: ${resolvedPath}. Only .ts, .tsx, .js, .jsx are supported.`
+      );
+    }
+    files = [resolvedPath];
+  } else {
+    throw new Error(`Path not found: ${resolvedPath}`);
+  }
+
+  // Execute dead code analysis
+  const deadCodeOptions = {
+    format: options.format as 'table' | 'json',
+    includeMetrics: true,
+  };
+
+  await executeDeadCodeAnalysis(files, deadCodeOptions);
+}
+
+/**
+ * Generate example configuration file
+ */
+async function generateConfigFile(): Promise<void> {
+  const configPath = path.join(process.cwd(), '.m2jsrc');
+  
+  try {
+    // Check if config already exists
+    await fs.access(configPath);
+    console.log(chalk.yellow('⚠️  .m2jsrc already exists in current directory'));
+    console.log(chalk.blue('💡 Delete it first if you want to regenerate'));
+    return;
+  } catch {
+    // File doesn't exist, proceed with creation
+  }
+
+  const exampleConfig = ConfigLoader.generateExampleConfig();
+  
+  try {
+    await fs.writeFile(configPath, exampleConfig, 'utf-8');
+    console.log(chalk.green('✅ Generated .m2jsrc configuration file'));
+    console.log(chalk.blue('📝 Edit the file to customize M2JS behavior'));
+    console.log(chalk.dim(`📁 Location: ${configPath}`));
+    
+    console.log(chalk.cyan('\n🚀 Key configuration options:'));
+    console.log(chalk.cyan('• deadCode.enableCache - Enable file parsing cache'));
+    console.log(chalk.cyan('• deadCode.showProgress - Show progress bar'));
+    console.log(chalk.cyan('• files.ignorePatterns - Files/folders to skip'));
+    console.log(chalk.cyan('• deadCode.format - Default output format'));
+    
+    console.log(chalk.blue('\n💡 You can also use environment variables:'));
+    console.log(chalk.blue('• M2JS_CACHE_ENABLED=false m2js --detect-unused'));
+    console.log(chalk.blue('• M2JS_SHOW_PROGRESS=true m2js src --detect-unused'));
+  } catch (error) {
+    console.error(chalk.red(`❌ Failed to create config file: ${(error as Error).message}`));
+    process.exit(1);
+  }
 }
 
 async function processGraphAnalysis(
