@@ -76,6 +76,14 @@ export interface CliOptions {
   initConfig?: boolean;
   helpDeadCode?: boolean;
   helpDuplicates?: boolean;
+  graphDiff?: boolean;
+  baseline?: string;
+  current?: string;
+  minSeverity?: 'low' | 'medium' | 'high' | 'critical';
+  includeDetails?: boolean;
+  includeImpact?: boolean;
+  includeSuggestions?: boolean;
+  helpGraphDiff?: boolean;
 }
 
 export interface ScanResult {

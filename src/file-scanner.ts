@@ -3,6 +3,27 @@ import path from 'path';
 import { ScanResult } from './types';
 
 const SUPPORTED_EXTENSIONS = ['.ts', '.tsx', '.js', '.jsx'];
+const IGNORED_DIRECTORIES = [
+  'node_modules',
+  'dist',
+  'build',
+  '.next',
+  'coverage',
+  '.git',
+  '.svn',
+  '.hg',
+  'vendor',
+  'target',
+  'bin',
+  'obj'
+];
+const IGNORED_FILE_PATTERNS = [
+  '.d.ts',        // TypeScript declaration files
+  '.test.',       // Test files
+  '.spec.',       // Spec files
+  '.min.',        // Minified files
+  '.bundle.',     // Bundle files
+];
 
 export async function scanDirectory(
   directoryPath: string
@@ -46,12 +67,14 @@ async function scanDirectoryRecursive(dirPath: string): Promise<string[]> {
       const fullPath = path.join(dirPath, entry.name);
 
       if (entry.isDirectory()) {
-        // Recursively scan subdirectories
-        const subFiles = await scanDirectoryRecursive(fullPath);
-        foundFiles.push(...subFiles);
+        // Skip ignored directories
+        if (!shouldIgnoreDirectory(entry.name)) {
+          const subFiles = await scanDirectoryRecursive(fullPath);
+          foundFiles.push(...subFiles);
+        }
       } else if (entry.isFile()) {
-        // Check if file has supported extension
-        if (isSupportedFile(entry.name)) {
+        // Check if file has supported extension and is not ignored
+        if (isSupportedFile(entry.name) && !shouldIgnoreFile(entry.name)) {
           foundFiles.push(fullPath);
         }
       }
@@ -69,6 +92,20 @@ async function scanDirectoryRecursive(dirPath: string): Promise<string[]> {
 function isSupportedFile(fileName: string): boolean {
   const extension = path.extname(fileName).toLowerCase();
   return SUPPORTED_EXTENSIONS.includes(extension);
+}
+
+function shouldIgnoreDirectory(dirName: string): boolean {
+  return IGNORED_DIRECTORIES.includes(dirName) || dirName.startsWith('.');
+}
+
+function shouldIgnoreFile(fileName: string): boolean {
+  // Check against ignored patterns
+  for (const pattern of IGNORED_FILE_PATTERNS) {
+    if (fileName.includes(pattern)) {
+      return true;
+    }
+  }
+  return false;
 }
 
 export function isDirectory(targetPath: string): Promise<boolean> {

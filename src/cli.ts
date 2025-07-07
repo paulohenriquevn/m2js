@@ -22,6 +22,7 @@ import { processBatch } from './batch-processor';
 import { analyzeDependencies } from './dependency-analyzer';
 import { executeDeadCodeAnalysis, getDeadCodeHelpText } from './dead-code-cli';
 import { executeDuplicateCodeAnalysis, getDuplicateCodeHelpText } from './duplicate-code-cli';
+import { executeGraphDiffAnalysis, getGraphDiffHelpText } from './graph-diff-cli';
 import { ConfigLoader } from './config-loader';
 
 // Read version from package.json
@@ -92,6 +93,14 @@ program
   .option('--init-config', 'generate example .m2jsrc configuration file')
   .option('--help-dead-code', 'show detailed help for dead code analysis')
   .option('--help-duplicates', 'show detailed help for duplicate code analysis')
+  .option('--graph-diff', 'analyze architectural changes between git references')
+  .option('--baseline <ref>', 'baseline git reference for comparison (branch, commit, tag)')
+  .option('--current <ref>', 'current git reference for comparison (default: working directory)')
+  .option('--min-severity <level>', 'minimum severity to report: low, medium, high, critical')
+  .option('--include-details', 'include detailed change analysis (default: true)')
+  .option('--include-impact', 'include impact scoring (default: true)')
+  .option('--include-suggestions', 'include improvement suggestions (default: true)')
+  .option('--help-graph-diff', 'show detailed help for graph diff analysis')
   .action(async (inputPath: string | undefined, options: CliOptions) => {
     try {
       // Handle special commands first
@@ -110,12 +119,17 @@ program
         return;
       }
 
+      if (options.helpGraphDiff) {
+        console.log(getGraphDiffHelpText());
+        return;
+      }
+
       // Check if path is required for the command
       if (!inputPath) {
         console.error(chalk.red('Error: path argument is required'));
         console.log(
           chalk.blue(
-            'Use --init-config to generate configuration, --help-dead-code or --help-duplicates for help'
+            'Use --init-config to generate configuration, --help-dead-code, --help-duplicates, or --help-graph-diff for help'
           )
         );
         process.exit(1);
@@ -151,6 +165,12 @@ async function processInput(
   // Route to duplicate code analysis if --detect-duplicates option is used
   if (options.detectDuplicates) {
     await processDuplicateCodeAnalysis(resolvedPath, options);
+    return;
+  }
+
+  // Route to graph diff analysis if --graph-diff option is used
+  if (options.graphDiff) {
+    await processGraphDiffAnalysis(resolvedPath, options);
     return;
   }
 
@@ -477,6 +497,48 @@ async function processDuplicateCodeAnalysis(
   };
 
   await executeDuplicateCodeAnalysis(files, duplicateOptions);
+}
+
+/**
+ * Process graph diff analysis
+ */
+async function processGraphDiffAnalysis(
+  inputPath: string,
+  options: CliOptions
+): Promise<void> {
+  const resolvedPath = path.resolve(inputPath);
+
+  // Validate that baseline is provided
+  if (!options.baseline) {
+    throw new Error(
+      'Graph diff analysis requires --baseline option. Use --help-graph-diff for more information.'
+    );
+  }
+
+  // Validate that path exists and is a directory (git repo)
+  const isDir = await isDirectory(resolvedPath);
+  if (!isDir) {
+    throw new Error(
+      'Graph diff analysis requires a directory path (project root with git repository)'
+    );
+  }
+
+  console.log(
+    chalk.blue(`Analyzing project: ${path.basename(resolvedPath)}`)
+  );
+
+  // Build graph diff options
+  const graphDiffOptions = {
+    baseline: options.baseline,
+    current: options.current,
+    format: options.format as 'table' | 'json',
+    includeDetails: options.includeDetails !== false,
+    includeImpact: options.includeImpact !== false,
+    includeSuggestions: options.includeSuggestions !== false,
+    minSeverity: options.minSeverity,
+  };
+
+  await executeGraphDiffAnalysis(resolvedPath, graphDiffOptions);
 }
 
 /**

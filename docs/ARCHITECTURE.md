@@ -6,27 +6,36 @@
 
 1. [System Overview](#system-overview)
 2. [Core Architecture](#core-architecture)
-3. [AI Enhancement Pipeline](#ai-enhancement-pipeline)
-4. [VS Code Extension Architecture](#vs-code-extension-architecture)
-5. [CI/CD Pipeline](#cicd-pipeline)
-6. [Performance & Scalability](#performance--scalability)
-7. [Security & Privacy](#security--privacy)
-8. [Design Decisions](#design-decisions)
+3. [Dead Code Detection Pipeline](#dead-code-detection-pipeline)
+4. [Graph-Deep Diff Analysis](#graph-deep-diff-analysis)
+5. [AI Enhancement Pipeline](#ai-enhancement-pipeline)
+6. [VS Code Extension Architecture](#vs-code-extension-architecture)
+7. [CI/CD Pipeline](#cicd-pipeline)
+8. [Performance & Scalability](#performance--scalability)
+9. [Security & Privacy](#security--privacy)
+10. [Design Decisions](#design-decisions)
 
 ## System Overview
 
 ### 🎯 Mission Statement
-M2JS transforms TypeScript/JavaScript code into LLM-friendly Markdown documentation with 60-90% token reduction, enabling better AI coding assistant interactions through intelligent code analysis.
+M2JS transforms TypeScript/JavaScript code into LLM-friendly Markdown documentation with 60-90% token reduction, provides intelligent dead code detection with confidence levels, and offers architectural change analysis between git references - enabling better AI coding assistant interactions and safer codebase maintenance.
 
 ### 🏗️ High-Level Architecture
 ```mermaid
 graph TB
     A[Source Code] --> B[M2JS CLI]
+    A1[Git Repository] --> B
     B --> C[Babel Parser]
     C --> D[AST Analysis]
     D --> E[AI Enhancement Pipeline]
+    D --> E2[Dead Code Analyzer]
+    D --> E3[Graph Diff Analyzer]
     E --> F[Markdown Generator]
+    E2 --> F2[Dead Code Reporter]
+    E3 --> F3[Architectural Diff Reporter]
     F --> G[Optimized Output]
+    F2 --> G2[Cleanup Suggestions]
+    F3 --> G3[Health Score & Recommendations]
     
     H[VS Code Extension] --> B
     I[GitHub Actions] --> B
@@ -36,14 +45,24 @@ graph TB
     E --> L[Architecture Analysis]
     E --> M[Semantic Analysis]
     E --> N[Template Generation]
+    
+    E2 --> O[Confidence Assessment]
+    E2 --> P[Risk Analysis]
+    E2 --> Q[Usage Tracking]
+    
+    E3 --> R[Git Integration]
+    E3 --> S[Change Detection]
+    E3 --> T[Impact Scoring]
 ```
 
 ### 🎯 Key Value Propositions
 1. **Token Efficiency**: 60-90% reduction in LLM context size
 2. **Business Intelligence**: Automatic domain and pattern detection
-3. **Developer Experience**: Native IDE integration with VS Code
-4. **Template-Driven Development**: LLM-guided implementation guides
-5. **Zero Configuration**: Works out-of-the-box with smart defaults
+3. **Dead Code Intelligence**: Confidence-based unused code detection
+4. **Architectural Health**: Git-based change analysis and health scoring
+5. **Developer Experience**: Native IDE integration with VS Code
+6. **Template-Driven Development**: LLM-guided implementation guides
+7. **Zero Configuration**: Works out-of-the-box with smart defaults
 
 ## Core Architecture
 
@@ -85,7 +104,31 @@ Source Code → Babel AST → Type Analysis → Export Extraction → Structured
 Parsed Data → Template Engine → Token Optimization → Markdown Output
 ```
 
-#### 4. AI Enhancement Pipeline
+#### 4. Dead Code Analyzer (`src/dead-code-*.ts`)
+**Responsibility**: Intelligent unused code detection with risk assessment
+- Cross-file usage analysis
+- Confidence-based scoring (High/Medium/Low)
+- Risk factor evaluation
+- Actionable removal suggestions
+
+```typescript
+// Dead Code Analysis pipeline
+Source Files → Usage Analysis → Cross-Reference → Confidence Assessment → Risk Analysis → Suggestions
+```
+
+#### 5. Graph Diff Analyzer (`src/graph-diff-*.ts`)
+**Responsibility**: Architectural change detection between git references
+- Git repository integration
+- Dependency graph comparison
+- Health score calculation
+- Impact assessment and recommendations
+
+```typescript
+// Graph Diff Analysis pipeline
+Git Refs → Temp Workspaces → Dependency Graphs → Change Detection → Impact Scoring → Health Analysis
+```
+
+#### 6. AI Enhancement Pipeline
 **Responsibility**: Intelligent analysis and context extraction
 
 ##### Business Context Analyzer (`src/business-context-analyzer.ts`)
@@ -132,6 +175,231 @@ sequenceDiagram
     AI_Pipeline->>Generator: Enhanced metadata
     Generator->>Output: Optimized Markdown
     Output->>User: 80% token reduction
+```
+
+## Dead Code Detection Pipeline
+
+### 🧹 Smart Dead Code Detection Architecture
+
+```mermaid
+graph TB
+    A[Source Files] --> B[File Scanner]
+    B --> C[AST Parser]
+    C --> D[Export Extractor]
+    C --> E[Import Extractor]
+    D --> F[Usage Analyzer]
+    E --> F
+    F --> G[Cross-Reference Engine]
+    G --> H[Confidence Calculator]
+    H --> I[Risk Assessor]
+    I --> J[Suggestion Generator]
+    J --> K[LLM-Friendly Report]
+    
+    L[Performance Cache] --> C
+    M[Configuration] --> F
+    N[Progress Tracker] --> K
+```
+
+### 🎯 Confidence Scoring Algorithm
+
+```typescript
+interface ConfidenceFactors {
+  isExported: boolean;           // -30 points if true
+  hasExternalNaming: boolean;    // -20 points if suggests external use
+  isTypeDefinition: boolean;     // -25 points if true
+  isFrameworkImport: boolean;    // -20 points if true
+  isDefaultExport: boolean;      // -15 points if true
+  isTestFile: boolean;          // +10 points if true
+  hasDocumentation: boolean;     // -10 points if true
+  usageCount: number;           // Direct impact on confidence
+}
+
+function calculateConfidence(factors: ConfidenceFactors): ConfidenceLevel {
+  let score = 100;
+  
+  // Apply penalties and bonuses
+  score -= factors.isExported ? 30 : 0;
+  score -= factors.hasExternalNaming ? 20 : 0;
+  score -= factors.isTypeDefinition ? 25 : 0;
+  // ... more factors
+  
+  if (score >= 80) return 'HIGH';
+  if (score >= 50) return 'MEDIUM';
+  return 'LOW';
+}
+```
+
+### 🔍 Risk Assessment Matrix
+
+| Risk Factor | Impact | Reasoning |
+|-------------|--------|-----------|
+| **Export Name Pattern** | High | Names like `createApi`, `utils` suggest external usage |
+| **Framework Import** | High | React hooks, Next.js functions may be used implicitly |
+| **Type Definition** | Medium | TypeScript types used in annotations |
+| **Default Export** | Medium | Can be imported with any name |
+| **Test File Location** | Low | Test framework may use exports |
+| **Documentation Present** | Low | Documented code likely has purpose |
+
+### ⚡ Performance Optimization
+
+#### LRU Cache Implementation
+```typescript
+class DeadCodeCache {
+  private cache = new Map<string, CacheEntry>();
+  private maxSize = 1000;
+  
+  get(filePath: string): ParsedFile | null {
+    const entry = this.cache.get(filePath);
+    if (!entry) return null;
+    
+    // Check if file modified since cache
+    const stats = fs.statSync(filePath);
+    if (stats.mtime > entry.timestamp) {
+      this.cache.delete(filePath);
+      return null;
+    }
+    
+    // Move to end (LRU)
+    this.cache.delete(filePath);
+    this.cache.set(filePath, entry);
+    return entry.data;
+  }
+}
+```
+
+## Graph-Deep Diff Analysis
+
+### 🏗️ Architectural Change Detection System
+
+```mermaid
+graph TB
+    A[Git Repository] --> B[GitIntegrator]
+    B --> C[Baseline Ref Resolution]
+    B --> D[Current Ref Resolution]
+    C --> E[Temp Workspace Creation]
+    D --> F[Current Analysis]
+    E --> G[Baseline Analysis]
+    F --> H[Dependency Graph Current]
+    G --> I[Dependency Graph Baseline]
+    H --> J[Graph Diff Engine]
+    I --> J
+    J --> K[Change Detection]
+    K --> L[Impact Assessment]
+    L --> M[Health Score Calculation]
+    M --> N[Recommendation Engine]
+    N --> O[LLM-Friendly Report]
+```
+
+### 📊 Health Score Calculation
+
+```typescript
+function calculateHealthScore(metrics: GraphMetrics): number {
+  let score = 100;
+  
+  // Penalize circular dependencies heavily
+  score -= metrics.circularDependencies.length * 10;
+  
+  // Penalize high coupling
+  const avgCoupling = metrics.averageDependencies;
+  if (avgCoupling > 5) {
+    score -= (avgCoupling - 5) * 5;
+  }
+  
+  // Penalize too many external dependencies relative to modules
+  const externalRatio = metrics.totalNodes > 0 ? 
+    metrics.externalDependencies / metrics.totalNodes : 0;
+  if (externalRatio > 2) {
+    score -= (externalRatio - 2) * 10;
+  }
+  
+  // Penalize complexity hotspots
+  score -= (metrics.hotspots?.length || 0) * 3;
+  
+  return Math.max(0, Math.min(100, score));
+}
+```
+
+### 🔄 Change Detection Categories
+
+#### 1. Circular Dependencies
+- **Detection**: Compare circular dependency arrays between refs
+- **Severity**: Critical if new circles, Low if resolved
+- **Impact**: High negative impact on maintainability and testability
+
+#### 2. Coupling Changes
+- **Detection**: Average dependencies per module analysis
+- **Severity**: Based on magnitude of change (threshold: 0.5)
+- **Impact**: Affects modularity and maintainability
+
+#### 3. External Dependencies
+- **Detection**: NPM package additions/removals
+- **Severity**: Medium for additions, Low for removals
+- **Impact**: Maintenance burden and security considerations
+
+#### 4. Layer Violations
+- **Detection**: Heuristic analysis of architectural boundaries
+- **Example**: UI components directly importing database modules
+- **Severity**: High - breaks architectural principles
+
+#### 5. Complexity Hotspots
+- **Detection**: Modules with above-average coupling
+- **Threshold**: 1.5x average dependencies
+- **Impact**: Difficulty in testing and maintaining specific modules
+
+### 🎯 Impact Scoring Algorithm
+
+```typescript
+interface ChangeImpact {
+  riskLevel: 'low' | 'medium' | 'high' | 'critical';
+  maintainability: number;    // -5 to +5
+  performance: number;        // -5 to +5  
+  testability: number;        // -5 to +5
+  overallScore: number;       // Sum of above
+  reasoning: string;
+  affectedAreas: string[];
+}
+
+function calculateImpact(change: ArchitecturalChange): ChangeImpact {
+  switch (change.type) {
+    case 'circular-dependency-introduced':
+      return {
+        riskLevel: 'critical',
+        maintainability: -3,
+        performance: -1,
+        testability: -2,
+        overallScore: -6,
+        reasoning: 'Circular dependencies make code harder to understand, test, and maintain',
+        affectedAreas: ['maintainability', 'testability', 'code organization']
+      };
+    // ... more cases
+  }
+}
+```
+
+### 🔗 Git Integration Architecture
+
+```typescript
+class GitIntegrator {
+  // Create temporary workspace with files from specific git ref
+  async createTempWorkspace(ref: string): Promise<string> {
+    const tempDir = path.join(tmpdir(), `m2js-workspace-${ref}-${Date.now()}`);
+    const files = this.getFilesAtRef(ref);
+    
+    // Copy files maintaining directory structure
+    for (const file of files) {
+      const content = this.getFileContentAtRef(file, ref);
+      const tempPath = path.join(tempDir, path.relative(this.repoPath, file));
+      fs.writeFileSync(tempPath, content);
+    }
+    
+    return tempDir;
+  }
+  
+  // Cleanup temporary workspace
+  cleanupWorkspace(workspacePath: string): void {
+    fs.rmSync(workspacePath, { recursive: true, force: true });
+  }
+}
 ```
 
 ## AI Enhancement Pipeline
