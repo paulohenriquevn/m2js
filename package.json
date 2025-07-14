@@ -96,7 +96,7 @@
   "dependencies": {
     "@babel/parser": "^7.28.0",
     "@babel/traverse": "^7.28.0",
-    "@babel/types": "^7.28.0",
+    "@babel/types": "^7.28.1",
     "chalk": "^4.1.2",
     "commander": "^14.0.0",
     "jscpd": "^4.0.5"
